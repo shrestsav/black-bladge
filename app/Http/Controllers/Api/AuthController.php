@@ -133,7 +133,6 @@ class AuthController extends Controller
                     ]);
 
         $token_response = json_decode((string) $response->getBody(), true);
-
         
         $check = DeviceToken::where('device_id',$request->device_id)
                             ->where('device_token',$request->device_token);
