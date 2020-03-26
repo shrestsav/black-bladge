@@ -140,7 +140,7 @@ class AuthController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'status' => '422',
-                'message' => 'Validation Failed',
+                'message' => trans('response.validation_failed'),
                 'errors' => $validator->errors(),
             ], 422);
         }
@@ -210,13 +210,13 @@ class AuthController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'fname' => 'required',
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.Auth::id()],
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'status' => '422',
-                'message' => 'Validation Failed',
+                'message' => trans('response.validation_failed'),
                 'errors' => $validator->errors(),
             ], 422);
         }
@@ -252,7 +252,7 @@ class AuthController extends Controller
 
         return response()->json([
                 'status' => '200',
-                'message'=> 'Profile Created Successfully' 
+                'message'=> trans('response.profile_created'), 
             ],200);
     }
     public function checkRole()
@@ -372,7 +372,7 @@ class AuthController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'status' => '422',
-                'message' => 'Validation Failed',
+                'message' => trans('response.validation_failed'),
                 'errors' => $validator->errors(),
             ], 422);
         }

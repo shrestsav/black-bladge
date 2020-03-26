@@ -39,21 +39,8 @@ class CustomerController extends Controller
             $customer->details->photo = asset('files/users/'.Auth::id().'/'.$customer->details->photo);
         else
             $customer->details->photo = null;
-
-        $appDefaults = AppDefault::first();
-        $orderTime = $appDefaults->order_time;
-
-        $offers = Offer::select('id','name','image','description')->where('status',1)->get();
-        $offerUrl = asset('files/offer_banners/');
         
-        $collection = collect([
-            'customer'  => $customer,
-            'orderTime' => $orderTime,
-            'offers'    => $offers,
-            'offerUrl'  => $offerUrl,
-            'notificationCount' => User::find(Auth::id())->unreadNotifications->count()
-        ]);
-        return response()->json($collection);
+        return response()->json($customer);
     }
 
     /**

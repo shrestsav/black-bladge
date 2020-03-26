@@ -9,7 +9,7 @@ return [
     |
     */
 
-    'validation_failed' => 'Arabic: Validation Failed',
-    'OTP_sent' => 'Arabic: OTP has been send to your phone',
-
+    'validation_failed' => 'ARABIC: Validation Failed',
+    'OTP_sent' => 'ARABIC: OTP has been send to your phone',
+    'profile_created' => 'ARABIC: Profile Created Successfully',
 ];
