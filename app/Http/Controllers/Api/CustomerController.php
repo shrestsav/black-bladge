@@ -13,6 +13,7 @@ use Auth;
 use Illuminate\Http\Request;
 use Intervention\Image\Facades\Image;
 use Validator;
+use App\Http\Resources\Api\User as UserResource;
 
 class CustomerController extends Controller
 {
@@ -32,69 +33,25 @@ class CustomerController extends Controller
                                  'created_at')
                         ->where('id',Auth::id())
                         ->with(
-                            'details:user_id,description,referral_id',
+                            'details:user_id,referral_id,gender',
                             'addresses:id,user_id,name,area_id,map_coordinates,building_community,type,appartment_no,remarks,is_default'
                         )
                         ->first()
                         ->makeVisible('photo_src');
         
-        return response()->json($customer);
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        return new UserResource($customer);
     }
 
     public function updateProfile(Request $request)
     {
-        if ($request->fname || $request->lname) {
+        if ($request->fname || $request->lname || $request->gender) {
             $msgs = [
                 "fname.required" => "First Name Cannot be empty"
             ];
             $validator = Validator::make($request->all(), [
-                "fname" => ['required', 'string', 'max:255'],
-            ],$msgs);
+                "fname"  => ['required', 'string', 'max:255'],
+                "gender" => ['required', 'string', 'max:255'],
+            ], $msgs);
 
             if ($validator->fails()) {
                 return response()->json([
@@ -103,9 +60,15 @@ class CustomerController extends Controller
                     'errors' => $validator->errors(),
                 ], 422);
             }
-            $input = $request->only('fname', 'lname');
-            $address = User::where('id',Auth::id())->update($input);
+            
+            $address = User::where('id',Auth::id())->update([
+                'fname' => $request->fname,
+                'lname' => $request->lname
+            ]);
 
+            UserDetail::where('user_id',Auth::id())->update([
+                'gender' => $request->gender
+            ]);
             return response()->json([
                 'status' => '200',
                 'message'=> 'Profile Updated Successfully' 
@@ -164,19 +127,16 @@ class CustomerController extends Controller
                 $constraint->upsize();
             });
             $photo = $request->file('photo');
-            // $fileName = 'dp_user_'.Auth::id().'.'.$photo->getClientOriginalExtension();
             $fileName = 'dp_user_'.Auth::id().'.jpg';
             $uploadDirectory = public_path('files'.DS.'users'.DS.Auth::id());
             if (!file_exists($uploadDirectory)) {
                 \File::makeDirectory($uploadDirectory, 0755, true);
             }
             $image->save($uploadDirectory.DS.$fileName,60);
-            // $photo->move($uploadDirectory, $fileName);
 
-            $userDetail = UserDetail::updateOrCreate(
-                ['user_id' => Auth::id()],
-                ['photo' => $fileName]
-            );
+            $userDetail = User::find(Auth::id())->update([
+                'photo' => $fileName
+            ]);
 
             return response()->json([
                 'status' => '200',
@@ -186,9 +146,9 @@ class CustomerController extends Controller
         } 
 
         return response()->json([
-                    'status' => '400',
-                    'message' => 'No parameters found to complete the request'
-                ], 400);
+            'status' => '400',
+            'message' => 'No parameters found to complete the request'
+        ], 400);
     }
 
     public function changePhone(Request $request)

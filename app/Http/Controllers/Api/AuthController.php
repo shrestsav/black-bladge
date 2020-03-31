@@ -68,7 +68,6 @@ class AuthController extends Controller
             return response()->json([
                 'message'     => trans('response.OTP_sent'),
                 'user_status' => 'existing',
-                // 'code'        => $request['OTP']
             ]);
         }
         else{
@@ -209,15 +208,16 @@ class AuthController extends Controller
     public function createProfile(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'fname' => 'required',
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.Auth::id()],
+            'fname'  => 'required',
+            'email'  => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.Auth::id()],
+            'gender' => 'required|string',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
-                'status' => '422',
+                'status'  => '422',
                 'message' => trans('response.validation_failed'),
-                'errors' => $validator->errors(),
+                'errors'  => $validator->errors(),
             ], 422);
         }
 
@@ -247,14 +247,16 @@ class AuthController extends Controller
                 ['user_id' => Auth::id()],
                 [
                     'referred_by' => $request->referred_by,
-                    'referral_id' => $referral_id
+                    'referral_id' => $referral_id,
+                    'gender'      => $request->gender
                 ]);
 
         return response()->json([
-                'status' => '200',
-                'message'=> trans('response.profile_created'), 
-            ],200);
+            'status' => '200',
+            'message'=> trans('response.profile_created'), 
+        ],200);
     }
+
     public function checkRole()
     {
         $role = Auth::user()->roles()->first()->name;
