@@ -25,6 +25,7 @@ class CreateUsersTable extends Migration
             $table->datetime('OTP_timestamp')->nullable();
             $table->smallInteger('OTP_verified')->nullable()->default(0);
             $table->string('password')->nullable();
+            $table->string('photo')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

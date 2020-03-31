@@ -26,10 +26,10 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'fname','lname', 'email', 'username', 'password','phone','OTP','OTP_timestamp'
+        'fname','lname', 'email', 'username', 'password','phone','OTP','OTP_timestamp','photo'
     ];
 
-    protected $appends = ['full_name'];
+    protected $appends = ['full_name','photo_src'];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -37,7 +37,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password', 'remember_token', 'photo_src'
     ];
 
     /**
@@ -132,6 +132,11 @@ class User extends Authenticatable
     public function getFullNameAttribute()
     {
         return "{$this->fname} {$this->lname}";
+    }
+
+    public function getPhotoSrcAttribute()
+    {
+        return $this->photo ? asset('files/users/'.$this->id.'/'.$this->photo) : asset('/files/images/person.png');
     }
 
     public function sendOTP()

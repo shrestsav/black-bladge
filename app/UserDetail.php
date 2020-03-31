@@ -12,7 +12,6 @@ class UserDetail extends Model
         'dob',
         'home_address',
         'area_id',
-        'photo',
         'description',
         'joined_date',
         'documents',

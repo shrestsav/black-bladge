@@ -28,17 +28,15 @@ class CustomerController extends Controller
                                  'lname',
                                  'phone',
                                  'email',
+                                 'photo',
                                  'created_at')
                         ->where('id',Auth::id())
                         ->with(
-                            'details:user_id,description,photo,referral_id',
+                            'details:user_id,description,referral_id',
                             'addresses:id,user_id,name,area_id,map_coordinates,building_community,type,appartment_no,remarks,is_default'
                         )
-                        ->first();
-        if($customer->details->photo)
-            $customer->details->photo = asset('files/users/'.Auth::id().'/'.$customer->details->photo);
-        else
-            $customer->details->photo = null;
+                        ->first()
+                        ->makeVisible('photo_src');
         
         return response()->json($customer);
     }
