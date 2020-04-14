@@ -23,8 +23,7 @@ class User extends JsonResource
             'full_name'   => $this->full_name,
             'photo_src'   => $this->photo_src,
             'created_at'  => $this->created_at,
-            'gender'      => $this->details->gender,
-            'referral_id' => $this->details->referral_id
+            'gender'      => $this->gender
         ];
     }
 }
