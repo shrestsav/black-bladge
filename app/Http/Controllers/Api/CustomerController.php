@@ -33,7 +33,7 @@ class CustomerController extends Controller
                                  'created_at')
                         ->where('id',Auth::id())
                         ->with(
-                            'details:user_id,referral_id,gender',
+                            'details:user_id,referral_id',
                             'addresses:id,user_id,name,area_id,map_coordinates,building_community,type,appartment_no,remarks,is_default'
                         )
                         ->first()
