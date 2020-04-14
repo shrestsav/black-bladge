@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Validator;
 use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\Hash;
 
 class DriverController extends Controller
 {
@@ -29,23 +30,9 @@ class DriverController extends Controller
      */
     public function index()
     {
-        $drivers = User::select('users.id',
-                                'users.fname',
-                                'users.lname',
-                                'users.username',
-                                'users.email',
-                                'users.phone',
-                                'UD.photo',
-                                'UD.gender',
-                                'UD.area_id',
-                                'UD.dob',
-                                'UD.photo',
-                                'UD.joined_date',
-                                'UD.description')
-                        ->whereHas('roles', function ($query) {
+        $drivers = User::whereHas('roles', function ($query) {
                             $query->where('name', '=', 'driver');
                         })
-                        ->join('user_details as UD','UD.user_id','=','users.id')
                         ->paginate(Session::get('rows'));
 
         return response()->json($drivers);
@@ -96,7 +83,6 @@ class DriverController extends Controller
                             });
         }
         
-
         if($request->type=='monthly'){
             $this->validate($request, [
                 'year_month' => 'required|string'
@@ -134,18 +120,54 @@ class DriverController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'fname' => 'required|max:255',
-            'email' => 'email|max:255|unique:users',
-            'phone' => 'required|unique:users',
-            'area_id' => 'required|numeric',
+            'fname'      => 'required|max:191',
+            'email'      => 'nullable|email|max:191|unique:users',
+            'phone'      => 'nullable|unique:users',
+            'username'   => 'required|string|max:191',
+            'license_no' => 'required|string|max:191',
+            'photo_file' => 'nullable|mimes:jpeg,jpg,bmp,png|max:15072',
+            'password'   => 'required|string|min:4|max:4',
         ]);
-        $driver = User::create($request->all()); 
-        $role_id = Role::where('name','driver')->first()->id;
-        $request['user_id'] = $driver->id;
-        $driverDetails = UserDetail::create($request->all()); 
         
+        $driver = User::create([
+            'username'    =>  $request->username,
+            'license_no'  =>  $request->license_no,
+            'gender'      =>  $request->gender, 
+            'fname'       =>  $request->fname,
+            'lname'       =>  $request->lname,
+            'phone'       =>  $request->phone,
+            'email'       =>  $request->email,
+            'dob'         =>  $request->dob,
+            'country'     =>  $request->country,
+            'password'    =>  Hash::make($request->password),
+        ]); 
+
+        $role_id = Role::where('name','driver')->first()->id;
+
         // Assign as Driver
         $driver->attachRole($role_id);
+        
+        //Save User Photo 
+        if ($request->hasFile('photo_file')) {
+            $image = Image::make($request->file('photo_file'))->orientate();
+            // prevent possible upsizing
+            $image->resize(null, 600, function ($constraint) {
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            });
+
+            $fileName = 'dp_user_'.$driver->id.'.jpg';
+            $uploadDirectory = public_path('files'.DS.'users'.DS.$driver->id);
+            if (!file_exists($uploadDirectory)) {
+                \File::makeDirectory($uploadDirectory, 0755, true);
+            }
+            $image->save($uploadDirectory.DS.$fileName,60);
+
+            $driver->update([
+                'photo' => $fileName
+            ]);
+        } 
+
 
         return response()->json(['message'=>'Successfully Added']);
     }
@@ -171,39 +193,27 @@ class DriverController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'id'      => 'required',
-            'fname'   => 'required|max:255',
-            'lname'   => 'required|max:255',
-            'email'   => 'email|max:255|unique:users,email,'.$id,
-            'phone'   => 'required|unique:users,phone,'.$id,
-            'area_id' => 'required|numeric',
-            'photo_file' => 'mimes:jpeg,jpg,bmp,png|max:15072'
+            'id'         => 'required',
+            'fname'      => 'required|max:191',
+            'lname'      => 'nullable|max:191',
+            'email'      => 'nullable|email|max:191|unique:users,email,'.$id,
+            'phone'      => 'nullable|unique:users,phone,'.$id,
+            'photo_file' => 'nullable|mimes:jpeg,jpg,bmp,png|max:15072',
+            'password'   => 'nullable|string|min:4|max:4',
         ]);
 
         if ($validator->fails()) {
             $error = $validator->errors();
             return response()->json([
-                'status' => '422',
+                'status'  => '422',
                 'message' => 'Validation Failed',
-                'errors' => $error,
+                'errors'  => $error,
             ], 422);
         }
-        
-        $customerUpdate = User::findOrFail($request->id)
-                              ->update([
-                                'fname'     =>  $request->fname,
-                                'lname'     =>  $request->lname,
-                                'username'  =>  $request->username,
-                                'phone'     =>  $request->phone,
-                                'email'     =>  $request->email
-                              ]);
 
-        $updateDetailsFields = [
-            'area_id'     => $request->area_id, 
-            'dob'         => $request->dob,
-            'joined_date' => $request->joined_date,
-            'description' => $request->description
-        ];
+        $driver = User::findOrFail($request->id);
+        $password = $driver->password;
+        $fileName = $driver->photo;
 
         //Save User Photo 
         if ($request->hasFile('photo_file')) {
@@ -220,12 +230,21 @@ class DriverController extends Controller
                 \File::makeDirectory($uploadDirectory, 0755, true);
             }
             $image->save($uploadDirectory.DS.$fileName,60);
-
-            $updateDetailsFields['photo'] = $fileName;
-
         } 
 
-        $detailsUpdate = UserDetail::updateOrCreate(['user_id' => $request->id], $updateDetailsFields);
+        $driver = $driver->update([
+            'username'    =>  $request->username,
+            'license_no'  =>  $request->license_no,
+            'gender'      =>  $request->gender, 
+            'fname'       =>  $request->fname,
+            'lname'       =>  $request->lname,
+            'phone'       =>  $request->phone,
+            'email'       =>  $request->email,
+            'dob'         =>  $request->dob,
+            'country'     =>  $request->country,
+            'photo'       =>  $fileName,
+            'password'    =>  $request->password ? Hash::make($request->password) : $password,
+        ]);
         
         return response()->json([
             'status' => '200',

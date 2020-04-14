@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 */
 Route::group(['middleware' => ['localization']], function() {
 	Route::post('/phoneRegister','Api\AuthController@phoneRegister');
+	Route::post('/driver/login','Api\AuthController@driverLogin');
 	Route::post('/verifyOTP','Api\AuthController@verifyOTP');
 
 	Route::middleware('auth:api')->get('/user', function (Request $request) {

@@ -16,19 +16,18 @@ class CreateUserDetailsTable extends Migration
         Schema::create('user_details', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('user_id')->unsigned();
-            $table->string('gender')->nullable();
             $table->smallInteger('home_address')->nullable()->comment('From User Address Table');
             $table->smallInteger('area_id')->nullable(); //Driver's main area ID
-            $table->date('dob')->nullable();
             $table->text('description')->nullable();
             $table->date('joined_date')->nullable();
             $table->longText('documents')->nullable();
             $table->string('referral_id')->nullable();
             $table->string('referred_by')->nullable();
-            $table->foreign('user_id')->references('id')->on('users')
-                ->onUpdate('cascade')->onDelete('cascade');
-
+            
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users')
+                  ->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

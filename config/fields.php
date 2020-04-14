@@ -2,29 +2,41 @@
 
 return [
   'createUser' => [
-    'User Information' => [
+    'Login Information' => [
+      'username' => [
+        'display_name' => 'Driver ID',
+        'col' => '4',
+        'type' =>  'text',
+      ],
+      'password' => [
+        'display_name' => 'Login Pin',
+        'col' => '4',
+        'type' =>  'number',
+      ],
+      'license_no' => [
+        'display_name' => 'License Number',
+        'col' => '4',
+        'type' =>  'text',
+      ],
+    ],
+    'Personal Information' => [
+      'gender' => [
+        'display_name' => 'Title',
+        'col' => '2',
+        'type' =>  'select',
+      ],
       'fname' => [
         'display_name' => 'First Name',
-        'col' => '6',
+        'col' => '5',
         'type' =>  'text',
       ],
       'lname' => [
         'display_name' => 'Last Name',
-        'col' => '6',
+        'col' => '5',
         'type' =>  'text',
-      ],
-      'area_id' => [
-        'display_name' => 'Select Driver Area',
-        'col' => '4',
-        'type' =>  'select',
-      ],
-      'phone' => [
+			],
+			'phone' => [
         'display_name' => 'Phone',
-        'col' => '4',
-        'type' =>  'text',
-      ],
-      'username' => [
-        'display_name' => 'Username',
         'col' => '4',
         'type' =>  'text',
       ],
@@ -33,22 +45,15 @@ return [
         'col' => '4',
         'type' =>  'email',
       ],
-    ],
-    'Other Information' => [
       'dob' => [
         'display_name' => 'Date of Birth',
         'col' => '4',
         'type' =>  'date',
-      ],
-      'joined_date' => [
-        'display_name' => 'Joined Date',
+			],
+			'country' => [
+        'display_name' => 'Country',
         'col' => '4',
-        'type' =>  'date',
-      ],
-      'description' => [
-        'display_name' => 'About',
-        'col' => '12',
-        'type' =>  'textarea',
+        'type' =>  'text',
       ],
     ],
   ],

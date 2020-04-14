@@ -25,7 +25,14 @@ class CreateUsersTable extends Migration
             $table->datetime('OTP_timestamp')->nullable();
             $table->smallInteger('OTP_verified')->nullable()->default(0);
             $table->string('password')->nullable();
+
+            //Other Details
             $table->string('photo')->nullable();
+            $table->string('gender')->nullable();
+            $table->string('country')->nullable();
+            $table->date('dob')->nullable();
+            $table->string('license_no')->nullable()->comment('if user is driver');
+            $table->datetime('last_login')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

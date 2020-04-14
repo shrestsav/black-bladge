@@ -26,7 +26,20 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'fname','lname', 'email', 'username', 'password','phone','OTP','OTP_timestamp','photo'
+        'fname',
+        'lname',
+        'email',
+        'username',
+        'password',
+        'phone',
+        'OTP',
+        'OTP_timestamp',
+        'photo',
+        'gender',
+        'country',
+        'dob',
+        'license_no',
+        'last_login'
     ];
 
     protected $appends = ['full_name','photo_src'];
@@ -37,7 +50,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token', 'photo_src'
+        'password', 'remember_token'
     ];
 
     /**
@@ -73,7 +86,7 @@ class User extends Authenticatable
      */
     public function findForPassport($username)
     {
-        return $this->where('phone', $username)->first();
+        return $this->where('phone', $username)->orWhere('username',$username)->first();
     }
 
     /**
@@ -84,13 +97,18 @@ class User extends Authenticatable
     */
     public function validateForPassportPasswordGrant($OTP)
     {
-        // return Hash::check($password, $this->password);
-        $OTP_timestamp = \Carbon\Carbon::parse($this->OTP_timestamp);
-        $current = \Carbon\Carbon::now();
-        $totalTime = \Carbon\Carbon::now()->diffInMinutes($OTP_timestamp);
+        //check if user is customer or driver first
+        if($this->hasRole('customer')){
+            // return Hash::check($password, $this->password);
+            $OTP_timestamp = \Carbon\Carbon::parse($this->OTP_timestamp);
+            $current = \Carbon\Carbon::now();
+            $totalTime = \Carbon\Carbon::now()->diffInMinutes($OTP_timestamp);
 
-        if($this->OTP==$OTP && $totalTime<=config('settings.OTP_expiry'))
-            return true;
+            if($this->OTP==$OTP && $totalTime<=config('settings.OTP_expiry')) return true;
+        }
+        elseif($this->hasRole('driver')){
+            return Hash::check($OTP, $this->getAuthPassword());
+        }
 
         return false;
     }

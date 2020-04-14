@@ -6,7 +6,7 @@
           <div class="col-lg-3 order-lg-2">
             <div class="card-profile-image">
               <a href="#">
-                <img :src="imageUrl()" class="rounded-circle" @click="triggerDPInput">
+                <img :src="driver.photo_src" class="rounded-circle" @click="triggerDPInput">
                 <input type="file" class="custom-file-input" lang="en" v-on:change="imageChange" style="display: none;" ref="dp_photo">
               </a>
             </div>
@@ -14,11 +14,11 @@
         </div>
         <div class="card-body">
           <h6 class="heading-small text-muted mb-4">EDIT DRIVER DATA</h6>
-          <div v-for="(section,sec_name,index) in fields">
+          <div v-for="(section,sec_name,index) in fields" :key="index">
             <h6 class="heading-small text-muted mb-4">{{sec_name}}</h6>
             <div class="pl-lg-4">
               <div class="row">
-                <div :class="'col-lg-'+item['col']" v-for="item,key in section">
+                <div :class="'col-lg-'+item['col']" v-for="(item,key) in section" :key="key">
                   <div class="form-group">
                     <label class="form-control-label" :for="'input-'+key">{{item['display_name']}}</label>
                     <input 
@@ -46,8 +46,14 @@
                       placeholder="Write something about driver" 
                       v-model="driver[key]"
                     ></textarea>
-                    <select class="form-control" v-if="item['type']==='select' && key==='area_id'" v-model="driver[key]" :class="{'not-validated':errors[key]}" >
-                      <option v-for="location in mainArea" :value="location.id">{{location.name}}</option>
+                    <select
+                        class="form-control"
+                        v-if="item['type']==='select' && key==='gender'"
+                        v-model="driver[key]"
+                        :class="{'not-validated':errors[key]}"
+                    >
+                        <option value="Mr" selected>Mr</option>
+                        <option value="Mr">Mrs</option>
                     </select>
                     <div class="invalid-feedback" style="display: block;" v-if="errors[key]">
                       {{errors[key][0]}}
@@ -79,15 +85,13 @@
                 <th></th>
                 <th>S.No.</th>
                 <th>Name</th>
-                <th>Area</th>
-                <th>Email</th>
-                <th>Date of Birth</th>
-                <th>Address</th>
+                <th>License No</th>
+                <th>Driver ID</th>
                 <th>Contact</th>
               </tr>
             </thead>
             <tbody class="list">
-              <tr v-for="item,key in drivers.data">
+              <tr v-for="(item,key) in drivers.data" :key="key">
                 <td>
                   <div class="dropdown">
                     <a class="btn btn-sm btn-icon-only text-light" href="javascript:;" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -101,10 +105,8 @@
                 </td>
                 <td>{{++key}}</td>
                 <td>{{item.full_name}}</td>
-                <td><span v-if="item.details">{{item.details.area_id}}</span></td>
-                <td>{{item.email}}</td>
-                <td><span v-if="item.details">{{item.details.dob}}</span></td>
-                <td><span v-if="item.details">{{item.details.address}}</span</td>
+                <td>{{item.license_no}}</td>
+                <td>{{item.username}}</td>
                 <td>{{item.phone}}</td>
               </tr>
             </tbody>
@@ -210,7 +212,7 @@
       },
       imageChange(e){
         this.driver.photo_file = e.target.files[0]
-        this.driver.photo = URL.createObjectURL(this.driver.photo_file)
+        this.driver.photo_src = URL.createObjectURL(this.driver.photo_file)
       },
       imageUrl(){
         return window.location.origin + '/files/users/' + this.driver.id +'/' + this.driver.photo

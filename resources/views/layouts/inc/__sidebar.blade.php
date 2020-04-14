@@ -22,7 +22,7 @@
     <div class="collapse navbar-collapse" id="sidenav-collapse-main">
       <!-- Nav items -->
       <ul class="navbar-nav">
-        <li class="nav-item">
+        {{-- <li class="nav-item">
           <router-link :to="{ name: 'dashboard'}" >
             <a class="nav-link"  href="{{url('/')}}" :href="'/'" v-bind:class="{ active: currentPage=='dashboard' }">
               <i class="ni ni-ui-04 text-info"></i>
@@ -37,7 +37,7 @@
               <span class="nav-link-text">Orders</span>
             </a>
           </router-link>
-        </li>
+        </li> --}}
         <li class="nav-item">
           <router-link :to="{ name: 'drivers'}" >
             <a class="nav-link" href="{{url('/v/drivers')}}" :href="''" v-bind:class="{active: currentMenu=='driversMenu'}">
@@ -62,7 +62,7 @@
             </a>
           </router-link>
         </li> --}}
-        <li class="nav-item">
+        {{-- <li class="nav-item">
           <a class="nav-link" href="#navbar-config" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-config" v-bind:class="{active: currentMenu=='settingsMenu'}">
             <i class="ni ni-settings text-info"></i>
             <span class="nav-link-text">App Settings</span>
@@ -111,7 +111,7 @@
               </li>
             </ul>
           </div>
-        </li>
+        </li> --}}
       </ul>
     </div>
   </div>

@@ -14,6 +14,8 @@ use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Hash;
+use App\Http\Resources\Api\Customer\Customer as CustomerResource;
 
 use Mail;
 use App\Mail\notifyMail;
@@ -129,6 +131,8 @@ class AuthController extends Controller
 
     public function verifyOTP(Request $request)
     {   
+        $client_secret = \DB::table('oauth_clients')->where('id',2)->first()->secret;
+        
         $validator = Validator::make($request->all(), [
             'phone'         => 'required',
             'OTP'           => 'required|numeric',
@@ -163,7 +167,7 @@ class AuthController extends Controller
                         'form_params' => [
                             'grant_type' => 'password',
                             'client_id' => 2,
-                            'client_secret' => 'l4flGC0QY4pE32KkKiZUNXYBsBmRcnAOogRKvw1H',
+                            'client_secret' => $client_secret,
                             'username' => $phone,
                             'password' => $OTP,
                             'scope' => '',
@@ -200,6 +204,84 @@ class AuthController extends Controller
             'role'          =>  $role,
             'user_id'       =>  $user_id,
             'user_details'  =>  $user_details
+        ];
+
+        return response()->json($result);
+    }
+
+    public function driverLogin(Request $request)
+    {   
+        $validator = Validator::make($request->all(), [
+            'username'     => 'required|string|max:191|exists:users,username',
+            'password'     =>  [
+                'required',
+                function ($attribute, $value, $fail) use ($request) {
+                    if (!Hash::check($value, User::where('username',$request->username)->firstOrFail()->getAuthPassword())) {
+                        $fail('Password did not match');
+                    }
+                },
+            ],
+            'device_id'    => 'required|string|max:191',
+            'device_token' => 'required|string|max:191'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => '422',
+                'message' => trans('response.validation_failed'),
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $user = User::where('username',$request->username)->firstOrFail();
+
+        $client_secret = \DB::table('oauth_clients')->where('id',2)->first()->secret;
+
+        $url = url('').'/oauth/token';
+        
+        $user_id = $user->id;
+        $role = $user->roles()->first()->name;
+        
+        $http = new \GuzzleHttp\Client();
+        $response = $http->post(url('').'/oauth/token', [
+                        'form_params' => [
+                            'grant_type' => 'password',
+                            'client_id' => 2,
+                            'client_secret' => $client_secret,
+                            'username' => $request->username,
+                            'password' => $request->password,
+                            'scope' => '',
+                        ],
+                        'http_errors' => true // add this to return errors in json
+                    ]);
+
+        $token_response = json_decode((string) $response->getBody(), true);
+        
+        $check = DeviceToken::where('device_id',$request->device_id)
+                            ->where('device_token',$request->device_token);
+        //If both device_id and device_token exists                           
+        if($check->exists()){
+            $check->update([
+                'user_id'   =>  $user_id
+            ]);
+        }
+        // If device_id only exists
+        else{
+            $deviceToken = DeviceToken::updateOrCreate(
+                [
+                    'device_id' => $request->device_id
+                ],
+                [
+                    'user_id'      => $user_id,
+                    'device_token' => $request->device_token
+                ]
+            );
+        }
+
+        $result = [
+            'tokens' =>  $token_response,
+            'role'   =>  $role,
+            'user'   =>  new CustomerResource($user),
         ];
 
         return response()->json($result);

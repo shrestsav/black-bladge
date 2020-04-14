@@ -1,4 +1,3 @@
-<?php echo 'Welcome to Black Bladge'; die(); ?>
 @extends('layouts.guest')
 
 @section('content')
