@@ -176,27 +176,28 @@ class AuthController extends Controller
                     ]);
 
         $token_response = json_decode((string) $response->getBody(), true);
-
         
         $check = DeviceToken::where('device_id',$request->device_id)
                             ->where('device_token',$request->device_token);
+
         //If both device_id and device_token exists                           
         if($check->exists()){
             $check->update([
-                'user_id'   =>  $user_id
+                'user_id' => $user_id
             ]);
         }
+
         // If device_id only exists
         else{
             $deviceToken = DeviceToken::updateOrCreate(
-                        [
-                            'device_id' => $request->device_id
-                        ],
-                        [
-                            'user_id'      => $user_id,
-                            'device_token' => $request->device_token
-                        ]
-                    );
+                [
+                    'device_id' => $request->device_id
+                ],
+                [
+                    'user_id'      => $user_id,
+                    'device_token' => $request->device_token
+                ]
+            );
         }
 
         $result = [
@@ -244,13 +245,13 @@ class AuthController extends Controller
         
         $http = new \GuzzleHttp\Client();
         $response = $http->post(url('').'/oauth/token', [
-                        'form_params' => [
-                            'grant_type' => 'password',
-                            'client_id' => 2,
+                        'form_params'       => [
+                            'grant_type'    => 'password',
+                            'client_id'     => 2,
                             'client_secret' => $client_secret,
-                            'username' => $request->username,
-                            'password' => $request->password,
-                            'scope' => '',
+                            'username'      => $request->username,
+                            'password'      => $request->password,
+                            'scope'         => '',
                         ],
                         'http_errors' => true // add this to return errors in json
                     ]);
@@ -290,8 +291,8 @@ class AuthController extends Controller
     public function createProfile(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'fname'  => 'required',
-            'email'  => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.Auth::id()],
+            'fname'  => 'required|string',
+            'email'  => 'required|string|email|max:255|unique:users,email,'.Auth::id(),
             'gender' => 'required|string',
         ]);
 
@@ -303,7 +304,7 @@ class AuthController extends Controller
             ], 422);
         }
 
-        $userInput = $request->only('fname', 'lname', 'email');
+        $userInput = $request->only('fname', 'lname', 'email', 'gender');
 
         if($request->referred_by){
             $check = UserDetail::where('referral_id',$request->referred_by);
@@ -329,8 +330,7 @@ class AuthController extends Controller
                 ['user_id' => Auth::id()],
                 [
                     'referred_by' => $request->referred_by,
-                    'referral_id' => $referral_id,
-                    'gender'      => $request->gender
+                    'referral_id' => $referral_id
                 ]);
 
         return response()->json([

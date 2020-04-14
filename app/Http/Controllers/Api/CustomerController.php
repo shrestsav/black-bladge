@@ -63,12 +63,10 @@ class CustomerController extends Controller
             
             $address = User::where('id',Auth::id())->update([
                 'fname' => $request->fname,
-                'lname' => $request->lname
-            ]);
-
-            UserDetail::where('user_id',Auth::id())->update([
+                'lname' => $request->lname,
                 'gender' => $request->gender
             ]);
+
             return response()->json([
                 'status' => '200',
                 'message'=> 'Profile Updated Successfully' 
@@ -118,7 +116,6 @@ class CustomerController extends Controller
                     'errors' => $validator->errors(),
                 ], 422);
             }
-
 
             $image = Image::make($request->file('photo'))->orientate();
             // prevent possible upsizing
