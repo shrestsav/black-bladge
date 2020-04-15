@@ -13,9 +13,10 @@ use Illuminate\Http\Request;
 |
 */
 Route::group(['middleware' => ['localization']], function() {
-	Route::post('/phoneRegister','Api\AuthController@phoneRegister');
+	Route::post('/customer/phoneRegister','Api\AuthController@phoneRegister');
+	Route::post('/customer/verifyOTP','Api\AuthController@verifyOTP');
 	Route::post('/driver/login','Api\AuthController@driverLogin');
-	Route::post('/verifyOTP','Api\AuthController@verifyOTP');
+	
 
 	Route::middleware('auth:api')->get('/user', function (Request $request) {
 		return $request->user();
@@ -26,19 +27,22 @@ Route::group(['middleware' => ['localization']], function() {
 		Route::apiResource('/orders','OrderController');
 		Route::post('/orders/checkCoupon','OrderController@checkCoupon');
 
-		Route::group(['middleware' => ['role:customer']], function() {
-			Route::post('/createProfile','AuthController@createProfile');
-
-			Route::apiResource('/customers','CustomerController');
-			Route::post('/updateProfile','CustomerController@updateProfile');
-			Route::post('/changePhone','CustomerController@changePhone');
-			Route::post('/updatePhone','CustomerController@updatePhone');
-
-
+		Route::group(['namespace' => 'Customer', 'prefix' => 'customer', 'middleware' => ['role:customer']], function() {
+			
+			Route::group(['prefix' => 'profile'], function() {
+				Route::post('/create','CustomerController@createProfile');
+				Route::post('/update','CustomerController@updateProfile');
+				Route::get('/details','CustomerController@index');
+			});
 
 
 
 
+
+			// Route::apiResource('/customers','CustomerController');
+				
+			// 	Route::post('/changePhone','CustomerController@changePhone');
+			// 	Route::post('/updatePhone','CustomerController@updatePhone');
 
 			// Route::get('/getAddress','CustomerController@getAddress');
 			// Route::post('/addAddress','CustomerController@addAddress');
