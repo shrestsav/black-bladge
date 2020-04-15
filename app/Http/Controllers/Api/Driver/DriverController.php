@@ -12,9 +12,7 @@ class DriverController extends Controller
 {
     public function index()
     {
-        $driver = User::find(Auth::id());
-
-        return response()->json(new DriverResource($driver));
+        return response()->json(new DriverResource(Auth::user()));
     }
 
     public function changeMainArea(Request $request)
