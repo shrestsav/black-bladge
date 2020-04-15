@@ -10,6 +10,7 @@ use App\User;
 use App\UserAddress;
 use App\UserDetail;
 use Auth;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Intervention\Image\Facades\Image;
 use Validator;
