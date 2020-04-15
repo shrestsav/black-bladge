@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 |
 */
 Route::group(['middleware' => ['localization']], function() {
-	Route::post('/customer/phoneRegister','Api\AuthController@phoneRegister');
+	Route::post('/customer/login','Api\AuthController@phoneRegister');
 	Route::post('/customer/verifyOTP','Api\AuthController@verifyOTP');
 	Route::post('/driver/login','Api\AuthController@driverLogin');
 	
