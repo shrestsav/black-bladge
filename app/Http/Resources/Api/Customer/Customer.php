@@ -20,6 +20,7 @@ class Customer extends JsonResource
             'lname'     => $this->lname,
             'username'  => $this->username,
             'phone'     => $this->phone,
+            'email'     => $this->email,
             'country'   => $this->country,
             'full_name' => $this->full_name,
             'photo_src' => $this->photo_src,
