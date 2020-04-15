@@ -16,6 +16,7 @@ use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\Api\Customer\Customer as CustomerResource;
+use App\Http\Resources\Api\Driver\Driver as DriverResource;
 
 use Mail;
 use App\Mail\notifyMail;
@@ -282,7 +283,7 @@ class AuthController extends Controller
         $result = [
             'tokens' =>  $token_response,
             'role'   =>  $role,
-            'user'   =>  new CustomerResource($user),
+            'user'   =>  new DriverResource($user),
         ];
 
         return response()->json($result);
