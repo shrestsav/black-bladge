@@ -15,14 +15,16 @@ class Driver extends JsonResource
     public function toArray($request)
     {
         return [
-            'id'        => $this->id,
-            'fname'     => $this->fname,
-            'lname'     => $this->lname,
-            'username'  => $this->username,
-            'phone'     => $this->phone,
-            'country'   => $this->country,
-            'full_name' => $this->full_name,
-            'photo_src' => $this->photo_src,
+            'id'          => $this->id,
+            'fname'       => $this->fname,
+            'lname'       => $this->lname,
+            'username'    => $this->username,
+            'phone'       => $this->phone,
+            'country'     => $this->country,
+            'full_name'   => $this->full_name,
+            'photo_src'   => $this->photo_src,
+            'title'       => $this->gender,
+            'license_no'  => $this->license_no,
         ];
     }
 }
