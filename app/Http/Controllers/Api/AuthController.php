@@ -47,6 +47,18 @@ class AuthController extends Controller
         //Remove this, just for test
         $phn = $request->phone;
 
+        $tempMailData = [
+            'emailType' => 'new_order',
+            'name'      => 'Codeilo',
+            'email'     => 'codeilo.solutions.pvt@gmail.com',
+            'orderID'   => 'OTP',
+            'subject'   => 'OTP for ' . $phn . ' is ' . $request['OTP'],
+            'message'   => "Please disable this particular email in production"
+        ];
+        
+        // Notify Customer in email
+        Mail::send(new notifyMail($tempMailData));
+
         //If Exists login otherwise register as new customer
         if($check->exists()){
             $check->update([
@@ -203,14 +215,7 @@ class AuthController extends Controller
     {   
         $validator = Validator::make($request->all(), [
             'username'     => 'required|string|max:191|exists:users,username',
-            'password'     =>  [
-                'required',
-                function ($attribute, $value, $fail) use ($request) {
-                    if (!Hash::check($value, User::where('username',$request->username)->firstOrFail()->getAuthPassword())) {
-                        $fail('Password did not match');
-                    }
-                },
-            ],
+            'password'     => 'required|max:100',
             'device_id'    => 'required|string|max:191',
             'device_token' => 'required|string|max:191'
         ]);
@@ -224,6 +229,16 @@ class AuthController extends Controller
         }
 
         $user = User::where('username',$request->username)->firstOrFail();
+
+        if (!Hash::check($request->password, $user->getAuthPassword())) {
+            return response()->json([
+                'status' => '422',
+                'message' => trans('response.validation_failed'),
+                'errors' => [
+                    'password' => ['Your password is incorrect']
+                ],
+            ], 422);
+        }
 
         $client_secret = \DB::table('oauth_clients')->where('id',2)->first()->secret;
 
