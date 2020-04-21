@@ -13,17 +13,16 @@ use Illuminate\Http\Request;
 |
 */
 Route::group(['middleware' => ['localization']], function() {
-	Route::post('/customer/login','Api\AuthController@phoneRegister');
-	Route::post('/customer/verifyOTP','Api\AuthController@verifyOTP');
-	Route::post('/driver/login','Api\AuthController@driverLogin');
+	Route::post('/customer/login','Api\Auth\AuthController@phoneRegister');
+	Route::post('/customer/verifyOTP','Api\Auth\AuthController@verifyOTP');
+	Route::post('/driver/login','Api\Auth\AuthController@driverLogin');
 	
-
 	Route::middleware('auth:api')->get('/user', function (Request $request) {
 		return $request->user();
 	});
 
 	Route::group(['namespace' => 'Api', 'middleware' => ['auth:api']], function() {
-		Route::get('/checkRole','AuthController@checkRole');
+		Route::get('/checkRole','Auth\AuthController@checkRole');
 		Route::apiResource('/orders','OrderController');
 		Route::post('/orders/checkCoupon','OrderController@checkCoupon');
 

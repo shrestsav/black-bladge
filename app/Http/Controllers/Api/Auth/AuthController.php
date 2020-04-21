@@ -1,15 +1,16 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Auth;
+
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 use App\DeviceToken;
-use App\Http\Controllers\Controller;
 use App\Notifications\OTPNotification;
 use App\Role;
 use App\User;
 use App\UserDetail;
 use Auth;
-use Illuminate\Http\Request;
 use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -20,6 +21,8 @@ use App\Http\Resources\Api\Driver\Driver as DriverResource;
 
 use Mail;
 use App\Mail\notifyMail;
+
+
 
 class AuthController extends Controller
 {

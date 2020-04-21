@@ -42,11 +42,11 @@ class BookingController extends Controller
     {
         $validator = Validator::make($data, [
             'pick_location_name' => 'required|string|max:100',
-            'pick_location_lat'  => 'required|string|max:100',
-            'pick_location_long' => 'required|string|max:100',
+            'pick_location_lat'  => 'required|numeric|max:100',
+            'pick_location_long' => 'required|numeric|max:100',
             'drop_location_name' => 'required|string|max:100',
-            'drop_location_lat'  => 'required|string|max:100',
-            'drop_location_long' => 'required|string|max:100',
+            'drop_location_lat'  => 'required|numeric|max:100',
+            'drop_location_long' => 'required|numeric|max:100',
             'estimated_distance' => 'required|numeric',
             'payment_id'         => 'required|numeric',
             'promo_code'         => 'nullable|string|max:20',
@@ -86,9 +86,9 @@ class BookingController extends Controller
     {
         $validator = Validator::make($data, [
             'pick_timestamp'     => 'required|date_format:Y-m-d H:i:s|',
-            'pick_location_name' => 'required|string|max:100',
-            'pick_location_lat'  => 'required|string|max:100',
-            'pick_location_long' => 'required|string|max:100',
+            'pick_location_name' => 'required|string',
+            'pick_location_lat'  => 'required|numeric',
+            'pick_location_long' => 'required|numeric',
             'booked_hours'       => 'required|numeric',
             'payment_id'         => 'required|numeric',
             'promo_code'         => 'nullable|string|max:20',
