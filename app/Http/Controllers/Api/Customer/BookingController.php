@@ -78,7 +78,7 @@ class BookingController extends Controller
         ]);
 
         return response()->json([
-            "message" => "Order Created Successfully"
+            "message" => "Instant Order Created Successfully"
         ], 200);
     }
 
@@ -116,7 +116,7 @@ class BookingController extends Controller
         ]);
 
         return response()->json([
-            "message" => "Order Created Successfully"
+            "message" => "Advanced Order Created Successfully"
         ], 200);
     }
 }

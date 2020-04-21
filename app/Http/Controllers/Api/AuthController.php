@@ -47,18 +47,6 @@ class AuthController extends Controller
         //Remove this, just for test
         $phn = $request->phone;
 
-        $tempMailData = [
-            'emailType' => 'new_order',
-            'name'      => 'Codeilo',
-            'email'     => 'codeilo.solutions.pvt@gmail.com',
-            'orderID'   => 'OTP',
-            'subject'   => 'OTP for ' . $phn . ' is ' . $request['OTP'],
-            'message'   => "Please disable this particular email in production"
-        ];
-        
-        // Notify Customer in email
-        Mail::send(new notifyMail($tempMailData));
-
         //If Exists login otherwise register as new customer
         if($check->exists()){
             $check->update([
