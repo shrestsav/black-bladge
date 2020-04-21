@@ -18,11 +18,6 @@ class PermissionSeeder extends Seeder
                 'display_name' => 'Create Role',
                 'description' => 'Create New Role'
             ],
-            [
-                'name' => 'role-list',
-                'display_name' => 'Display Role Listing',
-                'description' => 'List All Roles'
-            ],
         ];
         foreach ($permission as $key => $value) {
             Permission::create($value);

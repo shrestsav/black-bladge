@@ -60,28 +60,21 @@ class UserAndRoleSeeder extends Seeder
             'fname' => 'Customer', 
             'lname' => 'Test', 
             'email' => 'customer@bladge.com', 
-            'phone' => '+971999999999'
+            'phone' => 'CUSTOMER'
         ];
         $testCustomer = User::create($testCustomer);
-        $testCustomerDetails = UserDetail::create([
-                                'user_id' => $testCustomer->id,
-                                'referral_id' => 'YUD09EFG'
-                            ]);
+        
         $testCustomer->attachRole(Role::where('name','customer')->first()->id);
         
         // Create Test Driver and Attach Role
         $testDriver = [
             'fname'    => 'Driver', 
             'lname'    => 'Test', 
-            'username' => 'DRVER-112', 
+            'username' => 'DRIVER', 
             'password' => Hash::make('1234')
         ];
         $testDriver = User::create($testDriver);
-        $testDriverDetails = UserDetail::create([
-                                'user_id' => $testDriver->id,
-                                'area_id' => 1,
-                                'referral_id' => 'TRD76EFG'
-                            ]);
+       
         $testDriver->attachRole(Role::where('name','driver')->first()->id);
     }
 }

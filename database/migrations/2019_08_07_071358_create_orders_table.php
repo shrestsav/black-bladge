@@ -15,22 +15,24 @@ class CreateOrdersTable extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->integer('customer_id')->unsigned();
-            $table->smallInteger('type')->comment('1:Normal, 2:Urgent');
-            $table->integer('driver_id')->unsigned()->nullable()->comment('Pick Driver ID');
-            $table->integer('drop_driver_id')->unsigned()->nullable();
-            $table->smallInteger('pick_location')->comment('From User Address Table');
-            $table->date('pick_date');
-            $table->string('pick_timerange');
-            $table->smallInteger('drop_location')->comment('From User Address Table');
-            $table->date('drop_date')->nullable();
-            $table->string('drop_timerange')->nullable();
-            $table->smallInteger('status')->default(0)->comment('See Config');
-            $table->integer('VAT')->nullable();
-            $table->integer('delivery_charge')->nullable();
-            $table->integer('urgent_charge')->unsigned()->default(0);
-            $table->string('coupon')->nullable();
+            $table->bigInteger('customer_id')->unsigned();
+            $table->bigInteger('driver_id')->unsigned()->nullable();
+            $table->bigInteger('payment_id')->unsigned()->nullable();
+            $table->string('promo_code')->nullable();
+            $table->smallInteger('type')->comment('1:Instant, 2:Advanced');
+            
+            $table->text('pick_location');
+            $table->datetime('pick_timestamp')->nullable();
+            
+            $table->text('drop_location')->nullable();
+            $table->datetime('drop_timestamp')->nullable();
+            
+            $table->integer('booked_hours')->nullable();
+            $table->integer('estimated_distance')->nullable();
+            $table->integer('estimated_price')->nullable();
+
             $table->smallInteger('payment')->default(0)->comment('0:Pending, 1:Paid');
+            
             $table->timestamps();
         });
     }
