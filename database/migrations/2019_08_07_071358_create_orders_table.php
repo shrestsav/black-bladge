@@ -32,6 +32,7 @@ class CreateOrdersTable extends Migration
             $table->integer('estimated_price')->nullable();
 
             $table->smallInteger('payment')->default(0)->comment('0:Pending, 1:Paid');
+            $table->smallInteger('status')->default(0)->comment('See Config');
             
             $table->timestamps();
         });

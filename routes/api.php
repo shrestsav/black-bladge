@@ -37,6 +37,10 @@ Route::group(['middleware' => ['localization']], function() {
 			Route::group(['prefix' => 'booking'], function() {
 				Route::get('/list','BookingController@list');
 				Route::post('/create/{type}','BookingController@create');
+				
+				Route::get('/new','BookingController@new');
+				Route::get('/active','BookingController@active');
+				Route::get('/completed','BookingController@completed');
 			});
 
 			Route::apiResource('/cards','CardController');
@@ -69,10 +73,13 @@ Route::group(['middleware' => ['localization']], function() {
 		Route::group(['namespace' => 'Driver', 'prefix' => 'driver', 'middleware' => ['role:driver']], function() {
 			Route::get('/details','DriverController@index');
 
+			Route::group(['prefix' => 'booking'], function() {
+				Route::get('/new','BookingController@new');
+				Route::get('/active','BookingController@active');
+				Route::get('/completed','BookingController@completed');
 
-
-
-
+				Route::get('/accept/{order_id}','BookingController@accept');
+			});
 
 			// Route::post('/acceptOrder','DriverOrderController@acceptOrder');
 			// Route::post('/cancelPickup','DriverOrderController@cancelPickup');

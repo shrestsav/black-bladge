@@ -8,6 +8,7 @@ use Auth;
 class Order extends Model
 {
     protected $fillable = [
+        'status',
         'customer_id',
         'driver_id',
         'payment_id',
@@ -34,7 +35,6 @@ class Order extends Model
         return $this->belongsTo(User::class,'customer_id');
     }
 
-    //Pahila yo use garthyo ailey pickDriver, hataihalna bhayena
     public function driver()
     {
         return $this->belongsTo(User::class,'driver_id');
