@@ -56,25 +56,25 @@ class Handler extends ExceptionHandler
             if($exception instanceof NotFoundHttpException){
                 return response()->json([
                     'status' => '404',
-                    'errors' => 'This url does not exists'
+                    'message' => $exception->getMessage()
                 ], Response::HTTP_NOT_FOUND);
             }
             if($exception instanceof ModelNotFoundException){
                 return response()->json([
                     'status' => '404',
-                    'errors' => 'Data does not exists'
+                    'message' => $exception->getMessage()
                 ], Response::HTTP_NOT_FOUND);
             }
             if($exception instanceof ClientException){
                 return response()->json([
                     'status' => '401',
-                    'errors' => 'Code Error, Your code may have expired or doesnot match. Please try resending the code'
+                    'message' => 'Code Error, Your code may have expired or doesnot match. Please try resending the code'
                 ], 401);
             }
             if($exception instanceof HttpException){
                 return response()->json([
-                    'status' => '403',
-                    'errors' => 'Forbidden'
+                    'status'  => '403',
+                    'message' => 'Forbidden'
                 ], 403);
             }
         }

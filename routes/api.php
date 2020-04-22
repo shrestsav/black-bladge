@@ -39,6 +39,8 @@ Route::group(['middleware' => ['localization']], function() {
 				Route::post('/create/{type}','BookingController@create');
 			});
 
+			Route::apiResource('/cards','CardController');
+
 
 
 
@@ -61,7 +63,7 @@ Route::group(['middleware' => ['localization']], function() {
 			
 			// Route::delete('/cancelOrderForCustomer/{order_id}','OrderController@cancelOrderForCustomer');
 
-			// Route::apiResource('/cards','CardController');
+			// 
 		});
 		
 		Route::group(['namespace' => 'Driver', 'prefix' => 'driver', 'middleware' => ['role:driver']], function() {
