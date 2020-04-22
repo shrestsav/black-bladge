@@ -40,7 +40,6 @@ class CardController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'status' => '422',
                 'message' => 'Validation Failed',
                 'errors' => $validator->errors(),
             ], 422);
@@ -80,7 +79,6 @@ class CardController extends Controller
         $check->delete();
 
         return response()->json([
-            "status" => "200",
             "message" => "Card Removed Successfully"
         ], 200);
     }
