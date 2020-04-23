@@ -63,6 +63,7 @@ class BookingController extends Controller
 
         $order = Order::create([
             'customer_id'   =>  Auth::id(),
+            'status'        =>  0,
             'pick_location' => [
                 'name'      => $data['pick_location_name'],
                 'latitude'  => (int) $data['pick_location_lat'],
@@ -79,6 +80,7 @@ class BookingController extends Controller
         ]);
 
         return response()->json([
+            "order"   => new OrderResource($order),
             "message" => "Instant Order Created Successfully"
         ], 200);
     }
@@ -105,6 +107,7 @@ class BookingController extends Controller
 
         $order = Order::create([
             'customer_id'   =>  Auth::id(),
+            'status'        =>  0,
             'pick_timestamp'   =>  $data['pick_timestamp'],
             'pick_location' => [
                 'name'      => $data['pick_location_name'],
@@ -117,6 +120,7 @@ class BookingController extends Controller
         ]);
 
         return response()->json([
+            "order"   => new OrderResource($order),
             "message" => "Advanced Order Created Successfully"
         ], 200);
     }
