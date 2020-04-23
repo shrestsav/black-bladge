@@ -121,18 +121,18 @@ class BookingController extends Controller
         ], 200);
     }
 
-    public function new()
+    public function active()
     {
         $bookings = Order::where('customer_id',Auth::id())
                        ->with('details','driver')
-                       ->where('status',0)
+                       ->whereIn('status',[0,1])
                        ->orderBy('created_at','DESC')
                        ->first();
 
         return new OrderResource($bookings);
     }
 
-    public function active()
+    public function completed()
     {
         $bookings = Order::where('customer_id',Auth::id())
                        ->with('details','driver')
