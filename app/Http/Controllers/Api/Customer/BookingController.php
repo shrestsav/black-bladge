@@ -110,7 +110,8 @@ class BookingController extends Controller
             'pick_location' => [
                 'name'      => $data['pick_location_name'],
                 'latitude'  => $data['pick_location_lat'],
-                'longitude' => $data['pick_location_long']
+                'longitude' => $data['pick_location_long'],
+                'info'      => $data['pick_location_info'],
             ],
             'type'          => 2,
             'booked_hours'  => $data['booked_hours'],

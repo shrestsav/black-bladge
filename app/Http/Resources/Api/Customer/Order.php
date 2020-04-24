@@ -24,12 +24,16 @@ class Order extends JsonResource
             'estimated_distance'  => $this->estimated_distance,
             'estimated_price'     => $this->estimated_price,
             'booked_at'           => $this->created_at,
-            'driver_id'           => $this->when($this->status!=0, $this->driver_id),
-            'driver_fname'        => $this->when($this->status!=0, $this->driver['fname']),
-            'driver_lname'        => $this->when($this->status!=0, $this->driver['lname']),
-            'driver_full_name'    => $this->when($this->status!=0, $this->driver['full_name']),
-            'driver_phone'        => $this->when($this->status!=0, $this->driver['phone']),
-            'driver_license'      => $this->when($this->status!=0, $this->driver['license_no']),
+
+            'driver_id'           => $this->when($this->driver_id, $this->driver_id),
+            'driver_fname'        => $this->when($this->driver_id, $this->driver['fname']),
+            'driver_lname'        => $this->when($this->driver_id, $this->driver['lname']),
+            'driver_full_name'    => $this->when($this->driver_id, $this->driver['full_name']),
+            'driver_phone'        => $this->when($this->driver_id, $this->driver['phone']),
+            'driver_license'      => $this->when($this->driver_id, $this->driver['license_no']),
+
+            'booked_hours'        => $this->when($this->type==2, $this->driver['booked_hours']),
+            
             'cancellation_reason' => $this->when($this->deleted_at, $this->cancellation_reason),
         ];
     }
