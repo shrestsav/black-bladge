@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Customer;
 
 use Auth;
+use App\User;
 use App\Order;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -77,6 +78,8 @@ class BookingController extends Controller
             'estimated_distance' => $data['estimated_distance'],
             'payment_id'         => $data['payment_id'],
         ]);
+        
+        User::notifyNewBooking($order);
 
         return response()->json([
             "order"   => new OrderResource($order),

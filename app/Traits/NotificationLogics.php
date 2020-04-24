@@ -8,44 +8,8 @@ use App\Order;
 use App\User;
 use Mail;
 
-// use LaravelFCM\Message\OptionsBuilder;
-// use LaravelFCM\Message\PayloadDataBuilder;
-// use LaravelFCM\Message\PayloadNotificationBuilder;
-// use FCM;
-
-
 trait NotificationLogics
 {
-    // public function sendFCMNotification($notification)
-    // {  
-    //     $device_tokens = DeviceToken::where('user_id',$this->id)->pluck('device_token')->toArray();
-    //     if(count($device_tokens)){
-    //         $optionBuilder = new OptionsBuilder();
-    //         $optionBuilder->setTimeToLive(60*20);
-
-    //         $title = implode(' ', array_map('ucfirst', explode('_', $notification['notifyType'])));
-    //         $notificationBuilder = new PayloadNotificationBuilder($title);
-    //         $notificationBuilder->setBody($notification['message'])
-    //                             ->setSound('default');
-
-    //         $dataBuilder = new PayloadDataBuilder();
-    //         $dataBuilder->addData([
-    //             'a_data' => 'test data'
-    //         ]);
-
-    //         $option = $optionBuilder->build();
-    //         $notification = $notificationBuilder->build();
-    //         $data = $dataBuilder->build();
-
-    //         $downstreamResponse = FCM::sendTo($device_tokens, $option, $notification, $data);
-
-    //         $expiredTokens = $downstreamResponse->tokensToDelete();
-
-    //         if(count($expiredTokens)){
-    //             DeviceToken::whereIn('device_token',$expiredTokens)->delete();
-    //         } 
-    //     }
-    // }
 
     /**
     * Send Welcome Email to Customer
@@ -58,8 +22,8 @@ trait NotificationLogics
             'emailType' => 'new_registration',
             'name'      => $customer->full_name,
             'email'     => $customer->email,
-            'subject'   => "GO-RINSE: Welcome ".$customer->full_name,
-            'message'   => "Welcome to GO-RINSE..",
+            'subject'   => "BLACK-BLADGE: Welcome ".$customer->full_name,
+            'message'   => "Welcome to BLACK-BLADGE..",
         ];
         
         // Notify Customer in email
@@ -71,23 +35,21 @@ trait NotificationLogics
     /**
     * Notify Admins and Drivers of that specific area
     */
-    public static function notifyNewOrder($order_id)
+    public static function notifyNewBooking($order)
     {  
-        $order = Order::find($order_id);
-        $area_id = $order->pick_location_details->area_id;
-        $driver_ids = User::whereHas('roles', function ($query) {
-                                $query->where('name', '=', 'driver');
-                            })
-                            ->join('user_details as ud','users.id','=','ud.user_id')
-                            ->where('ud.area_id','=',$area_id)
-                            ->pluck('users.id')
-                            ->toArray();
+        // $driver_ids = User::whereHas('roles', function ($query) {
+        //                         $query->where('name', '=', 'driver');
+        //                     })
+        //                     ->join('user_details as ud','users.id','=','ud.user_id')
+        //                     ->where('ud.area_id','=',$area_id)
+        //                     ->pluck('users.id')
+        //                     ->toArray();
 
-        $superAdmin_ids = User::whereHas('roles', function ($query) {
-                                    $query->where('name', '=', 'superAdmin');
-                                })
-                              ->pluck('id')
-                              ->toArray();
+        // $superAdmin_ids = User::whereHas('roles', function ($query) {
+        //                             $query->where('name', '=', 'superAdmin');
+        //                         })
+        //                       ->pluck('id')
+        //                       ->toArray();
 
         $notification = [
             'notifyType' => 'new_order',
@@ -100,32 +62,32 @@ trait NotificationLogics
 
         $notifyCustomer = [
             'notifyType' => 'new_order',
-            'message'   => "We've received your New Order: #".$order_id. ". We will contact you soon.",
+            'message'   => "Booking ID: #".$order->id. ". We will contact you soon.",
             'model'     => 'order',
-            'url'       => $order_id
+            'url'       => $order->id
         ];
 
-        $customerMailData = [
-            'emailType' => 'new_order',
-            'name'      => $customer->full_name,
-            'email'     => $customer->email,
-            'orderID'   => $order_id,
-            'subject'   => "GO-RINSE: Your Order: #".$order_id. " has been placed",
-            'message'   => "We've received your New Order: #".$order_id. ". We will contact you soon.",
-        ];
+        // $customerMailData = [
+        //     'emailType' => 'new_order',
+        //     'name'      => $customer->full_name,
+        //     'email'     => $customer->email,
+        //     'orderID'   => $order->id,
+        //     'subject'   => "BLACK-BLADGE: Your Order: #".$order_id. " has been placed",
+        //     'message'   => "We've received your New Order: #".$order_id. ". We will contact you soon.",
+        // ];
         
         // Notify Customer in email
-        Mail::send(new notifyMail($customerMailData));
+        // Mail::send(new notifyMail($customerMailData));
 
         // Send Notification to All Superadmins
-        foreach($superAdmin_ids as $id){
-            User::find($id)->pushNotification($notification);
-        }
+        // foreach($superAdmin_ids as $id){
+        //     User::find($id)->pushNotification($notification);
+        // }
 
         // Send Notification to All Drivers of that particular area
-        foreach($driver_ids as $driver_id){
-            User::find($driver_id)->AppNotification($notification);
-        }
+        // foreach($driver_ids as $driver_id){
+        //     User::find($driver_id)->AppNotification($notification);
+        // }
         
         $customer->AppNotification($notifyCustomer); 
         
@@ -174,7 +136,7 @@ trait NotificationLogics
             'name'      => $customer->full_name,
             'email'     => $customer->email,
             'orderID'   => $order_id,
-            'subject'   => "GO-RINSE: Order: #".$order_id. " Accepted",
+            'subject'   => "BLACK-BLADGE: Order: #".$order_id. " Accepted",
             'message'   => 'Your Order #'.$order->id.' has been accepted by '. $order->pickDriver->fname. ' for pickup, please keep your items ready.'
         ];
         
@@ -206,9 +168,9 @@ trait NotificationLogics
         // Send Cancel Order Mail to Admin
         $adminMailData = [
             'emailType' => 'order_cancelled',
-            'name'      => 'GO-RINSE',
+            'name'      => 'BLACK-BLADGE',
             'email'     => env('ADMIN_EMAIL'),
-            'subject'   => 'GO-RINSE: Order #'.$order->id.' Cancelled',
+            'subject'   => 'BLACK-BLADGE: Order #'.$order->id.' Cancelled',
             'message'   => $order->customer->fname. ' has cancelled Order #'.$order->id,
         ];
 
@@ -221,7 +183,7 @@ trait NotificationLogics
             'emailType' => 'order_cancelled',
             'name'      => $customer->full_name,
             'email'     => $customer->email,
-            'subject'   => "GO-RINSE: Order Cancelled",
+            'subject'   => "BLACK-BLADGE: Order Cancelled",
             'message'   => "Your Order #".$order_id." has been cancelled",
         ];
 
@@ -315,7 +277,7 @@ trait NotificationLogics
             'name'      => $customer->full_name,
             'email'     => $customer->email,
             'orderID'   => $order_id,
-            'subject'   => "GO-RINSE: Order: #".$order_id. " Accepted",
+            'subject'   => "BLACK-BLADGE: Order: #".$order_id. " Accepted",
             'message'   => 'Your Order #'.$order->id.' has been accepted by '. $order->pickDriver->fname. ' for pickup, please keep your items ready.'
         ];
         
@@ -400,7 +362,7 @@ trait NotificationLogics
             'name'          => $customer->full_name,
             'email'         => $customer->email,
             'orderID'       => $order_id,
-            'subject'       => "GO-RINSE: Order: #".$order_id. " shipped for laundry",
+            'subject'       => "BLACK-BLADGE: Order: #".$order_id. " shipped for laundry",
             'message'       => "Your Order #".$order_id. " has been shipped for laundry. We will contact you soon",
             'orderDetails'  => $order->generateInvoiceForUser()
         ];
@@ -568,7 +530,7 @@ trait NotificationLogics
             'name'      => $customer->full_name,
             'email'     => $customer->email,
             'orderID'   => $order_id,
-            'subject'   => "GO-RINSE: Order: #".$order_id. " Delivered",
+            'subject'   => "BLACK-BLADGE: Order: #".$order_id. " Delivered",
             'message'   => "Your Order #".$order_id. " has been delivered to you. If you have any queries contact our support team."
         ];
         
@@ -599,7 +561,7 @@ trait NotificationLogics
             'emailType' => 'referral_bonus',
             'name'      => $customer->full_name,
             'email'     => $customer->email,
-            'subject'   => "GO-RINSE: Congratulations! You have been awarded with Referral Bonus",
+            'subject'   => "BLACK-BLADGE: Congratulations! You have been awarded with Referral Bonus",
             'message'   => 'Congratulations! One of your referral just completed his new order, You have been rewarded with AED '.$coupon->discount.'. You can claim this reward amount by using our Promo code '.$coupon->code.' before '.\Carbon\Carbon::parse($coupon->valid_to)->format('M-d-Y').' on your next order.'
         ];
         
