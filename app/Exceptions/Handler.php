@@ -65,8 +65,8 @@ class Handler extends ExceptionHandler
             }
             if($exception instanceof ClientException){
                 return response()->json([
-                    'message' => 'Code Error, Your code may have expired or doesnot match. Please try resending the code'
-                ], 401);
+                    'message' => $exception->getMessage()
+                ], 500);
             }
             if($exception instanceof HttpException){
                 return response()->json([

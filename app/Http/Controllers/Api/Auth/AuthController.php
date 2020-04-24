@@ -103,35 +103,6 @@ class AuthController extends Controller
             ]);
         }
     }
-    
-    //Not in use
-    public function login(Request $request)
-    {
-        return Date('Y-m-d H:i:s');
-        $validatedData = $request->validate([
-            'phone' => 'required|max:55',
-        ]);
-
-        $OTP = rand(1000,9999);
-        $OTP_timestamp = Date();
-
-        //Check if User Exists
-        $customer = User::where('phone',$phone);
-
-        if($customer->exists()){
-            $customer->update(['OTP' => $OTP, 'OTP_timestamp' => $OTP_timestamp]);
-            return response()->json([
-                'status' => '200',
-                'message'=>'OTP has been send to your phone'
-            ],200);
-        }
-        else{
-            return response()->json([
-                'status' => '404',
-                'message' => 'User doesnot exist, Please register first'
-            ], Response::HTTP_NOT_FOUND);
-        }
-    }
 
     public function verifyOTP(Request $request)
     {   
@@ -146,34 +117,51 @@ class AuthController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'status' => '422',
                 'message' => trans('response.validation_failed'),
                 'errors' => $validator->errors(),
             ], 422);
         }
 
-        $role = '';
-        $user_id = '';
+        $user = User::where('phone',$request->phone);
+        
+        if(!$user->exists()){
+            return response()->json([
+                'message' => "Validation Error",
+                'errors' => [
+                    'phone' =>  ['Phone number doesnot exists']
+                ],
+            ], 422);
+        }
+        
+        $user = $user->first();
+
+        //Check OTP
+        if(!$user->validateForPassportPasswordGrant($request->OTP)){
+            return response()->json([
+                'message' => "Validation Error",
+                'errors' => [
+                    'OTP' =>  ['OTP is invalid or expired, try resending OTP code.']
+                ],
+            ], 422);
+        }
+
         $user_details = false;
         $url = url('').'/oauth/token';
-        $OTP = $request->OTP;
-        $phone = $request->phone;
-        $user = User::where('phone',$phone);
-        if($user->exists()){
-            $user_id = $user->first()->id;
-            $role = $user->first()->roles()->first()->name;
-            $details = $user->first()->fname;
-            if($details)
-                $user_details = true;
-        }
+
+        $user_id = $user->id;
+        $role = $user->roles()->first()->name;
+        $details = $user->fname;
+        if($details)
+            $user_details = true;
+        
         $http = new \GuzzleHttp\Client();
         $response = $http->post(url('').'/oauth/token', [
                         'form_params' => [
                             'grant_type' => 'password',
                             'client_id' => 2,
                             'client_secret' => $client_secret,
-                            'username' => $phone,
-                            'password' => $OTP,
+                            'username' => $request->phone,
+                            'password' => $request->OTP,
                             'scope' => '',
                         ],
                         'http_errors' => true // add this to return errors in json
