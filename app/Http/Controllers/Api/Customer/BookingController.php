@@ -15,7 +15,6 @@ class BookingController extends Controller
     {
         $bookings = Order::where('customer_id',Auth::id())->withTrashed()->paginate(10);
 
-        return $bookings;
         return OrderResource::collection($bookings);
     }
     
@@ -149,7 +148,7 @@ class BookingController extends Controller
     public function cancel(Request $request, $order_id)
     {
         $validator = Validator::make($request->all(), [
-            'remark'  => 'required|string|max:300',
+            'cancellation_reason'  => 'required|string|max:300',
         ]);
 
         if ($validator->fails()) {
@@ -170,7 +169,7 @@ class BookingController extends Controller
         }
 
         $order->update([
-            'cancellation_reason' => $request->remark
+            'cancellation_reason' => $request->cancellation_reason
         ]);
         
         $order->delete();
