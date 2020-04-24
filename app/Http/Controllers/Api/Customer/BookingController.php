@@ -13,9 +13,10 @@ class BookingController extends Controller
 {
     public function list()
     {
-        $bookings = Order::where('customer_id',Auth::id())->paginate(10);
+        $bookings = Order::where('customer_id',Auth::id())->withTrashed()->paginate(10);
 
-        return response()->json($bookings);
+        return $bookings;
+        return OrderResource::collection($bookings);
     }
     
     /**
@@ -55,7 +56,6 @@ class BookingController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'status' => '422',
                 'message' => 'Validation Failed',
                 'errors' => $validator->errors(),
             ], 422);
@@ -99,7 +99,6 @@ class BookingController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'status' => '422',
                 'message' => 'Validation Failed',
                 'errors' => $validator->errors(),
             ], 422);
@@ -131,7 +130,7 @@ class BookingController extends Controller
                        ->with('details','driver')
                        ->whereIn('status',[0,1])
                        ->orderBy('created_at','DESC')
-                       ->first();
+                       ->firstOrFail();
 
         return new OrderResource($bookings);
     }
@@ -143,6 +142,47 @@ class BookingController extends Controller
                        ->where('status','>',0)
                        ->orderBy('created_at','DESC')
                        ->simplePaginate(10);
+
+        return OrderResource::collection($bookings);
+    }
+
+    public function cancel(Request $request, $order_id)
+    {
+        $validator = Validator::make($request->all(), [
+            'remark'  => 'required|string|max:300',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation Failed',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        // User::notifyOrderCancelled($order_id);
+        
+        $order = Order::findOrFail($order_id);
+
+        if(Auth::id()!=$order->customer_id){
+            return response()->json([
+                'message' => 'Forbidden! You donot have access to this order',
+            ], 403);
+        }
+
+        $order->update([
+            'cancellation_reason' => $request->remark
+        ]);
+        
+        $order->delete();
+
+        return response()->json([
+            'message' => 'Booking Cancelled',
+        ], 200);
+    }
+
+    public function cancelled()
+    {
+        $bookings = Order::where('customer_id',Auth::id())->onlyTrashed()->paginate(10);
 
         return OrderResource::collection($bookings);
     }

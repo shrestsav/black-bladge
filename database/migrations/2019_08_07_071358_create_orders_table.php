@@ -34,6 +34,8 @@ class CreateOrdersTable extends Migration
             $table->smallInteger('payment')->default(0)->comment('0:Pending, 1:Paid');
             $table->smallInteger('status')->default(0)->comment('See Config');
             
+            $table->text('cancellation_reason')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

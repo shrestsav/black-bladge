@@ -30,6 +30,7 @@ class Order extends JsonResource
             'driver_full_name'    => $this->when($this->status!=0, $this->driver['full_name']),
             'driver_phone'        => $this->when($this->status!=0, $this->driver['phone']),
             'driver_license'      => $this->when($this->status!=0, $this->driver['license_no']),
+            'cancellation_reason' => $this->when($this->deleted_at, $this->cancellation_reason),
         ];
     }
 }

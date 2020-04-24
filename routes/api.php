@@ -40,6 +40,9 @@ Route::group(['middleware' => ['localization']], function() {
 
 				Route::get('/active','BookingController@active');
 				Route::get('/completed','BookingController@completed');
+
+				Route::post('/cancel/{order_id}','BookingController@cancel');
+				Route::get('/cancelled','BookingController@cancelled');
 			});
 
 			Route::apiResource('/cards','CardController');

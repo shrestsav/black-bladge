@@ -3,10 +3,13 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Auth;
 
 class Order extends Model
 {
+    use SoftDeletes;
+    
     protected $fillable = [
         'status',
         'customer_id',
@@ -22,6 +25,7 @@ class Order extends Model
         'estimated_distance',
         'estimated_price',
         'payment',
+        'cancellation_reason'
     ];
 
     protected $casts = [
