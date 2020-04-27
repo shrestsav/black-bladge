@@ -12,7 +12,10 @@ class LocationController extends Controller
 {
     public function history()
     {
-        $favorites = LocationSearchHistory::where('user_id',Auth::id())->where('favorite',1)->get();
+        $favorites = LocationSearchHistory::where('user_id',Auth::id())
+                                          ->where('favorite',1)
+                                          ->get();
+                                          
         $histories = LocationSearchHistory::where('user_id',Auth::id())
                                         ->where('favorite',0)
                                         ->limit(10)
