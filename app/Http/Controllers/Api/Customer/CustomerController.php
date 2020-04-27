@@ -38,7 +38,6 @@ class CustomerController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'status'  => '422',
                 'message' => trans('response.validation_failed'),
                 'errors'  => $validator->errors(),
             ], 422);
@@ -50,7 +49,6 @@ class CustomerController extends Controller
             $check = UserDetail::where('referral_id',$request->referred_by);
             if(!$check->exists()){
                 return response()->json([
-                    'status' => '404',
                     'message'=> 'Referral ID is Invalid' 
                 ],404);
             }
@@ -75,7 +73,6 @@ class CustomerController extends Controller
                 ]);
 
         return response()->json([
-            'status' => '200',
             'message'=> trans('response.profile_created'), 
         ],200);
     }
@@ -106,7 +103,6 @@ class CustomerController extends Controller
             ]);
 
             return response()->json([
-                'status' => '200',
                 'message'=> 'Profile Updated Successfully' 
             ],200);
         }
@@ -115,7 +111,6 @@ class CustomerController extends Controller
             $user = User::findOrFail(Auth::id());
             if($user->email==$request->email){
                 return response()->json([
-                    'status' => '200',
                     'message'=> 'Same Email Detected' 
                 ],200);
             }
@@ -126,7 +121,6 @@ class CustomerController extends Controller
 
             if ($validator->fails()) {
                 return response()->json([
-                    'status' => '422',
                     'message' => 'Validation Failed',
                     'errors' => $validator->errors(),
                 ], 422);
@@ -136,7 +130,6 @@ class CustomerController extends Controller
             $address = $user->update($input);
 
             return response()->json([
-                'status' => '200',
                 'message'=> 'Email Updated Successfully' 
             ],200);
         }
@@ -149,7 +142,6 @@ class CustomerController extends Controller
 
             if ($validator->fails()) {
                 return response()->json([
-                    'status' => '422',
                     'message' => 'Validation Failed',
                     'errors' => $validator->errors(),
                 ], 422);
@@ -174,14 +166,12 @@ class CustomerController extends Controller
             ]);
 
             return response()->json([
-                'status' => '200',
                 'message'=> 'Photo Updated Successfully', 
                 'url' => asset('files/users/'.Auth::id().'/'.$fileName)
             ],200);
         } 
 
         return response()->json([
-            'status' => '400',
             'message' => 'No parameters found to complete the request'
         ], 400);
     }
@@ -195,7 +185,6 @@ class CustomerController extends Controller
         if ($validator->fails()) {
             $error = $validator->errors();
             return response()->json([
-                'status' => '422',
                 'message' => 'Validation Failed',
                 'errors' => $error,
             ], 422);
@@ -389,7 +378,6 @@ class CustomerController extends Controller
         $check_if_used = Order::where('pick_location',$id)->orWhere('drop_location',$id);
         if($check->user_id!=Auth::id()){
             return response()->json([
-                "status" => "403",
                 "message" => "You donot have access to this address"
             ], 403);
         }
