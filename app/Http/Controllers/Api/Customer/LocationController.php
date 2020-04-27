@@ -66,6 +66,7 @@ class LocationController extends Controller
         ]);
 
         return response()->json([
+            'history' => $history,
             'message' => 'Location History has been recorded'
         ]);
     }
