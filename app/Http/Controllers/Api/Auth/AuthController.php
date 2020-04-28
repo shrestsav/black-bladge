@@ -20,6 +20,7 @@ use App\Notifications\OTPNotification;
 use Illuminate\Support\Facades\Validator;
 
 use Symfony\Component\HttpFoundation\Response;
+use App\Http\Resources\Api\AppDefault as AppDefaultResource;
 use App\Http\Resources\Api\Driver\Driver as DriverResource;
 use App\Http\Resources\Api\Customer\Customer as CustomerResource;
 
@@ -200,11 +201,8 @@ class AuthController extends Controller
             'role'          =>  $role,
             'user_id'       =>  $user_id,
             'user_details'  =>  $user_details,
-            'configs'       =>  [
-                'pricing_unit'  =>  'AED',
-                'cost_per_km'   =>  $appDefaults->cost_per_km,
-                'cost_per_min'  =>  $appDefaults->cost_per_min,
-            ]
+            'user'          =>  new CustomerResource($user),
+            'configs'       =>  new AppDefaultResource($appDefaults)
         ];
 
         return response()->json($result);
@@ -288,11 +286,7 @@ class AuthController extends Controller
             'tokens'    =>  $token_response,
             'role'      =>  $role,
             'user'      =>  new DriverResource($user),
-            'configs'   =>  [
-                'pricing_unit'  =>  'AED',
-                'cost_per_km'   =>  $appDefaults->cost_per_km,
-                'cost_per_min'  =>  $appDefaults->cost_per_min,
-            ]
+            'configs'   =>  new AppDefaultResource($appDefaults)
         ];
 
         return response()->json($result);
