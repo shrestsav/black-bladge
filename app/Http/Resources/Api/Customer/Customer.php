@@ -24,7 +24,7 @@ class Customer extends JsonResource
             'country'       => $this->country,
             'full_name'     => $this->full_name,
             'photo_src'     => $this->photo_src,
-            'referral_id'   => $this->details->referral_id,
+            'referral_id'   => $this->details ? $this->details->referral_id : null,
         ];
     }
 }
