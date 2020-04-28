@@ -18,7 +18,7 @@ class LocationSearchHistory extends Model
 
     protected $casts = [
         'favorite'  => 'int',
-        'lattitude' => 'decimal:7',
-        'longitude' => 'decimal:7',
+        'lattitude' => 'float',
+        'longitude' => 'float',
     ];
 }
