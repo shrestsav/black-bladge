@@ -34,6 +34,12 @@ class LocationController extends Controller
     {
         $history = LocationSearchHistory::findOrFail($fav_id);
 
+        if($history->user_id != Auth::id()){
+            return response()->json([
+                'message' => 'Forbidden, you cannot update this history'
+            ],403);
+        }
+        
         $history->update([
             'favorite'  =>  0
         ]);
@@ -96,6 +102,12 @@ class LocationController extends Controller
         }
 
         $history = LocationSearchHistory::findOrFail($id);
+
+        if($history->user_id != Auth::id()){
+            return response()->json([
+                'message' => 'Forbidden, you cannot update this history'
+            ],403);
+        }
 
         $history->update([
             'custom_name' =>  $request->custom_name,
