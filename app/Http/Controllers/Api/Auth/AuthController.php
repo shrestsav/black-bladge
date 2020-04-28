@@ -108,6 +108,8 @@ class AuthController extends Controller
     public function verifyOTP(Request $request)
     {   
         $client_secret = \DB::table('oauth_clients')->where('id',2)->first()->secret;
+
+        $appDefaults = AppDefault::firstOrFail();
         
         $validator = Validator::make($request->all(), [
             'phone'         => 'required',
@@ -197,7 +199,12 @@ class AuthController extends Controller
             'tokens'        =>  $token_response,
             'role'          =>  $role,
             'user_id'       =>  $user_id,
-            'user_details'  =>  $user_details
+            'user_details'  =>  $user_details,
+            'configs'       =>  [
+                'pricing_unit'  =>  'AED',
+                'cost_per_km'   =>  $appDefaults->cost_per_km,
+                'cost_per_min'  =>  $appDefaults->cost_per_min,
+            ]
         ];
 
         return response()->json($result);
