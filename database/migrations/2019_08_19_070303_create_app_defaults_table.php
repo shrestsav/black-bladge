@@ -15,24 +15,22 @@ class CreateAppDefaultsTable extends Migration
     {
         Schema::create('app_defaults', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->integer('VAT')->unsigned();
-            $table->integer('delivery_charge')->unsigned();
-            $table->integer('urgent_charge')->unsigned()->default(0);
-            $table->integer('EDT')->unsigned()->default(1)->comment('Estimated Delivery Time');
-            $table->integer('OTP_expiry')->unsigned()->comment('Minute');
-            $table->longText('order_time');
-            $table->longText('driver_notes');
-            $table->string('FAQ_link');
-            $table->longText('online_chat');
-            $table->string('hotline_contact');
-            $table->string('company_email');
-            $table->string('company_logo');
-            $table->longText('TACS')->comment('TERMS AND CONDITIONS');
-            $table->longText('FAQS')->comment('FREQUENTLY ASKED QUESTIONS');
-            $table->integer('app_rows');
-            $table->integer('sys_rows');
-            $table->integer('referral_grant');
-            $table->text('OTD')->comment('Order Types Description i.e Urgent/Normal');
+            $table->integer('VAT')->unsigned()->nullable();
+            $table->integer('OTP_expiry')->unsigned()->comment('Minute')->nullable();
+            $table->longText('driver_notes')->nullable();
+            $table->string('FAQ_link')->nullable();
+            $table->longText('online_chat')->nullable();
+            $table->string('hotline_contact')->nullable();
+            $table->string('company_email')->nullable();
+            $table->string('company_logo')->nullable();
+            $table->longText('TACS')->comment('TERMS AND CONDITIONS')->nullable();
+            $table->longText('FAQS')->comment('FREQUENTLY ASKED QUESTIONS')->nullable();
+            $table->integer('app_rows')->nullable();
+            $table->integer('sys_rows')->nullable();
+            $table->integer('referral_grant')->nullable();
+
+            $table->decimal('cost_per_km', 8, 2)->nullable();
+            $table->decimal('cost_per_min', 8, 2)->nullable();
             $table->timestamps();
         });
     }

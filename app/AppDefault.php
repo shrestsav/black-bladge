@@ -8,11 +8,7 @@ class AppDefault extends Model
 {
     protected $fillable = [
 		'VAT',
-		'delivery_charge',
-		'urgent_charge',
-		'EDT',
 		'OTP_expiry',
-		'order_time',
 		'driver_notes',
 		'FAQ_link',
 		'online_chat',
@@ -24,15 +20,14 @@ class AppDefault extends Model
 		'app_rows',
 		'sys_rows',
 		'referral_grant',
-		'OTD'
+		'cost_per_km',
+		'cost_per_min',
     ];
     
     protected $casts = [
-        'order_time'   => 'array',
         'driver_notes' => 'array',
         'online_chat'  => 'array',
         'TACS' 		   => 'array',
         'FAQS' 		   => 'array',
-        'OTD' 		   => 'array'
     ];
 }

@@ -82,46 +82,40 @@ class BookingController extends Controller
     /**
      * Cancel Accepted Order.
     **/
-    public function cancelPickup(Request $request)
+    public function cancel($id)
     {
-        $validator = Validator::make($request->all(), [
-            'order_id' => 'required',
-        ]);
+        $order = Order::findOrFail($id);
 
-        if ($validator->fails()) {
+        if($order->driver_id != Auth::id()){
             return response()->json([
-                'status' => '422',
-                'message' => 'Validation Failed',
-                'errors' => $validator->errors(),
-            ], 422);
+                'message'=>'Forbidden, you cannot cancel this booking'
+            ],403);
         }
-
-        $order = Order::findOrFail($request->order_id);
 
         if($order->status==1 && $order->driver_id==Auth::id() && $order->details->PAB==Auth::id()){
 
+            $order->details->update([
+                'PAB'  =>  null
+            ]);
+
             $order->update([
-                // 'driver_id' => null, 
-                // 'pick_assigned_by' => null,
-                // 'PAT' => null,
+                'driver_id' => null,
                 'status' => 0
             ]);
-            User::notifyCancelForPickup($request->order_id);
+
+            // User::notifyCancelForPickup($request->order_id);
             return response()->json([
-                'status'=>'200',
-                'message'=>'Pickup Cancelled'
-            ],200);
+                'message'=>'Booking Pickup Cancelled'
+            ]);
         }
         elseif($order->status==1 && $order->driver_id==Auth::id() && $order->details->PAB!=Auth::id()){
             return response()->json([
-                'status'=>'403',
                 'message'=>'Please contact your manager to cancel this pickup'
             ],403);
         }
 
         return response()->json([
-                'status'=>'403',
-                'message'=>'Something wrong with the request'
-            ],403);
+            'message'=>'Something wrong with the request'
+        ],400);
     }
 }

@@ -3,7 +3,7 @@
     <div class="col-lg-12">
       <div class="card-wrapper">
         <general></general>
-        <offers></offers>
+        <!-- <offers></offers>
         <order></order>
         <div class="card">
           <div class="card-header">
@@ -19,7 +19,6 @@
           <div class="card-body" v-if="modules.supportPage.display">
             <div class="row">
               <div class="col-md-4">
-                <!-- <label class="form-control-label text-center">Company Logo</label> -->
                 <img :src="appDefaults.company_logo_url" class="img-center img-fluid" style="height: 109px;">
                 <br>
                 <div class="custom-file">
@@ -107,7 +106,7 @@
           <div class="card-body" v-if="modules.mainArea.display">
             <div class="row">
               <div class="bootstrap-tagsinput">
-                <span class="tag badge badge-primary" v-for="item in mainAreas">
+                <span class="tag badge badge-primary" v-for="(item,index) in mainAreas" :key="index">
                   {{item.name}}
                   <span data-role="remove" @click="deleteArea(item.id)"></span>
                 </span>
@@ -137,7 +136,7 @@
         </div>
         <TACS></TACS>
         <FAQS></FAQS>
-        <orderTypesDesc></orderTypesDesc>
+        <orderTypesDesc></orderTypesDesc> -->
       </div>
     </div>        
   </div>
@@ -165,8 +164,8 @@
       return{
         modules:{
           general : {
-            display : false,
-            icon : "+",
+            display : true,
+            icon : "-",
           },
           supportPage : {
             display : false,

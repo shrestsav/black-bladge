@@ -2,25 +2,26 @@
 
 namespace App\Http\Controllers\Api\Auth;
 
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use Auth;
+use Mail;
 
-use App\DeviceToken;
-use App\Notifications\OTPNotification;
 use App\Role;
 use App\User;
+use App\AppDefault;
 use App\UserDetail;
-use Auth;
-use Illuminate\Routing\UrlGenerator;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
-use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Support\Facades\Hash;
-use App\Http\Resources\Api\Customer\Customer as CustomerResource;
-use App\Http\Resources\Api\Driver\Driver as DriverResource;
-
-use Mail;
+use App\DeviceToken;
 use App\Mail\notifyMail;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Routing\UrlGenerator;
+use Illuminate\Support\Facades\Hash;
+use App\Notifications\OTPNotification;
+use Illuminate\Support\Facades\Validator;
+
+use Symfony\Component\HttpFoundation\Response;
+use App\Http\Resources\Api\Driver\Driver as DriverResource;
+use App\Http\Resources\Api\Customer\Customer as CustomerResource;
 
 
 
@@ -204,6 +205,8 @@ class AuthController extends Controller
 
     public function driverLogin(Request $request)
     {   
+        $appDefaults = AppDefault::firstOrFail();
+        
         $validator = Validator::make($request->all(), [
             'username'     => 'required|string|max:191|exists:users,username',
             'password'     => 'required|max:100',
@@ -275,9 +278,14 @@ class AuthController extends Controller
         }
 
         $result = [
-            'tokens' =>  $token_response,
-            'role'   =>  $role,
-            'user'   =>  new DriverResource($user),
+            'tokens'    =>  $token_response,
+            'role'      =>  $role,
+            'user'      =>  new DriverResource($user),
+            'configs'   =>  [
+                'pricing_unit'  =>  'AED',
+                'cost_per_km'   =>  $appDefaults->cost_per_km,
+                'cost_per_min'  =>  $appDefaults->cost_per_min,
+            ]
         ];
 
         return response()->json($result);
