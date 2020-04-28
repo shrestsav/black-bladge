@@ -9,6 +9,8 @@ class LocationSearchHistory extends Model
     protected $fillable = [
         'user_id',
         'name',
+        'custom_name',
+        'details',
         'lattitude',
         'longitude',
         'favorite'
@@ -16,7 +18,7 @@ class LocationSearchHistory extends Model
 
     protected $casts = [
         'favorite'  => 'int',
-        'lattitude' => 'int',
-        'longitude' => 'int',
+        'lattitude' => 'float',
+        'longitude' => 'float',
     ];
 }

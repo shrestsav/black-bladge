@@ -66,13 +66,13 @@ class BookingController extends Controller
             'status'        =>  0,
             'pick_location' => [
                 'name'      => $data['pick_location_name'],
-                'latitude'  => (int) $data['pick_location_lat'],
-                'longitude' => (int) $data['pick_location_long']
+                'latitude'  => $data['pick_location_lat'],
+                'longitude' => $data['pick_location_long']
             ],
             'drop_location' => [
                 'name'      => $data['drop_location_name'],
-                'latitude'  => (int) $data['drop_location_lat'],
-                'longitude' => (int) $data['drop_location_long']
+                'latitude'  => $data['drop_location_lat'],
+                'longitude' => $data['drop_location_long']
             ],
             'type'               => 1,
             'estimated_distance' => $data['estimated_distance'],

@@ -47,8 +47,9 @@ Route::group(['middleware' => ['localization']], function() {
 
 			Route::group(['prefix' => 'location'], function() {
 				Route::get('/history','LocationController@history');
-				Route::post('/history/save','LocationController@saveHistory');
-				Route::get('/history/favorite/{fav_id}','LocationController@toggleFavorite');
+				Route::post('/history/recent','LocationController@saveRecentHistory');
+				Route::post('/history/favorite','LocationController@saveFavoriteHistory');
+				Route::get('/history/favorite/remove/{fav_id}','LocationController@removeFavorite');
 			});
 
 			Route::apiResource('/cards','CardController');
