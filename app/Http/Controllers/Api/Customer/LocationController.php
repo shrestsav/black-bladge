@@ -91,8 +91,8 @@ class LocationController extends Controller
     public function saveFavoriteHistory(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'custom_name' => 'required|string|max:191',
-            'details'     => 'required|string|max:500',
+            'custom_name' => 'nullable|string|max:191',
+            'details'     => 'nullable|string|max:500',
         ]);
 
         if ($validator->fails()) {
