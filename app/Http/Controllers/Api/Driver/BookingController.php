@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Driver;
 
 use Auth;
+use Validator;
 use App\User;
 use App\Order;
 use App\BookingLog;
@@ -87,7 +88,7 @@ class BookingController extends Controller
     {
         $order = Order::findOrFail($id);
 
-        $validator = Validator::make($data, [
+        $validator = Validator::make($request->all(), [
             'remark'     => 'nullable|string|max:500'
         ]);
 
