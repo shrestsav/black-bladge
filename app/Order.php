@@ -29,10 +29,13 @@ class Order extends Model
     ];
 
     protected $casts = [
-        'status'        => 'int',
-        'type'          => 'int',
-        'pick_location' => 'array',
-        'drop_location' => 'array'
+        'status'             => 'int',
+        'type'               => 'int',
+        'pick_location'      => 'array',
+        'drop_location'      => 'array',
+        'booked_hours'       => 'float',
+        'estimated_distance' => 'float',
+        'estimated_price'    => 'float',
     ];
 
     public function customer()
