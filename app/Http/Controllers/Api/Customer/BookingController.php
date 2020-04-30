@@ -61,6 +61,8 @@ class BookingController extends Controller
             ], 422);
         }
 
+        $appDefaults = AppDefault::firstOrFail();
+
         $order = Order::create([
             'customer_id'   =>  Auth::id(),
             'status'        =>  0,
@@ -76,6 +78,7 @@ class BookingController extends Controller
             ],
             'type'               => 1,
             'estimated_distance' => $data['estimated_distance'],
+            'estimated_price'    => $data['estimated_distance']*$appDefaults->cost_per_km,
             'payment_id'         => $data['payment_id'],
         ]);
         
@@ -89,8 +92,10 @@ class BookingController extends Controller
 
     public function advancedBooking($data)
     {
+        $appDefaults = AppDefault::firstOrFail();
+
         $validator = Validator::make($data, [
-            'pick_timestamp'     => 'required|date_format:Y-m-d H:i:s|',
+            'pick_timestamp'     => 'required|date_format:Y-m-d H:i:s',
             'pick_location_name' => 'required|string',
             'pick_location_lat'  => 'required|numeric',
             'pick_location_long' => 'required|numeric',
@@ -116,9 +121,10 @@ class BookingController extends Controller
                 'longitude' => $data['pick_location_long'],
                 'info'      => $data['pick_location_info'],
             ],
-            'type'          => 2,
-            'booked_hours'  => $data['booked_hours'],
-            'payment_id'    => $data['payment_id'],
+            'type'             => 2,
+            'booked_hours'     => $data['booked_hours'],
+            'payment_id'       => $data['payment_id'],
+            'estimated_price'  => $data['estimated_distance']*$appDefaults->cost_per_min,
         ]);
 
         return response()->json([

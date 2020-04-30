@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Driver;
 use Auth;
 use App\User;
 use App\Order;
+use App\BookingLog;
 use App\OrderDetail;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -82,9 +83,20 @@ class BookingController extends Controller
     /**
      * Cancel Accepted Order.
     **/
-    public function cancel($id)
+    public function cancel(Request $request, $id)
     {
         $order = Order::findOrFail($id);
+
+        $validator = Validator::make($data, [
+            'remark'     => 'nullable|string|max:500'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation Failed',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
 
         if($order->driver_id != Auth::id()){
             return response()->json([
@@ -103,6 +115,15 @@ class BookingController extends Controller
                 'status' => 0
             ]);
 
+            // store logs
+            $log = BookingLog::create([
+                'user_id'   =>  Auth::id(),
+                'order_id'  =>  $order->id,
+                'user_type' =>  'driver',
+                'type'      =>  'assign_cancel',
+                'remark'    =>  $request->remark,
+            ]);
+            
             // User::notifyCancelForPickup($request->order_id);
             return response()->json([
                 'message'=>'Booking Pickup Cancelled'
