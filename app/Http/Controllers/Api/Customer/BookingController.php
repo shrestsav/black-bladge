@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Customer;
 use Auth;
 use App\User;
 use App\Order;
+use App\AppDefault;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -99,6 +100,7 @@ class BookingController extends Controller
             'pick_location_name' => 'required|string',
             'pick_location_lat'  => 'required|numeric',
             'pick_location_long' => 'required|numeric',
+            'pick_location_info' => 'nullable|string|max:500',
             'booked_hours'       => 'required|numeric',
             'payment_id'         => 'required|numeric',
             'promo_code'         => 'nullable|string|max:20',
@@ -124,7 +126,7 @@ class BookingController extends Controller
             'type'             => 2,
             'booked_hours'     => $data['booked_hours'],
             'payment_id'       => $data['payment_id'],
-            'estimated_price'  => $data['estimated_distance']*$appDefaults->cost_per_min,
+            'estimated_price'  => $data['booked_hours']*$appDefaults->cost_per_min,
         ]);
 
         return response()->json([

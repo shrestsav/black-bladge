@@ -32,7 +32,7 @@ class Order extends JsonResource
             'driver_phone'        => $this->when($this->driver_id, $this->driver['phone']),
             'driver_license'      => $this->when($this->driver_id, $this->driver['license_no']),
 
-            'booked_hours'        => $this->when($this->type==2, $this->driver['booked_hours']),
+            'booked_hours'        => $this->when($this->type==2, $this->booked_hours),
             
             'cancellation_reason' => $this->when($this->deleted_at, $this->cancellation_reason),
         ];

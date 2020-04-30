@@ -27,9 +27,9 @@ class CreateOrdersTable extends Migration
             $table->text('drop_location')->nullable();
             $table->datetime('drop_timestamp')->nullable();
             
-            $table->integer('booked_hours')->nullable();
-            $table->integer('estimated_distance')->nullable();
-            $table->integer('estimated_price')->nullable();
+            $table->decimal('booked_hours', 8, 2)->nullable();
+            $table->decimal('estimated_distance', 8, 2)->nullable();
+            $table->decimal('estimated_price', 8, 2)->nullable();
 
             $table->smallInteger('payment')->default(0)->comment('0:Pending, 1:Paid');
             $table->smallInteger('status')->default(0)->comment('See Config');
