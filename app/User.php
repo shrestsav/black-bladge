@@ -219,5 +219,14 @@ class User extends Authenticatable
         return $collection;
     }
 
+    public function activeBooking()
+    {
+        $bookings = $this->orders()->where('customer_id',Auth::id())->whereIn('status',[0,1])->first();
+
+        if($bookings)
+            return true;
+        else 
+            return false;
+    }
 
 }

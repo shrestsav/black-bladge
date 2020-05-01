@@ -197,12 +197,13 @@ class AuthController extends Controller
         }
 
         $result = [
-            'tokens'        =>  $token_response,
-            'role'          =>  $role,
-            'user_id'       =>  $user_id,
-            'user_details'  =>  $user_details,
-            'user'          =>  new CustomerResource($user),
-            'configs'       =>  new AppDefaultResource($appDefaults)
+            'tokens'          =>  $token_response,
+            'role'            =>  $role,
+            'user_id'         =>  $user_id,
+            'user_details'    =>  $user_details,
+            'user'            =>  new CustomerResource($user),
+            'configs'         =>  new AppDefaultResource($appDefaults),
+            'active_booking'  =>  $user->activeBooking(),
         ];
 
         return response()->json($result);
