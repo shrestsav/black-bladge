@@ -34,7 +34,7 @@
           <router-link :to="{ name: 'orders'}" >
             <a class="nav-link" href="{{url('/v/orders')}}" :href="''" v-bind:class="{ active: currentMenu=='ordersMenu' }">
               <i class="ni ni-cart text-info"></i>
-              <span class="nav-link-text">Orders</span>
+              <span class="nav-link-text">Bookings</span>
             </a>
           </router-link>
         </li>

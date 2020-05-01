@@ -11,7 +11,7 @@
       </router-link>
     </span> -->
     <!-- Orders Menus -->
-    <span v-if="currentMenu=='ordersMenu'">
+    <!-- <span v-if="currentMenu=='ordersMenu'">
       <router-link :to="{ name:'orders' }" class="btn btn-sm btn-neutral">
         <span class="btn-inner--icon"><i class="fas fa-user-edit"></i></span>
         <span class="btn-inner--text">Orders</span>
@@ -20,7 +20,7 @@
         <span class="btn-inner--icon"><i class="fas fa-user-edit"></i></span>
         <span class="btn-inner--text">Create Order</span>
       </router-link>
-    </span>
+    </span> -->
     
     <!-- Drivers Menus -->
     <span v-if="currentMenu=='driversMenu'">
