@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\Order\OrderCollection;
-use App\Http\Resources\Order\OrderResource;
 use App\Order;
 use App\OrderDetail;
 use App\OrderItem;
@@ -12,6 +10,8 @@ use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
+
+use App\Http\Resources\Order\Order as OrderResource;
 
 class OrderController extends Controller
 {
@@ -23,7 +23,6 @@ class OrderController extends Controller
     public function index()
     {
       $orders = Order::with('customer','pickDriver','dropDriver')->get();
-      return new OrderCollection($orders);
       return $orders;
     }
 
@@ -31,65 +30,35 @@ class OrderController extends Controller
     {
       $statusArr = [];
 
-      if($status==='Pending')
-        $statusArr = ['0','1','2','3'];
-      else if($status==='Received')
+      if($status==='New Booking')
+        $statusArr = ['0'];
+      else if($status==='Active Booking')
+        $statusArr = ['1','2','3'];
+      else if($status==='Completed')
         $statusArr = ['4'];
-      else if($status==='Ready for Delivery')
-        $statusArr = ['5','6'];
-      else if($status==='Delivered')
-        $statusArr = ['7'];
 
       $orders = Order::whereIn('status',$statusArr)
-                      ->with('customer','pickDriver','pick_location_details','drop_location_details','orderItems','dropDriver')
+                      ->with('customer','driver')
                       ->orderBy('created_at','DESC')
                       ->orderBy('status','ASC')
                       ->paginate(Session::get('rows'));
-      $orders->setCollection( $orders->getCollection()->makeVisible('order_invoice'));
 
-      return response()->json($orders);
+      return OrderResource::collection($orders);
     }
 
     public function searchOrders(Request $request, $Collection)
     {
       $statusArr = [];
 
-      if($Collection=='Pending')
-        $statusArr = ['0','1','2','3'];
-      else if($Collection=='Received')
+      if($Collection==='New Booking')
+        $statusArr = ['0'];
+      else if($Collection==='Active Booking')
+        $statusArr = ['1','2','3'];
+      else if($Collection==='Completed')
         $statusArr = ['4'];
-      else if($Collection=='Ready for Delivery')
-        $statusArr = ['5','6'];
-      else if($Collection=='Delivered')
-        $statusArr = ['7'];
-
       
-      $orders = Order::select(
-                        'orders.id',
-                        'orders.customer_id',
-                        'orders.type',
-                        'orders.driver_id',
-                        'orders.drop_driver_id',
-                        'orders.pick_location',
-                        'orders.pick_date',
-                        'orders.pick_timerange',
-                        'orders.drop_location',
-                        'orders.drop_date',
-                        'orders.drop_timerange',
-                        'orders.status',
-                        'orders.VAT',
-                        'orders.delivery_charge',
-                        'orders.coupon',
-                        'orders.payment',
-                        'orders.created_at',
-                        'orders.updated_at'
-                      )
-                      ->leftJoin('users as customers','customers.id','orders.customer_id')
-                      ->leftJoin('users as PD','PD.id','orders.driver_id')
-                      ->leftJoin('users as DD','DD.id','orders.drop_driver_id')
-                      ->leftJoin('user_addresses as UA','UA.id','orders.pick_location')
-                      ->whereIn('status',$statusArr)
-                      ->with('customer','pickDriver','pick_location_details','drop_location_details','orderItems','dropDriver');
+      $orders = Order::whereIn('status',$statusArr)
+                      ->with('customer','driver');
 
       if($request->orderID){
         $orders->where('orders.id','like','%'.$request->orderID.'%');
@@ -149,7 +118,7 @@ class OrderController extends Controller
       }
 
       $collection = collect([
-        'data' => $orders
+        'data' =>  OrderResource::collection($orders)
       ]);
       
       return response()->json($collection);
@@ -157,21 +126,18 @@ class OrderController extends Controller
 
     public function getOrdersCount()
     {
-      $pending = ['0','1','2','3'];
-      $received = ['4'];
-      $readyForDelivery = ['5','6'];
-      $delivered = ['7'];
+      $newBooking = ['0'];
+      $activeBooking = ['1','2','3'];
+      $completed = ['4'];
 
-      $pendingOrders = Order::whereIn('status',$pending)->count();
-      $receivedOrders = Order::whereIn('status',$received)->count();
-      $readyForDeliveryOrders = Order::whereIn('status',$readyForDelivery)->count();
-      $delivered = Order::whereIn('status',$delivered)->count();
+      $newBookingOrders = Order::whereIn('status',$newBooking)->count();
+      $activeBookingOrders = Order::whereIn('status',$activeBooking)->count();
+      $completedOrders = Order::whereIn('status',$completed)->count();
 
       $collection = collect([
-        'Pending'   => $pendingOrders,
-        'Received'  => $receivedOrders,
-        'Ready for Delivery' => $readyForDeliveryOrders,
-        'Delivered' => $delivered,
+        'New Booking'     => $newBookingOrders,
+        'Active Booking'  => $activeBookingOrders,
+        'Completed'       => $completedOrders,
       ]);
 
       return response()->json($collection);

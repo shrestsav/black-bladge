@@ -43,6 +43,12 @@ class BookingController extends Controller
 
     public function instantBooking($data)
     {
+        if(Auth::user()->activeBooking()){
+            return response()->json([
+                'message' => 'Forbidden, Complete your active order or cancel it to make new one'
+            ], 403);
+        }
+
         $validator = Validator::make($data, [
             'pick_location_name' => 'required|string|max:100',
             'pick_location_lat'  => 'required|numeric',
@@ -93,6 +99,12 @@ class BookingController extends Controller
 
     public function advancedBooking($data)
     {
+        if(Auth::user()->activeBooking()){
+            return response()->json([
+                'message' => 'Forbidden, Complete your active order or cancel it to make new one'
+            ], 403);
+        }
+        
         $appDefaults = AppDefault::firstOrFail();
 
         $validator = Validator::make($data, [

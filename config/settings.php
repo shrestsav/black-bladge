@@ -15,48 +15,21 @@ return [
         0 => 'Pending',
         1 => 'Assigned',
         // Drived added items to invoice
-        2 => 'Invoice Generated',
-        3 => 'Invoice Confirmed',
-        4 => 'Dropped at Laundry',
-        5 => 'Assigned for Delivery',
-        //New
-        6 => 'Picked for Delivery',
-        7 => 'Delivered by Driver',
-        //New
-        8 => 'Delivery Received by Customer', 
-        9 => 'Paid'
+        2 => 'Picked',
+        3 => 'Dropped',
+        4 => 'Payment Done'
     ],
     'orderStatus' => [
-        'Pending' => [
+        'New Booking' => [
             '0' => 'Pending',
+        ],
+        'Active Booking' => [
             '1' => 'Assigned',
-            '2' => 'Invoice Generated',
-            '3' => 'Confirmed by Customer',
+            '2' => 'Picked',
+            '3' => 'Dropped'
         ],
-        'Received' => [
-            '4' => 'On Work',
-        ],
-        'Ready for Delivery' => [
-            '5' => 'Assigned for Delivery',
-            '6' => 'Picked for Delivery',
-        ],
-        'Delivered' => [
-            '7' => 'Delivered by Driver',
+        'Completed' => [
+            '4' => 'Payment Done'
         ]
-    ],
-    'addressType' => [
-        1 => 'Apartment',
-        2 => 'Villa',
-        3 => 'Hotel',
-        4 => 'Office'
-    ],
-    'mainArea' => [
-        1 => 'Dubai',
-        2 => 'Something'
-    ],
-    'orderType' => [
-    	1 => 'Normal',
-        2 => 'Urgent'
-    ],
-
+    ]
 ];

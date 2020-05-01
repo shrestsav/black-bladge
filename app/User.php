@@ -221,7 +221,7 @@ class User extends Authenticatable
 
     public function activeBooking()
     {
-        $bookings = $this->orders()->whereIn('status',[0,1])->first();
+        $bookings = $this->orders()->whereIn('status',[0,1,2,3])->first();
         
         if($bookings)
             return true;

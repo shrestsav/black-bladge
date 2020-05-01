@@ -25,14 +25,14 @@
                 <tr>
                   <th></th>
                   <th>S.No.</th>
-                  <th>Order ID</th>
+                  <th>Booking ID</th>
                   <th>Customer</th>
                   <th>Order Type</th>
                   <th>Pickup From</th>
                   <th>Pickup Date</th>
                   <th>Picked By</th>
                   <th v-if="active.status!='Pending' && active.status!='Received'">Dropped By</th>
-                  <th v-if="active.status!='Pending'">Grand Total</th>
+                  <!-- <th v-if="active.status!='Pending'">Grand Total</th> -->
                   <th>Status</th>
                   <th>Ordered</th>
                 </tr>
@@ -83,7 +83,7 @@
                 </tr>
               </thead>
               <tbody class="list">
-                <tr v-for="(item,index) in showOrders.data" v-bind:class="{ urgent: checkPending(index) }">
+                <tr v-for="(item,index) in showOrders.data" :key="index" v-bind:class="{ urgent: checkPending(index) }">
                   <td>
                     <div class="dropdown">
                       <a class="btn btn-sm btn-icon-only text-light" href="javascript:;" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -93,9 +93,9 @@
                         
                         <a class="dropdown-item" href="javascript:;" @click="details(item.id)"  data-toggle="modal" data-target="#orderDetails" title="Show Order Details">Details</a>
                         
-                        <a class="dropdown-item" href="javascript:;" @click="assign(index,'pickAssign')"  data-toggle="modal" data-target="#assignOrder" title="Assign Pending Order" v-if="item.status == 0">Assign for Pickup</a>
+                        <!-- <a class="dropdown-item" href="javascript:;" @click="assign(index,'pickAssign')"  data-toggle="modal" data-target="#assignOrder" title="Assign Pending Order" v-if="item.status == 0">Assign for Pickup</a> -->
 
-                        <a class="dropdown-item" href="javascript:;" @click="assign(index,'dropAssign')"  data-toggle="modal" data-target="#assignOrder" title="Assign Drop Order" v-if="item.status == 4">Assign for Delivery</a>
+                        <!-- <a class="dropdown-item" href="javascript:;" @click="assign(index,'dropAssign')"  data-toggle="modal" data-target="#assignOrder" title="Assign Drop Order" v-if="item.status == 4">Assign for Delivery</a> -->
                       </div>
                     </div>
                   </td>
@@ -106,28 +106,28 @@
                     </div>
                     <span v-else>{{index+1}}</span>
                   </td>
-                  <td>{{item.id}}</td>
-                  <td><span v-if="item.customer">{{item.customer.full_name}}</span></td>
-                  <td>{{getOrderType(item.type)}}</td>
-                  <td v-if="item.pick_location_details">{{item.pick_location_details.name}}</td>
-                  <td>{{item.pick_date}}</td>
+                  <td>BOK-{{item.id}}</td>
+                  <td>{{item.customer_full_name}}</td>
+                  <td>{{item.order_type}}</td>
+                  <td v-if="item.pick_location">{{item.pick_location.name}}</td>
+                  <td>{{item.pick_timestamp}}</td>
                   <td>
                     <span v-if="item.status === 0">Not Assigned</span>
-                    <span v-if="item.status !== 0 && item.pick_driver">{{item.pick_driver.full_name}}</span>
+                    <span v-if="item.status > 0">{{item.driver_full_name}}</span>
                   </td>
                   <td v-if="active.status!='Pending' && active.status!='Received'">
-                    <span v-if="item.status < 5">Not Assigned</span>
-                    <span v-if="item.status >= 5 && item.drop_driver">{{item.drop_driver.full_name}}</span>
+                    <!-- <span v-if="item.status < 5">Not Assigned</span> -->
+                    <!-- <span v-if="item.status >= 5 && item.drop_driver">{{item.drop_driver.full_name}}</span> -->
                   </td>
-                  <td v-if="active.status!='Pending'">
-                    <template v-if="item.order_invoice.invoice_details">AED {{item.order_invoice.invoice_details.grand_total}}</template>
+                  <!-- <td v-if="active.status!='Pending'"> -->
+                    <!-- <template v-if="item.order_invoice.invoice_details">AED {{item.order_invoice.invoice_details.grand_total}}</template> -->
                     <!-- <template v-if=""></template> -->
                     
-                  </td>
+                  <!-- </td> -->
                   <td>
-                    <span>{{ getStatus(item.status) }}</span>
+                    <span>{{ item.status_is }}</span>
                   </td>
-                  <td>{{ dateDiff(item.created_at)}}</td>
+                  <td>{{ dateDiff(item.booked_at)}}</td>
                 </tr>
               </tbody>
             </table>
@@ -159,7 +159,7 @@
           order:'',
           page:1,
           order_id:'',
-          status:'Pending',
+          status:'New Booking',
         },
         showAssign: true,
         showDetails: true,
@@ -176,14 +176,14 @@
       this.$store.commit('changeCurrentPage', 'orders')
       this.$store.commit('changeCurrentMenu', 'ordersMenu')
       // get pending orders on page load
-      this.getOrders('Pending')
+      this.getOrders('New Booking')
       this.$store.dispatch('getOrderStatus')
     },
     mounted(){
       
     },
     methods:{
-      getOrders(status){
+      getOrders(status = 'New Booking'){
         this.active.status = status
         this.getResults()
         this.$store.dispatch('getOrdersCount')
@@ -208,7 +208,7 @@
         this.$refs.assign.mount()
       },      
       dateDiff(date){
-        var date = new Date(date+' UTC')
+        var date = new Date(date)
         return this.$moment(date).fromNow() // a
       },
       checkPending(index){
@@ -256,7 +256,7 @@
           if (result.value) {
             axios.post('/deleteMultipleOrders',this.pick)
             .then((response) => {
-              this.getOrders('Pending')
+              this.getOrders()
               showNotify('success',response.data.message)
             })
             .catch((error) => {
