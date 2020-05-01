@@ -15,7 +15,7 @@
         <div class="col-md-12">
           <label class="form-control-label">Order Active Hours</label>
           <draggable class="row" v-model="appDefaults.order_time">
-            <div class="col-md-2" v-for="timerange,key in appDefaults.order_time" @mouseover="orderTime.hover = true" @mouseleave="orderTime.hover = false">
+            <div class="col-md-2" v-for="(timerange,key) in appDefaults.order_time" :key="key" @mouseover="orderTime.hover = true" @mouseleave="orderTime.hover = false">
               <div class="form-group">
                 <div class="input-group input-group-merge" >
                   <div class="input-group-prepend">

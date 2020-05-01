@@ -13,7 +13,7 @@
           <div class="card-header border-0">
             <div class="nav-wrapper">
               <ul class="nav nav-pills nav-fill flex-column flex-md-row" id="tabs-icons-text" role="tablist">
-                <li class="nav-item" v-for="status,key in orderStatus">
+                <li class="nav-item" v-for="(status,key) in orderStatus" :key="key">
                   <a class="nav-link mb-sm-3 mb-md-0" :class="key=='Pending' ? 'active' : ''" :id="key" data-toggle="tab" href="" role="tab" aria-controls="tabs-icons-text-1" aria-selected="false" @click="getOrders(key)">{{key}}<span class="status_count" v-if="ordersCount[key]">{{ordersCount[key]}}</span></a>
                 </li>
               </ul>

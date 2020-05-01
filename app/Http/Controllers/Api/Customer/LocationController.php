@@ -66,8 +66,9 @@ class LocationController extends Controller
         }
 
         //Check if exists
-        $exists = LocationSearchHistory::where('lattitude',$request->lattitude)
-                                        ->where('longitude',$request->longitude);
+        $exists = LocationSearchHistory::where('user_id',Auth::id())
+                                       ->where('lattitude',$request->lattitude)
+                                       ->where('longitude',$request->longitude);
         
         if($exists->exists()){
             $history = $exists->first();

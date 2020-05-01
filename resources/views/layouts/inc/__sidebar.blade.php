@@ -29,7 +29,7 @@
               <span class="nav-link-text">Dashboard</span>
             </a>
           </router-link>
-        </li>
+        </li> --}}
         <li class="nav-item">
           <router-link :to="{ name: 'orders'}" >
             <a class="nav-link" href="{{url('/v/orders')}}" :href="''" v-bind:class="{ active: currentMenu=='ordersMenu' }">
@@ -37,7 +37,7 @@
               <span class="nav-link-text">Orders</span>
             </a>
           </router-link>
-        </li> --}}
+        </li>
         <li class="nav-item">
           <router-link :to="{ name: 'drivers'}" >
             <a class="nav-link" href="{{url('/v/drivers')}}" :href="''" v-bind:class="{active: currentMenu=='driversMenu'}">
