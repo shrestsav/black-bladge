@@ -153,7 +153,7 @@ class BookingController extends Controller
                        ->with('details','driver')
                        ->whereIn('status',[0,1])
                        ->orderBy('created_at','DESC')
-                       ->firstOrFail();
+                       ->first();
 
         return new OrderResource($bookings);
     }

@@ -33,7 +33,7 @@ class CustomerController extends Controller
         $validator = Validator::make($request->all(), [
             'fname'  => 'required|string',
             'email'  => 'required|string|email|max:255|unique:users,email,'.Auth::id(),
-            'gender' => 'required|string',
+            'title' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -42,8 +42,6 @@ class CustomerController extends Controller
                 'errors'  => $validator->errors(),
             ], 422);
         }
-
-        $userInput = $request->only('fname', 'lname', 'email', 'gender');
 
         if($request->referred_by){
             $check = UserDetail::where('referral_id',$request->referred_by);
@@ -54,7 +52,12 @@ class CustomerController extends Controller
             }
         }
 
-        $address = User::where('id',Auth::id())->update($userInput);
+        $address = User::where('id',Auth::id())->update([
+            'fname'   =>  $request->fname,
+            'lname'   =>  $request->lname,
+            'email'   =>  $request->email,
+            'gender'  =>  $request->title
+        ]);
         
         if($request->email){
             User::notifyNewRegistration(Auth::id());
@@ -79,13 +82,15 @@ class CustomerController extends Controller
 
     public function updateProfile(Request $request)
     {
-        if ($request->fname || $request->lname || $request->gender) {
+        if ($request->fname || $request->lname || $request->title) {
             $msgs = [
                 "fname.required" => "First Name Cannot be empty"
             ];
+
             $validator = Validator::make($request->all(), [
-                "fname"  => ['required', 'string', 'max:255'],
-                "gender" => ['required', 'string', 'max:255'],
+                "fname"  => 'required|string|max:255',
+                'email'  => 'required|string|email|max:255|unique:users,email,'.Auth::id(),
+                "title"  => 'required|string|max:255',
             ], $msgs);
 
             if ($validator->fails()) {
@@ -97,40 +102,14 @@ class CustomerController extends Controller
             }
             
             $address = User::where('id',Auth::id())->update([
-                'fname' => $request->fname,
-                'lname' => $request->lname,
-                'gender' => $request->gender
+                'fname'  =>  $request->fname,
+                'lname'  =>  $request->lname,
+                'gender' =>  $request->title,
+                'email'  =>  $request->email
             ]);
 
             return response()->json([
                 'message'=> 'Profile Updated Successfully' 
-            ],200);
-        }
-
-        if ($request->email) {
-            $user = User::findOrFail(Auth::id());
-            if($user->email==$request->email){
-                return response()->json([
-                    'message'=> 'Same Email Detected' 
-                ],200);
-            }
-            
-            $validator = Validator::make($request->all(), [
-               'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            ]);
-
-            if ($validator->fails()) {
-                return response()->json([
-                    'message' => 'Validation Failed',
-                    'errors' => $validator->errors(),
-                ], 422);
-            }
-
-            $input = $request->only('email');
-            $address = $user->update($input);
-
-            return response()->json([
-                'message'=> 'Email Updated Successfully' 
             ],200);
         }
         

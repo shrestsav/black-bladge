@@ -343,9 +343,6 @@ class AuthController extends Controller
         // return $response;
         return json_decode((string) $response->getBody(), true);
 
-
-
-
         // $getUnregisteredUser = User::where('id',1)->first();
         // $accessToken = $getUnregisteredUser->createToken('manual token');
         // $accessToken = $getUnregisteredUser->createToken('manual token')->accessToken;
