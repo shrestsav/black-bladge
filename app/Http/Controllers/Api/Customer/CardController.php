@@ -33,7 +33,7 @@ class CardController extends Controller
         $validator = Validator::make($request->all(), [
             'name'       => 'required:max:191',
             'type'       => 'required|digits:1',
-            'card_no'    => 'required|digits:16',
+            'card_no'    => 'required|digits:16|unique:payment_cards',
             'month_year' => 'required|max:191',
             'csv'        => 'required|digits:3'
         ]);
