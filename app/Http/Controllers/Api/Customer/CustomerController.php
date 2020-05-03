@@ -133,7 +133,7 @@ class CustomerController extends Controller
                 $constraint->upsize();
             });
             $photo = $request->file('photo');
-            $fileName = 'dp_user_'.Auth::id().'.jpg';
+            $fileName = Str::random(10).'.jpg';
             $uploadDirectory = public_path('files'.DS.'users'.DS.Auth::id());
             if (!file_exists($uploadDirectory)) {
                 \File::makeDirectory($uploadDirectory, 0755, true);
