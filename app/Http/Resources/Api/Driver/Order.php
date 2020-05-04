@@ -28,7 +28,7 @@ class Order extends JsonResource
             'customer_fname'      => $this->customer['fname'],
             'customer_lname'      => $this->customer['lname'],
             'customer_photo_src'  => $this->customer['photo_src'],
-            'customer_full_name'  => $this->customer['gender'].' '.$this->customer['full_name'],
+            'customer_full_name'  => ucfirst(strtolower($this->customer['gender'])).'. '.$this->customer['full_name'],
             'customer_phone'      => $this->customer['phone'],
             'booked_hours'        => $this->when($this->type==2, $this->booked_hours),
         ];
