@@ -29,6 +29,7 @@ class Order extends JsonResource
             'customer_lname'      => $this->customer['lname'],
             'customer_full_name'  => $this->customer['full_name'],
             'customer_phone'      => $this->customer['phone'],
+            'booked_hours'        => $this->when($this->type==2, $this->booked_hours),
         ];
     }
 }
