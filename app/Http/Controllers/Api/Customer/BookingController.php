@@ -51,11 +51,15 @@ class BookingController extends Controller
 
         $validator = Validator::make($data, [
             'pick_location_name' => 'required|string|max:100',
+            'pick_location_sub_name' => 'required|string|max:100',
             'pick_location_lat'  => 'required|numeric',
             'pick_location_long' => 'required|numeric',
+            'pick_location_info' => 'nullable|string|max:500',
             'drop_location_name' => 'required|string|max:100',
+            'drop_location_sub_name' => 'required|string|max:100',
             'drop_location_lat'  => 'required|numeric',
             'drop_location_long' => 'required|numeric',
+            'drop_location_info' => 'nullable|string|max:500',
             'estimated_distance' => 'required|numeric',
             'payment_id'         => 'required|numeric',
             'promo_code'         => 'nullable|string|max:20',
@@ -75,13 +79,17 @@ class BookingController extends Controller
             'status'        =>  0,
             'pick_location' => [
                 'name'      => $data['pick_location_name'],
+                'sub_name'  => $data['pick_location_sub_name'],
                 'latitude'  => $data['pick_location_lat'],
-                'longitude' => $data['pick_location_long']
+                'longitude' => $data['pick_location_long'],
+                'info'      => isset($data['pick_location_info']) ? $data['pick_location_info'] : null,
             ],
             'drop_location' => [
                 'name'      => $data['drop_location_name'],
+                'sub_name'  => $data['drop_location_sub_name'],
                 'latitude'  => $data['drop_location_lat'],
-                'longitude' => $data['drop_location_long']
+                'longitude' => $data['drop_location_long'],
+                'info'      => isset($data['drop_location_info']) ? $data['drop_location_info'] : null,
             ],
             'type'               => 1,
             'estimated_distance' => $data['estimated_distance'],
@@ -110,6 +118,7 @@ class BookingController extends Controller
         $validator = Validator::make($data, [
             'pick_timestamp'     => 'required|date_format:Y-m-d H:i:s',
             'pick_location_name' => 'required|string',
+            'pick_location_sub_name' => 'required|string|max:100',
             'pick_location_lat'  => 'required|numeric',
             'pick_location_long' => 'required|numeric',
             'pick_location_info' => 'nullable|string|max:500',
@@ -131,9 +140,10 @@ class BookingController extends Controller
             'pick_timestamp'   =>  $data['pick_timestamp'],
             'pick_location' => [
                 'name'      => $data['pick_location_name'],
+                'sub_name'  => $data['pick_location_sub_name'],
                 'latitude'  => $data['pick_location_lat'],
                 'longitude' => $data['pick_location_long'],
-                'info'      => $data['pick_location_info'],
+                'info'      => isset($data['pick_location_info']) ? $data['pick_location_info'] : null,
             ],
             'type'             => 2,
             'booked_hours'     => $data['booked_hours'],
@@ -153,7 +163,7 @@ class BookingController extends Controller
                        ->with('details','driver')
                        ->whereIn('status',[0,1])
                        ->orderBy('created_at','DESC')
-                       ->first();
+                       ->firstOrFail();
 
         return new OrderResource($bookings);
     }

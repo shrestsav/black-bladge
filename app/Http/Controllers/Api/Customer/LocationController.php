@@ -54,6 +54,7 @@ class LocationController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name'      => 'required|string',
+            'sub_name'  => 'required|string',
             'lattitude' => 'required|numeric',
             'longitude' => 'required|numeric',
         ]);
@@ -77,6 +78,7 @@ class LocationController extends Controller
             $history = LocationSearchHistory::create([
                 'user_id'   =>  Auth::id(),
                 'name'      =>  $request->name,
+                'sub_name'  =>  $request->sub_name,
                 'lattitude' =>  $request->lattitude,
                 'longitude' =>  $request->longitude,
                 'favorite'  =>  0,

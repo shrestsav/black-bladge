@@ -17,6 +17,7 @@ class CreateLocationSearchHistoriesTable extends Migration
             $table->bigIncrements('id');
             $table->bigInteger('user_id')->unsigned();
             $table->string('name')->nullable();
+            $table->string('sub_name')->nullable();
             $table->string('custom_name')->nullable();
             $table->text('details')->nullable();
             $table->string('lattitude')->nullable();

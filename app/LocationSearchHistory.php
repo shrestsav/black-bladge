@@ -9,6 +9,7 @@ class LocationSearchHistory extends Model
     protected $fillable = [
         'user_id',
         'name',
+        'sub_name',
         'custom_name',
         'details',
         'lattitude',
