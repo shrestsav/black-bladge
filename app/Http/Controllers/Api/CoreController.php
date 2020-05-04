@@ -9,64 +9,15 @@ use App\MainArea;
 use App\Offer;
 use App\Service;
 use Illuminate\Http\Request;
+use App\Http\Resources\Api\AppDefault as AppDefaultResource;
 
 class CoreController extends Controller
 {
-    public function serviceWithItems()
+    public function appDefaults()
     {
-        $services = Service::all();
-
-        $categoryWithItems = Category::select('id','name','icon')->with('items:id,category_id,name')->get();
-
-        $collection = collect([
-            'services' => $services,
-            'categories' => $categoryWithItems,
-            'iconURL' => asset('files/categories/')
-        ]);
-        return response()->json($collection);
-    }    
-
-    public function servicesPlusItems()
-    {
-        $services = Service::all();
-        $categoryWithItems = Category::select('id','name','icon')->with('items')->get();
+        $appConfigs = AppDefault::firstOrFail();
         
-        $newCollection = [];
-        foreach ($services as $service) {
-            $serviceCharge = $service->price;
-            $data = [
-                'id'    =>  $service->id,
-                'name'  =>  $service->name,
-                'categories'  =>  [],
-            ];
-            foreach($categoryWithItems as $category){
-                $newCategory = [];
-                $newCategory = [
-                    'id'    =>  $category->id,
-                    'name'  =>  $category->name,
-                    'icon'  =>  asset('files/categories').'/'.$category->icon,
-                    'items' =>  [],
-                ];
-                foreach ($category->items as $item) {
-                    $newItem = [];
-                    $newItem = [
-                        'id'    =>  $item->id,
-                        'name'  =>  $item->name,
-                        'price' =>  $item->price+$serviceCharge,
-                    ];
-                    array_push($newCategory['items'],$newItem);
-                }
-                array_push($data['categories'],$newCategory);
-            }
-            array_push($newCollection,$data);
-        }
-
-        // $collection = collect([
-        //     'services' => $newCollection,
-        //     'items'    => $categoryWithItems
-        // ]);
-
-        return response()->json($newCollection);
+        return new AppDefaultResource($appConfigs);
     }
 
     public function getSettings($settingType)
@@ -93,33 +44,6 @@ class CoreController extends Controller
         return response()->json($input);
     }    
 
-    public function orderDefaults()
-    {
-        $appDefaults = AppDefault::firstOrFail();
-
-        $input = $appDefaults->only('order_time', 'driver_notes');
-
-        return response()->json($input);
-    }
-
-    public function mainAreas()
-    {
-        $mainAreas = MainArea::pluck('name','id')->toArray();
-        
-        return response()->json($mainAreas);
-    }
-
-    public function offers()
-    {
-        $offers = Offer::where('status',1)->get();
-        $url = asset('files/offer_banners/');
-        $data = [
-            'data' => $offers,
-            'imageUrl' =>$url
-        ];
-        return response()->json($data);
-    }
-
     public function termsAndConditions()
     {
         $TACS = AppDefault::firstOrFail()->TACS;
@@ -132,12 +56,5 @@ class CoreController extends Controller
         $FAQS = AppDefault::firstOrFail()->FAQS;
         
         return response()->json($FAQS);
-    }
-
-    public function orderTypeDesc()
-    {
-        $OTD = AppDefault::firstOrFail()->OTD;
-        
-        return response()->json($OTD);
     }
 }

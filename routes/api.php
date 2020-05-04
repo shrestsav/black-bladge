@@ -120,6 +120,20 @@ Route::group(['middleware' => ['localization']], function() {
 			// Route::post('/changeMainArea','DriverController@changeMainArea');
 		});
 
+		Route::get('/appConfigs','CoreController@appDefaults');
+
+
+
+
+
+
+
+
+
+
+
+
+
 		Route::get('/test','OrderController@test');
 		Route::get('/tokens','AuthController@tokens');
 		
