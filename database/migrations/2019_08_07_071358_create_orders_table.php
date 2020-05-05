@@ -17,6 +17,7 @@ class CreateOrdersTable extends Migration
             $table->bigIncrements('id');
             $table->bigInteger('customer_id')->unsigned();
             $table->bigInteger('driver_id')->unsigned()->nullable();
+            $table->bigInteger('vehicle_id')->unsigned()->nullable()->comment('Only for drivers');
             $table->bigInteger('payment_id')->unsigned()->nullable();
             $table->string('promo_code')->nullable();
             $table->smallInteger('type')->comment('1:Instant, 2:Advanced');

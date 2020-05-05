@@ -57,6 +57,25 @@ return [
       ],
     ],
   ],
+  'createVehicle' => [
+    'Vehicle Information' => [
+      'vehicle_number' => [
+        'display_name' => 'Vehicle Number',
+        'col' => '6',
+        'type' =>  'text',
+      ],
+      'brand' => [
+        'display_name' => 'Brand',
+        'col' => '6',
+        'type' =>  'text',
+      ],
+      'description' => [
+        'display_name' => 'Description',
+        'col' => '12',
+        'type' =>  'textarea',
+      ],
+    ],
+  ],
   'createOrder' => [
     'Order Information' => [
       'customer_id' => [

@@ -32,6 +32,7 @@ class CreateUsersTable extends Migration
             $table->string('country')->nullable();
             $table->date('dob')->nullable();
             $table->string('license_no')->nullable()->comment('if user is driver');
+            $table->bigInteger('vehicle_id')->nullable()->comment('Only for drivers');
             $table->datetime('last_login')->nullable();
             $table->rememberToken();
             $table->timestamps();

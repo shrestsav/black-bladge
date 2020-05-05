@@ -57,6 +57,14 @@ class BookingController extends Controller
     public function accept($id)
     {
         $order = Order::findOrFail($id);
+        
+        $vehicle_id = Auth::user()->vehicle_id;
+
+        if(!$vehicle_id){
+            return response()->json([
+                'message'=>'Forbidden, first set your vehicle'
+            ],403);
+        }
 
         if($order->status > 0){
             return response()->json([
@@ -65,9 +73,11 @@ class BookingController extends Controller
         }
         
         $order->update([
-            'driver_id' => Auth::id(), 
+            'driver_id'  => Auth::id(), 
+            'vehicle_id' => $vehicle_id, 
             'status' => 1
         ]);
+        
         $orderDetails = OrderDetail::updateOrCreate(
             ['order_id' => $order->id],
             [

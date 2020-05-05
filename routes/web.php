@@ -30,6 +30,43 @@ Route::get('/', 'HomeController@index')->name('dashboard');
 Auth::routes();
 
 Route::middleware(['auth'])->group(function () {
+	Route::apiResource('/drivers','DriverController');
+	Route::get('/driver/all','DriverController@allDrivers');
+	Route::get('/driver/orders/{driver_id}','DriverController@driverOrders');
+
+	Route::apiResource('/customers','CustomerController');
+	Route::get('/unverifiedCustomers','CustomerController@unverifiedCustomers');
+	Route::post('/deleteCustomers','CustomerController@deleteCustomers');
+	Route::get('/address/{customer_id}','CustomerController@address');
+
+	Route::get('/customer/all','CustomerController@all');
+
+	Route::apiResource('/vehicles','vehicleController');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	Route::get('/authUser','CoreController@authUser');
 	Route::get('/v/{any}', 'HomeController@index')->where('any', '.*');
 	Route::group(['prefix' => 'admin', 'middleware' => ['role:superAdmin']], function() {
@@ -50,14 +87,8 @@ Route::middleware(['auth'])->group(function () {
 
 	Route::get('/filterCraps','OrderController@filterCraps');
 	
-	Route::apiResource('/services','ServiceController');
-	Route::apiResource('/categories','CategoryController');
-	Route::apiResource('/items','ItemController');
 	Route::get('/appDefaults','CoreController@appDefaults');
 	Route::post('/appDefaults','CoreController@updateAppDefaults');
-	Route::get('/mainAreas','CoreController@mainAreas');
-	Route::post('/mainArea','CoreController@addMainArea');
-	Route::delete('/mainArea/{id}','CoreController@deleteMainArea');
 	
 	Route::get('/offers','CoreController@offers');
 	Route::post('/offers','CoreController@addOffer');
@@ -69,16 +100,7 @@ Route::middleware(['auth'])->group(function () {
 	Route::get('/coupon/referral','CouponController@referralCoupons');
 	Route::get('/coupon/orders/{code}','CouponController@redeemedOrders');
 
-	Route::apiResource('/drivers','DriverController');
-	Route::get('/driver/all','DriverController@allDrivers');
-	Route::get('/driver/orders/{driver_id}','DriverController@driverOrders');
-
-	Route::apiResource('/customers','CustomerController');
-	Route::get('/unverifiedCustomers','CustomerController@unverifiedCustomers');
-	Route::post('/deleteCustomers','CustomerController@deleteCustomers');
-	Route::get('/address/{customer_id}','CustomerController@address');
-
-	Route::get('/customer/all','CustomerController@all');
+	
 
 	Route::get('/notifications','UserController@notifications');
 	Route::get('/markAsRead/{notificationId}','UserController@markAsRead');

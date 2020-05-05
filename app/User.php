@@ -39,6 +39,7 @@ class User extends Authenticatable
         'country',
         'dob',
         'license_no',
+        'vehicle_id',
         'last_login'
     ];
 

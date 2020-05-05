@@ -5,13 +5,29 @@ Vue.use(VueRouter)
 
 import dashboard from '../components/dashboard.vue'
 import appDefaults from '../components/appDefaults/index.vue'
-import orders from '../components/orders/index.vue'
-import orderDetails from '../components/orders/details.vue'
-import createOrder from '../components/orders/create.vue'
-import customers from '../components/customers/index.vue'
-import unverifiedCustomers from '../components/customers/unverifiedCustomers.vue'
+
 import drivers from '../components/drivers/index.vue'
 import createDriver from '../components/drivers/create.vue'
+
+import customers from '../components/customers/index.vue'
+import unverifiedCustomers from '../components/customers/unverifiedCustomers.vue'
+
+import vehicles from '../components/vehicles/index.vue'
+import createVehicle from '../components/vehicles/create.vue'
+
+
+
+
+
+
+
+
+import orders from '../components/orders/index.vue'
+import orderDetails from '../components/orders/details.vue'
+
+import createOrder from '../components/orders/create.vue'
+
+
 import services from '../components/services/index.vue'
 import createService from '../components/services/create.vue'
 import categories from '../components/categories/index.vue'
@@ -37,6 +53,9 @@ const routes = [
   
   {name:'drivers',  path: '/v/drivers', component: drivers },
   {name:'createDriver',  path: '/v/drivers/create', component: createDriver },
+
+  {name:'vehicles',  path: '/v/vehicles', component: vehicles },
+  {name:'createVehicle',  path: '/v/vehicles/create', component: createVehicle },
 
   {name:'services',  path: '/v/services', component: services },
   {name:'createService',  path: '/v/services/create', component: createService },

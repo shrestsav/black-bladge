@@ -14,6 +14,7 @@ class Order extends Model
         'status',
         'customer_id',
         'driver_id',
+        'vehicle_id',
         'payment_id',
 		'promo_code',
 		'type',

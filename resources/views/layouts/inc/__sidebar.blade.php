@@ -54,6 +54,14 @@
             </a>
           </router-link>
         </li>
+        <li class="nav-item">
+          <router-link :to="{ name: 'vehicles'}" >
+            <a class="nav-link" href="{{url('/v/vehicles')}}" :href="''" v-bind:class="{active: currentMenu=='vehiclesMenu'}">
+              <i class="ni ni-bus-front-12 text-info"></i>
+              <span class="nav-link-text">Vehicles</span>
+            </a>
+          </router-link>
+        </li>
         {{-- <li class="nav-item">
           <router-link :to="{ name: 'reports'}" >
             <a class="nav-link" href="{{url('/v/reports')}}" :href="''" v-bind:class="{active: currentMenu=='reportsMenu'}">

@@ -34,6 +34,17 @@
       </router-link>
     </span>
 
+    <span v-if="currentMenu=='vehiclesMenu'">
+      <router-link :to="{ name: 'vehicles'}" class="btn btn-sm btn-neutral">
+        <span class="btn-inner--icon"><i class="fas fa-user-edit"></i></span>
+        <span class="btn-inner--text">Vehicles</span>
+      </router-link>
+      <router-link :to="{ name: 'createVehicle'}" class="btn btn-sm btn-neutral">
+        <span class="btn-inner--icon"><i class="fas fa-user-edit"></i></span>
+        <span class="btn-inner--text">Add Vehicle</span>
+      </router-link>
+    </span>
+
     <!-- Settings Menus -->
    <!--  <span v-if="currentMenu=='settingsMenu'">
       <router-link :to="{ name: 'services'}" class="btn btn-sm btn-neutral">
