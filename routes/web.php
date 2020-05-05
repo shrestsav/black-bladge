@@ -41,6 +41,10 @@ Route::middleware(['auth'])->group(function () {
 
 	Route::get('/customer/all','CustomerController@all');
 
+	Route::get('/vehicles',function(){
+		return 'test';
+	});
+	
 	Route::apiResource('/vehicles','vehicleController');
 
 
