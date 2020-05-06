@@ -220,7 +220,6 @@ export default {
             axios
                 .get("/getFields/createUser")
                 .then(response => (this.fields = response.data));
-            this.$store.dispatch("getMainAreas");
         },
         getDrivers(page = 1) {
             this.active.page = page;
@@ -295,11 +294,6 @@ export default {
             );
         }
     },
-    computed: {
-        mainArea() {
-            return this.$store.getters.mainAreas;
-        }
-    }
 };
 </script>
 
