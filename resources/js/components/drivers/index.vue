@@ -168,7 +168,7 @@
                                 <td>{{item.full_name}}</td>
                                 <td>{{item.license_no}}</td>
                                 <td>{{item.username}}</td>
-                                <td><span v-if="item.vehicle">{{item.vehicle.vehicle_number}}<span></td>
+                                <td>{{item.vehicle_number}}</td>
                                 <td>{{item.phone}}</td>
                             </tr>
                         </tbody>

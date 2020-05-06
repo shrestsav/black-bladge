@@ -26,7 +26,7 @@ class Driver extends JsonResource
             'photo_src'      => $this->photo_src,
             'title'          => $this->gender,
             'license_no'     => $this->license_no,
-            'vehicle_number' => $this->vehicle['vehicle_number'],
+            'vehicle_number' => $this->vehicle ? $this->vehicle['vehicle_number'] : null,
         ];
     }
 }

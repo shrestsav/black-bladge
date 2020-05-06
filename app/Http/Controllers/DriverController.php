@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Session;
 use Validator;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Resources\Api\Driver\Driver as DriverResource;
 
 class DriverController extends Controller
 {
@@ -36,7 +37,7 @@ class DriverController extends Controller
                         ->with('vehicle')
                         ->paginate(Session::get('rows'));
 
-        return response()->json($drivers);
+        return DriverResource::collection($drivers);
     }
 
     public function allDrivers()
