@@ -230,4 +230,8 @@ class User extends Authenticatable
             return false;
     }
 
+    public function vehicle()
+    {
+        return $this->belongsTo(Vehicle::class);
+    }
 }

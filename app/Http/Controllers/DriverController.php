@@ -33,6 +33,7 @@ class DriverController extends Controller
         $drivers = User::whereHas('roles', function ($query) {
                             $query->where('name', '=', 'driver');
                         })
+                        ->with('vehicle')
                         ->paginate(Session::get('rows'));
 
         return response()->json($drivers);
@@ -125,6 +126,7 @@ class DriverController extends Controller
             'phone'      => 'nullable|unique:users',
             'username'   => 'required|string|max:191',
             'license_no' => 'required|string|max:191',
+            'vehicle_id' => 'required|numeric|exists:vehicles,id|unique:users,vehicle_id',
             'photo_file' => 'nullable|mimes:jpeg,jpg,bmp,png|max:15072',
             'password'   => 'required|string|min:4|max:4',
         ]);
@@ -132,6 +134,7 @@ class DriverController extends Controller
         $driver = User::create([
             'username'    =>  $request->username,
             'license_no'  =>  $request->license_no,
+            'vehicle_id'  =>  $request->vehicle_id,
             'gender'      =>  $request->gender, 
             'fname'       =>  $request->fname,
             'lname'       =>  $request->lname,
@@ -196,6 +199,9 @@ class DriverController extends Controller
             'id'         => 'required',
             'fname'      => 'required|max:191',
             'lname'      => 'nullable|max:191',
+            'username'   => 'required|string|max:191',
+            'license_no' => 'required|string|max:191',
+            'vehicle_id' => 'required|numeric|exists:vehicles,id|unique:users,vehicle_id',
             'email'      => 'nullable|email|max:191|unique:users,email,'.$id,
             'phone'      => 'nullable|unique:users,phone,'.$id,
             'photo_file' => 'nullable|mimes:jpeg,jpg,bmp,png|max:15072',
@@ -235,6 +241,7 @@ class DriverController extends Controller
         $driver = $driver->update([
             'username'    =>  $request->username,
             'license_no'  =>  $request->license_no,
+            'vehicle_id'  =>  $request->vehicle_id,
             'gender'      =>  $request->gender, 
             'fname'       =>  $request->fname,
             'lname'       =>  $request->lname,

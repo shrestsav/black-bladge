@@ -12,7 +12,7 @@ class VehicleController extends Controller
 {
     public function index()
     {
-        $vehicles = Vehicle::paginate(20);
+        $vehicles = Vehicle::all();
 
         return $vehicles;
     }

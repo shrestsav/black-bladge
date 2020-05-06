@@ -118,7 +118,7 @@
                             </tr>
                         </thead>
                         <tbody class="list">
-                            <tr v-for="(item,key) in vehicles.data" :key="key">
+                            <tr v-for="(item,key) in vehicles" :key="key">
                                 <td>
                                     <div class="dropdown">
                                         <a
@@ -150,9 +150,6 @@
                             </tr>
                         </tbody>
                     </table>
-                </div>
-                <div class="card-footer py-4" v-if="vehicles.data">
-                    <pagination :data="vehicles" @pagination-change-page="getVehicles"></pagination>
                 </div>
             </div>
         </div>

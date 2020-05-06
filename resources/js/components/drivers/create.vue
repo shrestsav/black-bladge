@@ -66,6 +66,15 @@
                                     <option value="Mr" selected>Mr</option>
                                     <option value="Mr">Mrs</option>
                                 </select>
+                                <select
+                                    class="form-control"
+                                    v-if="item['type']==='select' && key==='vehicle_id'"
+                                    v-model="driver[key]"
+                                    :class="{'not-validated':errors[key]}"
+                                >
+                                    <option value="" selected disabled>Select Vehicle</option>
+                                    <option :value="item.id" v-for="(item,index) in vehicles" :key="index">{{item.vehicle_number}}</option>
+                                </select>
                                 <div
                                     class="invalid-feedback"
                                     style="display: block;"
@@ -95,7 +104,8 @@ export default {
         return {
             fields: {},
             driver: {},
-            errors: {}
+            errors: {},
+            vehicles: []
         };
     },
     created() {
@@ -120,6 +130,7 @@ export default {
 				country: "",
 				photo_src: "/files/images/person.png"
             };
+            this.getVehicles();
         },
         defSettings() {
             axios
@@ -144,6 +155,12 @@ export default {
                         showNotify("danger", error.response.data.errors[prop]);
                     }
                 });
+        },
+        getVehicles()
+        {
+            axios.get('/vehicles').then((response) => {
+                this.vehicles = response.data;
+            })
         },
         triggerDPInput() {
             this.$refs.dp_photo.click();

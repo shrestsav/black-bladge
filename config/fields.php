@@ -5,18 +5,23 @@ return [
     'Login Information' => [
       'username' => [
         'display_name' => 'Driver ID',
-        'col' => '4',
+        'col' => '6',
         'type' =>  'text',
       ],
       'password' => [
         'display_name' => 'Login Pin',
-        'col' => '4',
+        'col' => '6',
         'type' =>  'number',
       ],
       'license_no' => [
         'display_name' => 'License Number',
-        'col' => '4',
+        'col' => '6',
         'type' =>  'text',
+      ],
+      'vehicle_id' => [
+        'display_name' => 'Vehicle',
+        'col' => '6',
+        'type' =>  'select',
       ],
     ],
     'Personal Information' => [
