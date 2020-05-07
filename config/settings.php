@@ -11,14 +11,6 @@ return [
     'OTP_expiry'  => 5,
     'VAT'         => 5,
     'delivery_charge'  => 105,
-    'orderStatuses' => [
-        0 => 'Pending',
-        1 => 'Assigned',
-        // Drived added items to invoice
-        2 => 'Picked',
-        3 => 'Dropped',
-        4 => 'Payment Done'
-    ],
     'orderStatus' => [
         'New Booking' => [
             '0' => 'Pending',
@@ -31,5 +23,14 @@ return [
         'Completed' => [
             '4' => 'Payment Done'
         ]
-    ]
+    ],
+    'orderStatuses' => [
+        0 => 'New',
+        1 => 'Assigned',
+        2 => 'Start Trip',
+        3 => 'Arrived at Customer',
+        4 => 'Start Trip for Destination',
+        5 => 'Reached Destination',
+        6 => 'Payment Done and Closed'
+    ],
 ];

@@ -51,8 +51,6 @@ class BookingController extends Controller
     /**
      * Accept new orders.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
      */
     public function accept($id)
     {
@@ -89,6 +87,64 @@ class BookingController extends Controller
         // User::notifyAcceptOrder($id);
         
         return response()->json(['message' => 'Successfully Accepted']);
+    }
+
+    /**
+     * Start Trip to pickup customer.
+     */
+    public function startTripToPickLocation($id)
+    {
+        $order = Order::findOrFail($id);
+
+        if($order->status != 1 || $order->driver_id != Auth::id()){
+            return response()->json([
+                'message'=>'Forbidden, status or driver id problem'
+            ],403);
+        }
+        
+        $order->update([
+            'status' => 2
+        ]);
+        
+        $orderDetails = OrderDetail::updateOrCreate(
+            ['order_id' => $order->id],
+            [
+                'STPL' => Date('Y-m-d h:i:s'),
+            ]
+        );
+
+        // User::notifyAcceptOrder($id);
+        
+        return response()->json(['message' => 'Trip Started, Please proceed to customer Location']);
+    }
+
+    /**
+     * Arrived at pick location
+     */
+    public function arrivedAtPickLocation($id)
+    {
+        $order = Order::findOrFail($id);
+
+        if($order->status != 2 || $order->driver_id != Auth::id()){
+            return response()->json([
+                'message'=>'Forbidden, status or driver id problem'
+            ],403);
+        }
+        
+        $order->update([
+            'status' => 3
+        ]);
+        
+        $orderDetails = OrderDetail::updateOrCreate(
+            ['order_id' => $order->id],
+            [
+                'AAPL' => Date('Y-m-d h:i:s'),
+            ]
+        );
+
+        // User::notifyAcceptOrder($id);
+        
+        return response()->json(['message' => 'Arrived at pick location']);
     }
 
     /**

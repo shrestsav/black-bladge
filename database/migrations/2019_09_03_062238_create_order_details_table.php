@@ -15,15 +15,12 @@ class CreateOrderDetailsTable extends Migration
     {
         Schema::create('order_details', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->integer('order_id')->unsigned()->unique();
+            $table->bigInteger('order_id')->unsigned()->unique();
             $table->integer('PAB')->unsigned()->nullable()->comment('Pick Assigned By');
-            $table->integer('DAB')->unsigned()->nullable()->comment('Drop Assigned By');
             $table->dateTime('PAT')->nullable()->comment('Pick Assigned Time / Accepted Time');
-            $table->dateTime('DAT')->nullable()->comment('Drop Assigned Time');
-            $table->dateTime('PFC')->nullable()->comment('Picked From Customer');
-            $table->dateTime('DAO')->nullable()->comment('Dropped At Office');
-            $table->dateTime('PFO')->nullable()->comment('Picked From Office');
-            $table->dateTime('DTC')->nullable()->comment('Delivered To Customer');
+            $table->dateTime('STPL')->nullable()->comment('Start Trip to Pick Location');
+            $table->dateTime('AAPL')->nullable()->comment('Arrived at Pickup Location');
+            $table->dateTime('DC')->nullable()->comment('Dropped Customer at Destination');
             $table->smallInteger('payment_type')->nullable()->comment('1:Cash On Delivery, 2:Card, 3: Paypal');
             $table->string('payment_id')->nullable()->comment('Payment ID from Paypal or Payfort');
             $table->dateTime('PT')->nullable()->comment('Payment Time');

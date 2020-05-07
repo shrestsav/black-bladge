@@ -89,6 +89,9 @@ Route::group(['middleware' => ['localization']], function() {
 
 				Route::get('/accept/{order_id}','BookingController@accept');
 				Route::post('/cancel/{order_id}','BookingController@cancel');
+
+				Route::get('/startTripToPickLocation/{order_id}','BookingController@startTripToPickLocation');
+				Route::get('/arrivedAtPickLocation/{order_id}','BookingController@arrivedAtPickLocation');
 			});
 
 			// Route::post('/acceptOrder','DriverOrderController@acceptOrder');
