@@ -161,7 +161,7 @@ class BookingController extends Controller
     {
         $bookings = Order::where('customer_id',Auth::id())
                        ->with('details','driver')
-                       ->whereIn('status',[0,1])
+                       ->whereIn('status',[0,1,2,3,4])
                        ->orderBy('created_at','DESC')
                        ->firstOrFail();
 
@@ -172,7 +172,7 @@ class BookingController extends Controller
     {
         $bookings = Order::where('customer_id',Auth::id())
                        ->with('details','driver')
-                       ->where('status','>',0)
+                       ->where('status','>',4)
                        ->orderBy('created_at','DESC')
                        ->simplePaginate(10);
 
