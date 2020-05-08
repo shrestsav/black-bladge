@@ -27,7 +27,7 @@ Route::get('/te',function(){
 			'drop_location'	=> $order->drop_location
 		]);
 	}
-	return 'done'
+	return 'done';
 });
 
 Route::get('/phpinfo',function(){
