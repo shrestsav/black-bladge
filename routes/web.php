@@ -1,12 +1,5 @@
 <?php
 
-use App\Order;
-use App\DropLocation;
-use App\ReferralGrant;
-use App\Events\TaskEvent;
-use App\Jobs\PendingNotification;
-
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -17,20 +10,6 @@ use App\Jobs\PendingNotification;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-
-Route::get('/te',function(){
-	$orders = Order::all();
-	foreach($orders as $order){
-		if($order->drop_location){
-			$dropLocation = DropLocation::create([
-				'order_id'	=>	$order->id,
-				'drop_location'	=> $order->drop_location
-			]);
-		}	
-	}
-	return 'done';
-});
 
 Route::get('/phpinfo',function(){
 	return dd(phpinfo());
