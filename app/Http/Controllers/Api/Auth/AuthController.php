@@ -23,6 +23,7 @@ use Symfony\Component\HttpFoundation\Response;
 use App\Http\Resources\Api\AppDefault as AppDefaultResource;
 use App\Http\Resources\Api\Driver\Driver as DriverResource;
 use App\Http\Resources\Api\Customer\Customer as CustomerResource;
+use App\Http\Resources\Api\Driver\Order as OrderResource;
 
 
 
@@ -284,10 +285,11 @@ class AuthController extends Controller
         }
 
         $result = [
-            'tokens'    =>  $token_response,
-            'role'      =>  $role,
-            'user'      =>  new DriverResource($user),
-            'configs'   =>  new AppDefaultResource($appDefaults)
+            'tokens'          =>  $token_response,
+            'role'            =>  $role,
+            'user'            =>  new DriverResource($user),
+            'configs'         =>  new AppDefaultResource($appDefaults),
+            'active_booking'  =>  new OrderResource($user->activeDriverBooking()),
         ];
 
         return response()->json($result);

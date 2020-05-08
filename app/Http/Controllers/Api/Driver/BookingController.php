@@ -95,7 +95,16 @@ class BookingController extends Controller
     public function startTripToPickLocation($id)
     {
         $order = Order::findOrFail($id);
+        
+        $exists = Order::where('driver_id',Auth::id())->whereIn('status',[2,3,4])->exists();
 
+        if($exists){
+            return response()->json([
+                'message'=>'You already have active booking, complete it first'
+            ],403);
+        }
+
+        // check if driver already have active started trips
         if($order->status != 1 || $order->driver_id != Auth::id()){
             return response()->json([
                 'message'=>'Forbidden, status or driver id problem'

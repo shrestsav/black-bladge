@@ -113,9 +113,15 @@ class User extends Authenticatable
 
         return false;
     }
+    
     public function orders()
     {
         return $this->hasMany(Order::class,'customer_id');
+    }
+    
+    public function driverBookings()
+    {
+        return $this->hasMany(Order::class,'driver_id');
     }
 
     public function driverList()
@@ -228,6 +234,13 @@ class User extends Authenticatable
             return true;
         else 
             return false;
+    }
+
+    public function activeDriverBooking()
+    {
+        $bookings = $this->driverBookings()->whereIn('status',[2,3,4])->first();
+        
+        return $bookings;
     }
 
     public function vehicle()
