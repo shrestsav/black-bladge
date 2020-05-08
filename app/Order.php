@@ -53,4 +53,17 @@ class Order extends Model
     {
         return $this->hasOne(OrderDetail::class);
     }
+
+    public function dropLocations()
+    {
+        return $this->hasMany(DropLocation::class,'order_id');
+    }
+
+    public function dropLocation()
+    {
+        $dropLocation = $this->dropLocations()->orderBy('created_at','DESC')->first();
+
+        if($dropLocation)
+            return $dropLocation->drop_location;
+    }
 }

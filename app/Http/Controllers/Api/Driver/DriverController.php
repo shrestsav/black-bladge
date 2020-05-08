@@ -11,6 +11,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\Driver\Driver as DriverResource;
 use App\Http\Resources\Api\AppDefault as AppDefaultResource;
 use App\Http\Resources\Api\Driver\Vehicle as VehicleResource;
+use App\Http\Resources\Api\Driver\Order as OrderResource;
 
 class DriverController extends Controller
 {
@@ -21,9 +22,10 @@ class DriverController extends Controller
         $vehicles = Vehicle::all();
 
         $data = [
-            'user'      =>  new DriverResource(Auth::user()),
-            'configs'   =>  new AppDefaultResource($appDefaults),
-            'vehicles'  =>  VehicleResource::collection($vehicles),
+            'user'            =>  new DriverResource(Auth::user()),
+            'configs'         =>  new AppDefaultResource($appDefaults),
+            'vehicles'        =>  VehicleResource::collection($vehicles),
+            'active_booking'  =>  new OrderResource(Auth::user()->activeDriverBooking()),
         ];
 
         return response()->json($data);

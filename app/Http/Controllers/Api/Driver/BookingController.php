@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\Api\Driver;
 
 use Auth;
-use Validator;
 use App\User;
 use App\Order;
+use Validator;
 use App\BookingLog;
 use App\OrderDetail;
+use App\DropLocation;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\Driver\Order as OrderResource;
@@ -214,5 +215,50 @@ class BookingController extends Controller
         return response()->json([
             'message'=>'Something wrong with the request'
         ],400);
+    }
+
+    /**
+     * Change Drop Location.
+    **/
+    public function changeDropLocation(Request $request, $id)
+    {
+        $order = Order::findOrFail($id);
+
+        if($order->driver_id != Auth::id()){
+            return response()->json([
+                'message'=>'Forbidden'
+            ],403);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'drop_location_name' => 'required|string|max:100',
+            'drop_location_sub_name' => 'required|string|max:100',
+            'drop_location_lat'  => 'required|numeric',
+            'drop_location_long' => 'required|numeric',
+            'drop_location_info' => 'nullable|string|max:500',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation Failed',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $dropLocation = DropLocation::create([
+            'order_id'      => $order->id,
+            'drop_location' => [
+                'name'      => $request->drop_location_name,
+                'sub_name'  => $request->drop_location_sub_name,
+                'latitude'  => $request->drop_location_lat,
+                'longitude' => $request->drop_location_long,
+                'info'      => isset($request->drop_location_info) ? $request->drop_location_info : null,
+            ]
+        ]);
+
+        return response()->json([
+            'message' => 'Drop location has been changed',
+            'order'   => new OrderResource($order),
+        ]);
     }
 }

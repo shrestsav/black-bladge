@@ -6,6 +6,7 @@ use Auth;
 use App\User;
 use App\Order;
 use App\AppDefault;
+use App\DropLocation;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -84,17 +85,21 @@ class BookingController extends Controller
                 'longitude' => $data['pick_location_long'],
                 'info'      => isset($data['pick_location_info']) ? $data['pick_location_info'] : null,
             ],
+            'type'               => 1,
+            'estimated_distance' => $data['estimated_distance'],
+            'estimated_price'    => $data['estimated_distance']*$appDefaults->cost_per_km,
+            'payment_id'         => $data['payment_id'],
+        ]);
+            
+        $dropLocation = DropLocation::create([
+            'order_id'      => $order->id,
             'drop_location' => [
                 'name'      => $data['drop_location_name'],
                 'sub_name'  => $data['drop_location_sub_name'],
                 'latitude'  => $data['drop_location_lat'],
                 'longitude' => $data['drop_location_long'],
                 'info'      => isset($data['drop_location_info']) ? $data['drop_location_info'] : null,
-            ],
-            'type'               => 1,
-            'estimated_distance' => $data['estimated_distance'],
-            'estimated_price'    => $data['estimated_distance']*$appDefaults->cost_per_km,
-            'payment_id'         => $data['payment_id'],
+            ]
         ]);
         
         User::notifyNewBooking($order);
