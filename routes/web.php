@@ -22,10 +22,12 @@ use App\Jobs\PendingNotification;
 Route::get('/te',function(){
 	$orders = Order::all();
 	foreach($orders as $order){
-		$dropLocation = DropLocation::create([
-			'order_id'	=>	$order->id,
-			'drop_location'	=> $order->drop_location
-		]);
+		if($order->drop_location){
+			$dropLocation = DropLocation::create([
+				'order_id'	=>	$order->id,
+				'drop_location'	=> $order->drop_location
+			]);
+		}	
 	}
 	return 'done';
 });
