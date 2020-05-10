@@ -64,6 +64,6 @@ class Order extends Model
         $dropLocation = $this->dropLocations()->orderBy('created_at','DESC')->first();
 
         if($dropLocation)
-            return $dropLocation->drop_location;
+            return $dropLocation->drop_location;    
     }
 }
