@@ -34,7 +34,7 @@ class Coupon extends Model
     {
     	if($this->coupon_type=3){
     		$redeemed = Order::where('customer_id',$this->user_id)
-    						 ->where('coupon',$this->code)
+    						 ->where('promo_code',$this->code)
     						 ->exists();
 
     		if($redeemed){
@@ -49,7 +49,7 @@ class Coupon extends Model
     {
     	$redeems = 0;
     	if($this->coupon_type=1 || $this->coupon_type=2){
-    		$redeems = Order::where('coupon',$this->code)
+    		$redeems = Order::where('promo_code',$this->code)
     						 ->get()
     						 ->count();
 
