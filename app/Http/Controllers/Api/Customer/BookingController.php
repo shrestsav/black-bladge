@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Customer;
 use Auth;
 use App\User;
 use App\Order;
+use App\Coupon;
 use App\AppDefault;
 use App\DropLocation;
 use Illuminate\Http\Request;
@@ -63,7 +64,7 @@ class BookingController extends Controller
             'drop_location_info' => 'nullable|string|max:500',
             'estimated_distance' => 'required|numeric',
             'payment_id'         => 'required|numeric',
-            'promo_code'         => 'nullable|string|max:20',
+            'promo_code'         => 'nullable|string|min:4|max:15'
         ]);
 
         if ($validator->fails()) {
@@ -74,6 +75,14 @@ class BookingController extends Controller
         }
 
         $appDefaults = AppDefault::firstOrFail();
+
+        if($request->promo_code){
+            if(!Coupon::checkIfValidCoupon($request->promo_code)){
+                return response()->json([
+                    'message' => 'Invalid Coupon'
+                ], 403);
+            }
+        }
 
         $order = Order::create([
             'customer_id'   =>  Auth::id(),
@@ -129,7 +138,7 @@ class BookingController extends Controller
             'pick_location_info' => 'nullable|string|max:500',
             'booked_hours'       => 'required|numeric',
             'payment_id'         => 'required|numeric',
-            'promo_code'         => 'nullable|string|max:20',
+            'promo_code'         => 'nullable|string|min:4|max:15'
         ]);
 
         if ($validator->fails()) {
@@ -223,5 +232,41 @@ class BookingController extends Controller
         $bookings = Order::where('customer_id',Auth::id())->onlyTrashed()->paginate(10);
 
         return OrderResource::collection($bookings);
+    }
+
+    public function checkCoupon(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'promo_code'  => 'required|string|min:4|max:15'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation Failed',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $coupon = Coupon::where('code',$request->promo_code)->firstOrFail();
+
+        if(!$coupon->checkIfValidCoupon($request->promo_code)){
+            return response()->json([
+                'message' => 'Invalid Coupon'
+            ], 403);
+        }
+      
+        $discount = '';
+        if($coupon->type==1)
+            $discount = $coupon->discount.'%';
+        elseif($coupon->type==2)
+            $discount = config('settings.currency').' '.$coupon->discount;
+        
+        return response()->json([
+            'message'     =>  'Coupon Verified',
+            'code'        =>  $coupon->code,
+            'discount'    =>  $discount,
+            'valid_from'  =>  $coupon->valid_from,
+            'valid_to'    =>  $coupon->valid_to
+        ]);
     }
 }

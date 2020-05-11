@@ -100,7 +100,7 @@
             </ul>
           </div>
         </li>
-        {{-- <li class="nav-item">
+        <li class="nav-item">
           <a class="nav-link" href="#promo-codes" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="promo-codes" v-bind:class="{active: currentMenu=='couponMenu'}">
             <i class="ni ni-settings text-info"></i>
             <span class="nav-link-text">PROMO CODES</span>
@@ -119,7 +119,7 @@
               </li>
             </ul>
           </div>
-        </li> --}}
+        </li>
       </ul>
     </div>
   </div>

@@ -24,7 +24,6 @@ Route::group(['middleware' => ['localization']], function() {
 	Route::group(['namespace' => 'Api', 'middleware' => ['auth:api']], function() {
 		Route::get('/checkRole','Auth\AuthController@checkRole');
 		Route::apiResource('/orders','OrderController');
-		Route::post('/orders/checkCoupon','OrderController@checkCoupon');
 
 		Route::group(['namespace' => 'Customer', 'prefix' => 'customer', 'middleware' => ['role:customer']], function() {
 			
@@ -43,6 +42,8 @@ Route::group(['middleware' => ['localization']], function() {
 
 				Route::post('/cancel/{order_id}','BookingController@cancel');
 				Route::get('/cancelled','BookingController@cancelled');
+
+				Route::post('/coupon/check','BookingController@checkCoupon');
 			});
 
 			Route::group(['prefix' => 'location'], function() {

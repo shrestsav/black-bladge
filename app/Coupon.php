@@ -2,6 +2,8 @@
 
 namespace App;
 
+use App\Order;
+use Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -54,5 +56,73 @@ class Coupon extends Model
     	}
 
         return $redeems;
-    }
+	}
+	
+	// public function checkIfValidCoupon($code)
+	// {
+	// 	$ret = true;
+
+	// 	$today = \Carbon\Carbon::now()->timezone(config('settings.timezone'))->toDateTimeString();
+  
+	// 	$coupon = Coupon::where('code', $code)
+	// 					->where('status', 1)
+	// 					->where('valid_from','<=',$today)
+	// 					->where('valid_to','>=',$today);
+
+	// 	if(!$coupon->exists()){
+	// 		$ret = false;
+	// 	}
+
+	// 	$coupon = $coupon->first();
+
+	// 	//If coupon is of type single use
+	// 	if($coupon->coupon_type==1 || $coupon->coupon_type==3){
+	// 		// check if already used
+	// 		if(Order::where('customer_id',Auth::id())->where('promo_code',$code)->exists()){
+	// 			$ret = false;
+	// 		}
+	// 	  }
+		  
+	// 	if($coupon->coupon_type==3 && $coupon->user_id){
+	// 		if($coupon->user_id!=Auth::id()){
+	// 			$ret = false;
+	// 		}
+	// 	}
+
+	// 	return $ret;
+	// }
+
+	public function checkIfValidCoupon($code)
+	{
+		$ret = true;
+
+		$today = \Carbon\Carbon::now()->timezone(config('settings.timezone'))->toDateTimeString();
+  
+		$coupon = Coupon::where('code', $code)
+						->where('status', 1)
+						->where('valid_from','<=',$today)
+						->where('valid_to','>=',$today);
+
+		if(!$coupon->exists()){
+			$ret = false;
+		}
+
+		$coupon = $coupon->first();
+
+		//If coupon is of type single use
+		if($coupon->coupon_type==1 || $coupon->coupon_type==3){
+			// check if already used
+			if(Order::where('customer_id',Auth::id())->where('promo_code',$code)->exists()){
+				$ret = false;
+			}
+		  }
+		  
+		if($coupon->coupon_type==3 && $coupon->user_id){
+			if($coupon->user_id!=Auth::id()){
+				$ret = false;
+			}
+		}
+
+		return $ret;
+	}
 }
