@@ -25,6 +25,7 @@ class Order extends JsonResource
             'estimated_distance'  => $this->estimated_distance,
             'estimated_price'     => $this->estimated_price,
             'booked_at'           => $this->created_at,
+            'promo_code'          => $this->promo_code,
 
             'driver_id'           => $this->when($this->driver_id, $this->driver_id),
             'driver_fname'        => $this->when($this->driver_id, $this->driver['fname']),
