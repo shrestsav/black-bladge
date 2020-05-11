@@ -32,14 +32,13 @@ class AuthController extends Controller
     public function phoneRegister(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'phone'=> 'required',
+            'phone'=> 'required'
         ]);
 
         if ($validator->fails()) {
             return response()->json([
-                'status' => '422',
                 'message' => trans('response.validation_failed'),
-                'errors' => $validator->errors(),
+                'errors' => $validator->errors()
             ], 422);
         }
 
@@ -68,9 +67,9 @@ class AuthController extends Controller
         //If Exists login otherwise register as new customer
         if($check->exists()){
             $check->update([
-                        'OTP' => $request['OTP'],
-                        'OTP_timestamp' => $request['OTP_timestamp']
-                    ]);
+                'OTP' => $request['OTP'],
+                'OTP_timestamp' => $request['OTP_timestamp']
+            ]);
 
             // $customer = $check->first()->sendOTP();
 
@@ -86,7 +85,6 @@ class AuthController extends Controller
 
             if ($validator->fails()) {
                 return response()->json([
-                    'status' => '422',
                     'message' => trans('response.validation_failed'),
                     'errors' => $validator->errors(),
                 ], 422);
@@ -101,8 +99,7 @@ class AuthController extends Controller
 
             return response()->json([
                 'message'     => trans('response.OTP_sent'),
-                'user_status' => 'new',
-                // 'code'        =>$request['OTP']
+                'user_status' => 'new'
             ]);
         }
     }

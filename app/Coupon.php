@@ -97,28 +97,34 @@ class Coupon extends Model
 		$ret = true;
 
 		$today = \Carbon\Carbon::now()->timezone(config('settings.timezone'))->toDateTimeString();
-  
-		$coupon = Coupon::where('code', $code)
-						->where('status', 1)
-						->where('valid_from','<=',$today)
-						->where('valid_to','>=',$today);
+		
+		$valid_from = \Carbon\Carbon::parse($this->valid_from);
+		$valid_to = \Carbon\Carbon::parse($this->valid_to);
 
-		if(!$coupon->exists()){
+		if($this->status != 1 || $valid_from > $today || $valid_to < $today){
 			$ret = false;
 		}
+		// $coupon = Coupon::where('code', $code)
+		// 				->where('status', 1)
+		// 				->where('valid_from','<=',$today)
+		// 				->where('valid_to','>=',$today);
 
-		$coupon = $coupon->first();
+		// if(!$coupon->exists()){
+		// 	$ret = false;
+		// }
+
+		// $coupon = $coupon->first();
 
 		//If coupon is of type single use
-		if($coupon->coupon_type==1 || $coupon->coupon_type==3){
+		if($this->coupon_type==1 || $this->coupon_type==3){
 			// check if already used
 			if(Order::where('customer_id',Auth::id())->where('promo_code',$code)->exists()){
 				$ret = false;
 			}
 		  }
 		  
-		if($coupon->coupon_type==3 && $coupon->user_id){
-			if($coupon->user_id!=Auth::id()){
+		if($this->coupon_type==3 && $this->user_id){
+			if($this->user_id!=Auth::id()){
 				$ret = false;
 			}
 		}

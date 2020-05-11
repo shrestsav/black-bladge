@@ -77,7 +77,9 @@ class BookingController extends Controller
         $appDefaults = AppDefault::firstOrFail();
 
         if($request->promo_code){
-            if(!Coupon::checkIfValidCoupon($request->promo_code)){
+            $coupon = Coupon::where('code',$request->promo_code)->firstOrFail();
+
+            if(!$coupon->checkIfValidCoupon($request->promo_code)){
                 return response()->json([
                     'message' => 'Invalid Coupon'
                 ], 403);
@@ -98,6 +100,7 @@ class BookingController extends Controller
             'estimated_distance' => $data['estimated_distance'],
             'estimated_price'    => $data['estimated_distance']*$appDefaults->cost_per_km,
             'payment_id'         => $data['payment_id'],
+            'promo_code'         => isset($coupon) ? $coupon->code : null,
         ]);
             
         $dropLocation = DropLocation::create([
@@ -148,6 +151,16 @@ class BookingController extends Controller
             ], 422);
         }
 
+        if($request->promo_code){
+            $coupon = Coupon::where('code',$request->promo_code)->firstOrFail();
+
+            if(!$coupon->checkIfValidCoupon($request->promo_code)){
+                return response()->json([
+                    'message' => 'Invalid Coupon'
+                ], 403);
+            }
+        }
+
         $order = Order::create([
             'customer_id'   =>  Auth::id(),
             'status'        =>  0,
@@ -163,6 +176,7 @@ class BookingController extends Controller
             'booked_hours'     => $data['booked_hours'],
             'payment_id'       => $data['payment_id'],
             'estimated_price'  => $data['booked_hours']*$appDefaults->cost_per_min,
+            'promo_code'       => isset($coupon) ? $coupon->code : null,
         ]);
 
         return response()->json([
