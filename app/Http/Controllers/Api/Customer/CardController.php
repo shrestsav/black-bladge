@@ -40,7 +40,7 @@ class CardController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'message' => 'Validation Failed',
+                'message' => trans('response.validation_failed'),
                 'errors' => $validator->errors(),
             ], 422);
         }
@@ -56,7 +56,7 @@ class CardController extends Controller
         
         return response()->json([
             "card"    => $card,
-            "message" => "Card Saved Successfully"
+            "message" => trans('response.card.saved'),
         ], 200);
     }
 

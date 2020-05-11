@@ -33,7 +33,7 @@ class CustomerController extends Controller
         $validator = Validator::make($request->all(), [
             'fname'  => 'required|string',
             'email'  => 'required|string|email|max:255|unique:users,email,'.Auth::id(),
-            'title' => 'required|string',
+            'title'  => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -76,7 +76,7 @@ class CustomerController extends Controller
                 ]);
 
         return response()->json([
-            'message'=> trans('response.profile_created'), 
+            'message'=> trans('response.profile.create'),
         ],200);
     }
 
@@ -95,9 +95,8 @@ class CustomerController extends Controller
 
             if ($validator->fails()) {
                 return response()->json([
-                    'status' => '422',
-                    'message' => 'Validation Failed',
-                    'errors' => $validator->errors(),
+                    'message' => trans('response.validation_failed'),
+                    'errors'  => $validator->errors(),
                 ], 422);
             }
             
@@ -109,7 +108,7 @@ class CustomerController extends Controller
             ]);
 
             return response()->json([
-                'message'=> 'Profile Updated Successfully' 
+                'message'=> trans('response.profile.update')
             ],200);
         }
         
@@ -121,7 +120,7 @@ class CustomerController extends Controller
 
             if ($validator->fails()) {
                 return response()->json([
-                    'message' => 'Validation Failed',
+                    'message' => trans('response.validation_failed'),
                     'errors' => $validator->errors(),
                 ], 422);
             }
@@ -164,7 +163,7 @@ class CustomerController extends Controller
         if ($validator->fails()) {
             $error = $validator->errors();
             return response()->json([
-                'message' => 'Validation Failed',
+                'message' => trans('response.validation_failed'),
                 'errors' => $error,
             ], 422);
         }
@@ -192,7 +191,7 @@ class CustomerController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'status' => '422',
-                'message' => 'Validation Failed',
+                'message' => trans('response.validation_failed'),
                 'errors' => $validator->errors(),
             ], 422);
         }
@@ -238,7 +237,7 @@ class CustomerController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'status' => '422',
-                'message' => 'Validation Failed',
+                'message' => trans('response.validation_failed'),
                 'errors' => $validator->errors(),
             ], 422);
         }
@@ -275,7 +274,7 @@ class CustomerController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'status' => '422',
-                'message' => 'Validation Failed',
+                'message' => trans('response.validation_failed'),
                 'errors' => $validator->errors(),
             ], 422);
         }
@@ -321,7 +320,7 @@ class CustomerController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'status' => '422',
-                'message' => 'Validation Failed',
+                'message' => trans('response.validation_failed'),
                 'errors' => $validator->errors(),
             ], 422);
         }

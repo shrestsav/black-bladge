@@ -69,19 +69,19 @@ class BookingController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'message' => 'Validation Failed',
+                'message' => trans('response.validation_failed'),
                 'errors' => $validator->errors(),
             ], 422);
         }
 
         $appDefaults = AppDefault::firstOrFail();
 
-        if($request->promo_code){
-            $coupon = Coupon::where('code',$request->promo_code)->firstOrFail();
+        if($data['promo_code']){
+            $coupon = Coupon::where('code',$data['promo_code'])->firstOrFail();
 
-            if(!$coupon->checkIfValidCoupon($request->promo_code)){
+            if(!$coupon->checkIfValidCoupon($data['promo_code'])){
                 return response()->json([
-                    'message' => 'Invalid Coupon'
+                    'message' => trans('response.coupon.invalid')
                 ], 403);
             }
         }
@@ -146,17 +146,17 @@ class BookingController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'message' => 'Validation Failed',
+                'message' => trans('response.validation_failed'),
                 'errors' => $validator->errors(),
             ], 422);
         }
 
-        if($request->promo_code){
-            $coupon = Coupon::where('code',$request->promo_code)->firstOrFail();
+        if($data['promo_code']){
+            $coupon = Coupon::where('code',$data['promo_code'])->firstOrFail();
 
-            if(!$coupon->checkIfValidCoupon($request->promo_code)){
+            if(!$coupon->checkIfValidCoupon($data['promo_code'])){
                 return response()->json([
-                    'message' => 'Invalid Coupon'
+                    'message' => trans('response.coupon.invalid')
                 ], 403);
             }
         }
@@ -215,7 +215,7 @@ class BookingController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'message' => 'Validation Failed',
+                'message' => trans('response.validation_failed'),
                 'errors' => $validator->errors(),
             ], 422);
         }
@@ -256,7 +256,7 @@ class BookingController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'message' => 'Validation Failed',
+                'message' => trans('response.validation_failed'),
                 'errors' => $validator->errors(),
             ], 422);
         }
@@ -265,7 +265,7 @@ class BookingController extends Controller
 
         if(!$coupon->checkIfValidCoupon($request->promo_code)){
             return response()->json([
-                'message' => 'Invalid Coupon'
+                'message' => trans('response.coupon.invalid')
             ], 403);
         }
       
@@ -276,7 +276,7 @@ class BookingController extends Controller
             $discount = config('settings.currency').' '.$coupon->discount;
         
         return response()->json([
-            'message'     =>  'Coupon Verified',
+            'message'     =>  trans('response.coupon.valid'),
             'code'        =>  $coupon->code,
             'discount'    =>  $discount,
             'valid_from'  =>  $coupon->valid_from,
