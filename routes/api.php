@@ -135,6 +135,21 @@ Route::group(['middleware' => ['localization']], function() {
 
 
 
+		// Using these
+		Route::get('/termsAndConditions','CoreController@termsAndConditions');
+		Route::get('/FAQS','CoreController@FAQS');
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -148,8 +163,7 @@ Route::group(['middleware' => ['localization']], function() {
 		Route::get('/configs/{configType}','CoreController@getSettings');
 		Route::get('/mainAreas','CoreController@mainAreas');
 		Route::get('/offers','CoreController@offers');
-		Route::get('/termsAndConditions','CoreController@termsAndConditions');
-		Route::get('/FAQS','CoreController@FAQS');
+		
 		Route::get('/orderTypeDesc','CoreController@orderTypeDesc');
 		Route::get('/servicesPlusItems','CoreController@servicesPlusItems');
 

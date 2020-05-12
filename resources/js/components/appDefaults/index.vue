@@ -133,10 +133,26 @@
               <button class="btn btn-outline-primary" @click="saveMainArea()">Create</button>
             </div>
           </div>
-        </div>
-        <TACS></TACS>
-        <FAQS></FAQS>
-        <orderTypesDesc></orderTypesDesc> -->
+        </div> -->
+        <!-- <TACS></TACS> -->
+        
+		<div class="row">
+			<div class="col-md-6">
+				<FAQSEnglish></FAQSEnglish>
+			</div>
+			<div class="col-md-6">
+				<FAQSArabic></FAQSArabic>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-6">
+				<TACSEnglish></TACSEnglish>
+			</div>
+			<div class="col-md-6">
+				<TACSArabic></TACSArabic>
+			</div>
+		</div>
+        <!-- <orderTypesDesc></orderTypesDesc> -->
       </div>
     </div>        
   </div>
@@ -146,8 +162,10 @@
   import general from './general.vue'
   import order from './order.vue'
   import offers from './offers.vue'
-  import TACS from './TACS.vue'
-  import FAQS from './FAQS.vue'
+  import TACSEnglish from './TACSEnglish.vue'
+  import TACSArabic from './TACSArabic.vue'
+  import FAQSEnglish from './FAQSEnglish.vue'
+  import FAQSArabic from './FAQSArabic.vue'
   import orderTypesDesc from './orderTypesDesc.vue'
   import { mapState } from 'vuex'
 
@@ -156,8 +174,10 @@
       general,
       order,
       offers,
-      TACS,
-      FAQS,
+      TACSEnglish,
+      TACSArabic,
+      FAQSEnglish,
+      FAQSArabic,
       orderTypesDesc,
     },
     data(){

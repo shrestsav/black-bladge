@@ -44,16 +44,20 @@ class CoreController extends Controller
         return response()->json($input);
     }    
 
-    public function termsAndConditions()
+    public function termsAndConditions(Request $request)
     {
-        $TACS = AppDefault::firstOrFail()->TACS;
+        $local = ($request->hasHeader('App-Lang')) ? $request->header('App-Lang') : 'en';
+
+        $TACS = AppDefault::firstOrFail()->TACS[$local];
         
         return response()->json($TACS);
     }
 
-    public function FAQS()
+    public function FAQS(Request $request)
     {
-        $FAQS = AppDefault::firstOrFail()->FAQS;
+        $local = ($request->hasHeader('App-Lang')) ? $request->header('App-Lang') : 'en';
+
+        $FAQS = AppDefault::firstOrFail()->FAQS[$local];
         
         return response()->json($FAQS);
     }
