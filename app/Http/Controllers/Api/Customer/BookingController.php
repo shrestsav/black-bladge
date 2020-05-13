@@ -175,7 +175,7 @@ class BookingController extends Controller
             'type'             => 2,
             'booked_hours'     => $data['booked_hours'],
             'payment_id'       => $data['payment_id'],
-            'estimated_price'  => $data['booked_hours']*$appDefaults->cost_per_min,
+            'estimated_price'  => $data['booked_hours']*60*$appDefaults->cost_per_min,
             'promo_code'       => isset($coupon) ? $coupon->code : null,
         ]);
 
