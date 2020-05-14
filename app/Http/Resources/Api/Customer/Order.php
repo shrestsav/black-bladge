@@ -17,10 +17,12 @@ class Order extends JsonResource
         return [
             'id'                  => $this->id,
             'status'              => $this->status,
+            'status_str'          => config('settings.orderStatuses')[$this->status],
             'type'                => $this->type,
             'order_type'          => $this->type == 1 ? 'Instant' : 'Advanced',
+            'pick_timestamp'      => $this->pick_timestamp,
             'pick_location'       => $this->pick_location,
-            // 'drop_location'       => $this->drop_location,
+            'drop_timestamp'      => $this->when($this->type==2, $this->drop_timestamp),
             'drop_location'       => $this->dropLocation(),
             'estimated_distance'  => $this->estimated_distance,
             'estimated_price'     => $this->estimated_price,

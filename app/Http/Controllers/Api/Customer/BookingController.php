@@ -45,14 +45,6 @@ class BookingController extends Controller
 
     public function instantBooking($data)
     {
-        // return \Carbon\Carbon::now()->timezone(config('settings.timezone'))->toDateTimeString();
-        // return \Carbon\Carbon::now()->toDateTimeString();
-        if(Auth::user()->activeBooking()){
-            return response()->json([
-                'message' => 'Forbidden, Complete your active order or cancel it to make new one'
-            ], 403);
-        }
-
         $validator = Validator::make($data, [
             'pick_location_name' => 'required|string|max:100',
             'pick_location_sub_name' => 'required|string|max:100',
@@ -74,6 +66,23 @@ class BookingController extends Controller
                 'message' => trans('response.validation_failed'),
                 'errors' => $validator->errors(),
             ], 422);
+        }
+
+        // if(Auth::user()->activeBooking()){
+        //     return response()->json([
+        //         'message' => 'Forbidden, Complete your active order or cancel it to make new one'
+        //     ], 403);
+        // }
+
+        $pick_timstamp = \Carbon\Carbon::now()->timezone(config('settings.timezone'))->toDateTimeString();
+        
+        $checkExistingBooking = Auth::user()->checkExistingBooking($pick_timstamp);
+        
+        if($checkExistingBooking){
+            return response()->json([
+                'message' => 'Forbidden, You already have active booking at this time.',
+                'order'   => new OrderResource($checkExistingBooking)
+            ], 403);
         }
 
         $appDefaults = AppDefault::firstOrFail();
@@ -98,7 +107,7 @@ class BookingController extends Controller
                 'longitude' => $data['pick_location_long'],
                 'info'      => isset($data['pick_location_info']) ? $data['pick_location_info'] : null,
             ],
-            'pick_timestamp'   =>  \Carbon\Carbon::now()->timezone(config('settings.timezone'))->toDateTimeString(),
+            'pick_timestamp'   =>  $pick_timstamp,
             'type'               => 1,
             'estimated_distance' => $data['estimated_distance'],
             'estimated_price'    => $data['estimated_distance']*$appDefaults->cost_per_km,
@@ -130,15 +139,15 @@ class BookingController extends Controller
         $appDefaults = AppDefault::firstOrFail();
 
         $validator = Validator::make($data, [
-            'pick_timestamp'     => 'required|date_format:Y-m-d H:i:s',
-            'pick_location_name' => 'required|string',
+            'pick_timestamp'         => 'required|date_format:Y-m-d H:i:s',
+            'pick_location_name'     => 'required|string',
             'pick_location_sub_name' => 'required|string|max:100',
-            'pick_location_lat'  => 'required|numeric',
-            'pick_location_long' => 'required|numeric',
-            'pick_location_info' => 'nullable|string|max:500',
-            'booked_hours'       => 'required|numeric',
-            'payment_id'         => 'required|numeric',
-            'promo_code'         => 'nullable|string|min:4|max:15'
+            'pick_location_lat'      => 'required|numeric',
+            'pick_location_long'     => 'required|numeric',
+            'pick_location_info'     => 'nullable|string|max:500',
+            'booked_hours'           => 'required|numeric',
+            'payment_id'             => 'required|numeric',
+            'promo_code'             => 'nullable|string|min:4|max:15'
         ]);
 
         if ($validator->fails()) {
@@ -148,11 +157,12 @@ class BookingController extends Controller
             ], 422);
         }
 
-        // return Auth::user()->activeBooking($data['pick_timestamp'],$data['booked_hours']);
-
-        if(Auth::user()->activeBooking()){
+        $checkExistingBooking = Auth::user()->checkExistingBooking($data['pick_timestamp'],$data['booked_hours']);
+       
+        if($checkExistingBooking){
             return response()->json([
-                'message' => 'Forbidden, Complete your active order or cancel it to make new one'
+                'message' => 'Forbidden, You already have active booking at this time.',
+                'order'   => new OrderResource($checkExistingBooking)
             ], 403);
         }
 
@@ -193,11 +203,7 @@ class BookingController extends Controller
 
     public function active()
     {
-        $bookings = Order::where('customer_id',Auth::id())
-                       ->with('details','driver')
-                       ->whereIn('status',[0,1,2,3,4])
-                       ->orderBy('created_at','DESC')
-                       ->firstOrFail();
+        $bookings = Auth::user()->activeBookingOrder();
 
         return new OrderResource($bookings);
     }

@@ -17,6 +17,7 @@ class Order extends JsonResource
         return [
             'id'                  => $this->id,
             'status'              => $this->status,
+            'status_str'          => config('settings.orderStatuses')[$this->status],
             'type'                => $this->type,
             'order_type'          => $this->type == 1 ? 'Instant' : 'Advanced',
             'pick_location'       => $this->pick_location,

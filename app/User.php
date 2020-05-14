@@ -236,53 +236,71 @@ class User extends Authenticatable
             return false;
     }
 
-    public function activeTest()
+    public function activeBookingOrder()
     {
         $instantBooking = $this->orders()->with('details','driver')
                                 ->where('type',1)
                                 ->whereIn('status',[0,1,2,3,4])
                                 ->orderBy('created_at','DESC')
-                                ->firstOrFail();
+                                ->first();
         
         $advancedBooking = $this->orders()->with('details','driver')
                                 ->where('type',2)
                                 ->whereIn('status',[0,1,2,3,4])
                                 ->orderBy('pick_timestamp','DESC')
-                                ->firstOrFail();
+                                ->first();
+        
+        if($instantBooking)
+            return $instantBooking;
+        elseif($advancedBooking)
+            return $advancedBooking;
+        else
+            return abort(404,'Sorry you have no active booking');
     }
+
     /**
      * pick_timestamp and booked_hours will be null for instant booking
      */
-
-    public function bookCollision($pick_timestamp=null, $booked_hours=null)
+    public function checkExistingBooking($pick_timestamp=null, $booked_hours=null)
     {
-        if(!$pick_timestamp && !$booked_hours){
+        if($pick_timestamp && !$booked_hours){
             $instantBookings = $this->orders()->where('type',1)->whereIn('status',[0,1,2,3,4])->first();
-            $pick_timestamp = \Carbon\Carbon::now();
-            $advanceBookings = $this->orders()->where('type',2)->get();
-            $bookingExists = $advanceBookings->filter(function ($order) use ($pick_timestamp) {
-                $PTS = \Carbon\Carbon::parse($order->pick_timestamp);
-                $EBT = $order->end_booking_timestamp;
-                return (($EBT >= $pick_timestamp) && ($PTS <= $pick_timestamp));
-            });
-            if($instantBookings || count($bookingExists)){
-                return true;
-            }
+            $advanceBookings = $this->orders()
+                                    ->where('type',2)
+                                    ->whereIn('status',[0,1,2,3,4])
+                                    ->where('pick_timestamp','<=',$pick_timestamp)
+                                    ->where('drop_timestamp','>=',$pick_timestamp)
+                                    ->first();
+
+            if($instantBookings)
+                return $instantBookings;
+            elseif($advanceBookings)
+                return $advanceBookings;
         }
         else{
             $pick_timestamp = \Carbon\Carbon::parse($pick_timestamp);
             $drop_timestamp = \Carbon\Carbon::parse($pick_timestamp)->addHours($booked_hours); 
 
-            $advanceBookings = $this->orders()->where('type',2)->get();
+            $advanceBookings = $this->orders()
+                                    ->where('type',2)
+                                    ->whereIn('status',[0,1,2,3,4])
+                                    ->where(function($query) use ($pick_timestamp) {
+                                        $query->where('pick_timestamp','<=',$pick_timestamp)
+                                              ->where('drop_timestamp','>=',$pick_timestamp);
+                                    })
+                                    ->orWhere(function($query) use ($drop_timestamp) {
+                                        $query->where('pick_timestamp','<=',$drop_timestamp)
+                                              ->where('drop_timestamp','>=',$drop_timestamp);
+                                    })
+                                    ->first();
 
-            $bookingExists = $advanceBookings->filter(function ($order) use ($pick_timestamp, $drop_timestamp) {
-                $PTS = \Carbon\Carbon::parse($order->pick_timestamp);
-                $EBT = $order->end_booking_timestamp;
-                return (($EBT >= $pick_timestamp) && ($PTS <= $pick_timestamp)) || (($EBT >= $drop_timestamp) && ($PTS <= $drop_timestamp));
-            });
-            return $bookingExists;
-            if(count($bookingExists)){
-                return true;
+            // $bookingExists = $advanceBookings->filter(function ($order) use ($pick_timestamp, $drop_timestamp) {
+            //     $PTS = \Carbon\Carbon::parse($order->pick_timestamp);
+            //     $EBT = $order->end_booking_timestamp;
+            //     return (($EBT >= $pick_timestamp) && ($PTS <= $pick_timestamp)) || (($EBT >= $drop_timestamp) && ($PTS <= $drop_timestamp));
+            // });
+            if($advanceBookings){
+                return $advanceBookings;
             }
         }
 
