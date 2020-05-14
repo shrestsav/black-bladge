@@ -208,6 +208,13 @@ class BookingController extends Controller
         return new OrderResource($bookings);
     }
 
+    public function activeList()
+    {
+        $bookings = Order::where('customer_id',Auth::id())->whereIn('status',[0,1,2,3,4])->get();
+
+        return OrderResource::collection($bookings);
+    }
+
     public function completed()
     {
         $bookings = Order::where('customer_id',Auth::id())

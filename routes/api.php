@@ -38,6 +38,7 @@ Route::group(['middleware' => ['localization']], function() {
 				Route::post('/create/{type}','BookingController@create');
 
 				Route::get('/active','BookingController@active');
+				Route::get('/active/list','BookingController@activeList');
 				Route::get('/completed','BookingController@completed');
 
 				Route::post('/cancel/{order_id}','BookingController@cancel');
