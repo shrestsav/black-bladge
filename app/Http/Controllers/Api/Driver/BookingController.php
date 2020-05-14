@@ -158,6 +158,90 @@ class BookingController extends Controller
     }
 
     /**
+     * Start trip for destination
+     */
+    public function startTripForDestination($id)
+    {
+        $order = Order::findOrFail($id);
+
+        if($order->status != 3 || $order->driver_id != Auth::id()){
+            return response()->json([
+                'message'=>'Forbidden, status or driver id problem'
+            ],403);
+        }
+        
+        $order->update([
+            'status' => 4
+        ]);
+        
+        // $orderDetails = OrderDetail::updateOrCreate(
+        //     ['order_id' => $order->id],
+        //     [
+        //         'AAPL' => Date('Y-m-d h:i:s'),
+        //     ]
+        // );
+
+        // User::notifyAcceptOrder($id);
+        
+        return response()->json(['message' => 'Started trip for drop location']);
+    }
+
+    /**
+     * Arrived at Drop Location
+     */
+    public function arrivedAtDropLocation(Request $request, $id)
+    {
+        $order = Order::findOrFail($id);
+
+        if($order->status != 4 || $order->driver_id != Auth::id()){
+            return response()->json([
+                'message'=>'Forbidden, status or driver id problem'
+            ],403);
+        }
+        
+        $validator = Validator::make($data, [
+            'drop_location_name'     => 'required|string|max:100',
+            'drop_location_sub_name' => 'required|string|max:100',
+            'drop_location_lat'      => 'required|numeric',
+            'drop_location_long'     => 'required|numeric',
+            'drop_location_info'     => 'nullable|string|max:500',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => trans('response.validation_failed'),
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+        
+        $dropLocation = DropLocation::create([
+            'order_id'      => $order->id,
+            'drop_location' => [
+                'name'      => $request->drop_location_name,
+                'sub_name'  => $request->drop_location_sub_name,
+                'latitude'  => $request->drop_location_lat,
+                'longitude' => $request->drop_location_long,
+                'info'      => isset($request->drop_location_info) ? $request->drop_location_info : null,
+            ]
+        ]);
+
+        $order->update([
+            'status' => 5
+        ]);
+
+        $orderDetails = OrderDetail::updateOrCreate(
+            ['order_id' => $order->id],
+            [
+                'DC' => Date('Y-m-d h:i:s'),
+            ]
+        );
+
+        // User::notifyAcceptOrder($id);
+        
+        return response()->json(['message' => 'Reached Drop Location']);
+    }
+
+    /**
      * Cancel Accepted Order.
     **/
     public function cancel(Request $request, $id)

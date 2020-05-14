@@ -123,13 +123,7 @@ class BookingController extends Controller
     }
 
     public function advancedBooking($data)
-    {
-        if(Auth::user()->activeBooking()){
-            return response()->json([
-                'message' => 'Forbidden, Complete your active order or cancel it to make new one'
-            ], 403);
-        }
-        
+    {   
         $appDefaults = AppDefault::firstOrFail();
 
         $validator = Validator::make($data, [
@@ -149,6 +143,14 @@ class BookingController extends Controller
                 'message' => trans('response.validation_failed'),
                 'errors' => $validator->errors(),
             ], 422);
+        }
+
+        // return Auth::user()->activeBooking($data['pick_timestamp'],$data['booked_hours']);
+
+        if(Auth::user()->activeBooking()){
+            return response()->json([
+                'message' => 'Forbidden, Complete your active order or cancel it to make new one'
+            ], 403);
         }
 
         if($data['promo_code']){

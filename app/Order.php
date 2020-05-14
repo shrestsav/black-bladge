@@ -39,6 +39,13 @@ class Order extends Model
         'estimated_price'    => 'float',
     ];
 
+    protected $appends = ['end_booking_timestamp'];
+    
+    public function getEndBookingTimestampAttribute()
+    {
+        return $this->type==2 ? \Carbon\Carbon::parse($this->pick_timestamp)->addHours($this->booked_hours) : null;
+    }
+
     public function customer()
     {
         return $this->belongsTo(User::class,'customer_id');

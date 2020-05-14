@@ -236,6 +236,45 @@ class User extends Authenticatable
             return false;
     }
 
+    /**
+     * pick_timestamp and booked_hours will be null for instant booking
+     */
+
+    public function bookCollision($pick_timestamp=null, $booked_hours=null)
+    {
+        if(!$pick_timestamp && !$booked_hours){
+            $instantBookings = $this->orders()->where('type',1)->whereIn('status',[0,1,2,3,4])->first();
+            $pick_timestamp = \Carbon\Carbon::now();
+            $advanceBookings = $this->orders()->where('type',2)->get();
+            $bookingExists = $advanceBookings->filter(function ($order) use ($pick_timestamp) {
+                $PTS = \Carbon\Carbon::parse($order->pick_timestamp);
+                $EBT = $order->end_booking_timestamp;
+                return (($EBT >= $pick_timestamp) && ($PTS <= $pick_timestamp));
+            });
+            if($instantBookings || count($bookingExists)){
+                return true;
+            }
+        }
+        else{
+            $pick_timestamp = \Carbon\Carbon::parse($pick_timestamp);
+            $drop_timestamp = \Carbon\Carbon::parse($pick_timestamp)->addHours($booked_hours); 
+
+            $advanceBookings = $this->orders()->where('type',2)->get();
+
+            $bookingExists = $advanceBookings->filter(function ($order) use ($pick_timestamp, $drop_timestamp) {
+                $PTS = \Carbon\Carbon::parse($order->pick_timestamp);
+                $EBT = $order->end_booking_timestamp;
+                return (($EBT >= $pick_timestamp) && ($PTS <= $pick_timestamp)) || (($EBT >= $drop_timestamp) && ($PTS <= $drop_timestamp));
+            });
+            return $bookingExists;
+            if(count($bookingExists)){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function activeDriverBooking()
     {
         $bookings = $this->driverBookings()->whereIn('status',[2,3,4])->first();
