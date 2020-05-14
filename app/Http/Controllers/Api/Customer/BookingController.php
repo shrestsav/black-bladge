@@ -210,7 +210,11 @@ class BookingController extends Controller
 
     public function activeList()
     {
-        $bookings = Order::where('customer_id',Auth::id())->whereIn('status',[0,1,2,3,4])->get();
+        $bookings = Order::where('customer_id',Auth::id())
+                        ->whereIn('status',[0,1,2,3,4])
+                        ->orderBy('type','ASC')
+                        ->orderBy('pick_timestamp','ASC')
+                        ->get();
 
         return OrderResource::collection($bookings);
     }
