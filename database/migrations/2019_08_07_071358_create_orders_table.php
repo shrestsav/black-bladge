@@ -23,10 +23,10 @@ class CreateOrdersTable extends Migration
             $table->smallInteger('type')->comment('1:Instant, 2:Advanced');
             
             $table->text('pick_location');
-            $table->datetime('pick_timestamp')->nullable();
+            $table->datetime('pick_timestamp')->nullable()->comment('this timestamp is in respective timezone');
             
             $table->text('drop_location')->nullable();
-            $table->datetime('drop_timestamp')->nullable();
+            $table->datetime('drop_timestamp')->nullable()->comment('this timestamp is in respective timezone, only for advanced');
             
             $table->decimal('booked_hours', 8, 2)->nullable();
             $table->decimal('estimated_distance', 8, 2)->nullable();

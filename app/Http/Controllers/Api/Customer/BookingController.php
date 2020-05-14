@@ -45,6 +45,8 @@ class BookingController extends Controller
 
     public function instantBooking($data)
     {
+        // return \Carbon\Carbon::now()->timezone(config('settings.timezone'))->toDateTimeString();
+        // return \Carbon\Carbon::now()->toDateTimeString();
         if(Auth::user()->activeBooking()){
             return response()->json([
                 'message' => 'Forbidden, Complete your active order or cancel it to make new one'
@@ -96,6 +98,7 @@ class BookingController extends Controller
                 'longitude' => $data['pick_location_long'],
                 'info'      => isset($data['pick_location_info']) ? $data['pick_location_info'] : null,
             ],
+            'pick_timestamp'   =>  \Carbon\Carbon::now()->timezone(config('settings.timezone'))->toDateTimeString(),
             'type'               => 1,
             'estimated_distance' => $data['estimated_distance'],
             'estimated_price'    => $data['estimated_distance']*$appDefaults->cost_per_km,
@@ -174,6 +177,7 @@ class BookingController extends Controller
                 'longitude' => $data['pick_location_long'],
                 'info'      => isset($data['pick_location_info']) ? $data['pick_location_info'] : null,
             ],
+            'drop_timestamp'   => \Carbon\Carbon::parse($data['pick_timestamp'])->addHours($data['booked_hours']),
             'type'             => 2,
             'booked_hours'     => $data['booked_hours'],
             'payment_id'       => $data['payment_id'],

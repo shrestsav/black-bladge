@@ -15,6 +15,25 @@ Route::get('/phpinfo',function(){
 	return dd(phpinfo());
 });
 
+Route::get('/update',function(){
+	$orders = App\Order::all();
+
+	foreach($orders as $order){
+		if($order->type==2){
+			$order->update([
+				'drop_timestamp' => \Carbon\Carbon::parse($order['pick_timestamp'])->addHours($order['booked_hours'])
+			]);
+		}
+		if($order->type==1){
+			$order->update([
+				'pick_timestamp' => \Carbon\Carbon::parse($order['created_at'])->timezone(config('settings.timezone'))->toDateTimeString()
+			]);
+		}
+	}
+
+	return 'done';
+});
+
 Route::group(['prefix' => 'test'], function() {
 	Route::get('/notification/{id}','TestController@notification');
 	Route::get('/mail','TestController@mail');

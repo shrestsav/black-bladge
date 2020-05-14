@@ -236,6 +236,20 @@ class User extends Authenticatable
             return false;
     }
 
+    public function activeTest()
+    {
+        $instantBooking = $this->orders()->with('details','driver')
+                                ->where('type',1)
+                                ->whereIn('status',[0,1,2,3,4])
+                                ->orderBy('created_at','DESC')
+                                ->firstOrFail();
+        
+        $advancedBooking = $this->orders()->with('details','driver')
+                                ->where('type',2)
+                                ->whereIn('status',[0,1,2,3,4])
+                                ->orderBy('pick_timestamp','DESC')
+                                ->firstOrFail();
+    }
     /**
      * pick_timestamp and booked_hours will be null for instant booking
      */
