@@ -31,7 +31,7 @@ Route::get('/update',function(){
 		}
 	}
 
-	$del = App\Order::onlyTrashed()->delete();
+	$del = App\Order::onlyTrashed()->forceDelete();
 
 	return 'done';
 });
