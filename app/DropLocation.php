@@ -8,7 +8,9 @@ class DropLocation extends Model
 {
     protected $fillable = [
         'order_id',
-        'drop_location'
+        'drop_location',
+        'type',
+        'added_by'
     ];
 
     protected $casts = [

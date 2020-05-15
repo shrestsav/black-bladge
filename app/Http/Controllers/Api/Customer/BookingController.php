@@ -117,6 +117,8 @@ class BookingController extends Controller
             
         $dropLocation = DropLocation::create([
             'order_id'      => $order->id,
+            'type'          => 2,
+            'added_by'      => Auth::id(),
             'drop_location' => [
                 'name'      => $data['drop_location_name'],
                 'sub_name'  => $data['drop_location_sub_name'],

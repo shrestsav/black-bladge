@@ -17,6 +17,8 @@ class CreateDropLocationsTable extends Migration
             $table->bigIncrements('id');
             $table->bigInteger('order_id');
             $table->text('drop_location');
+            $table->smallInteger('type')->comment('1: Additional, 2: Final');
+            $table->bigInteger('added_by');
             $table->timestamps();
         });
     }

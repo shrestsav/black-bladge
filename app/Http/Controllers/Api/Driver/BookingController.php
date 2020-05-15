@@ -216,6 +216,8 @@ class BookingController extends Controller
         
         $dropLocation = DropLocation::create([
             'order_id'      => $order->id,
+            'type'          => 2,
+            'added_by'      => Auth::id(),
             'drop_location' => [
                 'name'      => $request->drop_location_name,
                 'sub_name'  => $request->drop_location_sub_name,
@@ -304,7 +306,7 @@ class BookingController extends Controller
     /**
      * Change Drop Location.
     **/
-    public function changeDropLocation(Request $request, $id)
+    public function addDropLocation(Request $request, $id)
     {
         $order = Order::findOrFail($id);
 
@@ -315,11 +317,12 @@ class BookingController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'drop_location_name' => 'required|string|max:100',
+            'type'                   => 'required|numeric',
+            'drop_location_name'     => 'required|string|max:100',
             'drop_location_sub_name' => 'required|string|max:100',
-            'drop_location_lat'  => 'required|numeric',
-            'drop_location_long' => 'required|numeric',
-            'drop_location_info' => 'nullable|string|max:500',
+            'drop_location_lat'      => 'required|numeric',
+            'drop_location_long'     => 'required|numeric',
+            'drop_location_info'     => 'nullable|string|max:500'
         ]);
 
         if ($validator->fails()) {
@@ -331,6 +334,8 @@ class BookingController extends Controller
 
         $dropLocation = DropLocation::create([
             'order_id'      => $order->id,
+            'type'          => $request->type,
+            'added_by'      => Auth::id(),
             'drop_location' => [
                 'name'      => $request->drop_location_name,
                 'sub_name'  => $request->drop_location_sub_name,

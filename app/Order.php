@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Http\Resources\Api\DropLocation as DropLocationResource;
 use Auth;
 
 class Order extends Model
@@ -68,9 +69,15 @@ class Order extends Model
 
     public function dropLocation()
     {
-        $dropLocation = $this->dropLocations()->orderBy('created_at','DESC')->first();
+        $dropLocation = $this->dropLocations()->where('type',2)->orderBy('created_at','DESC')->first();
 
-        if($dropLocation)
-            return $dropLocation->drop_location;    
+        return new DropLocationResource($dropLocation);    
+    }
+
+    public function additionalLocations()
+    {
+        $dropLocations = $this->dropLocations()->where('type',1)->orderBy('created_at','ASC')->get();
+
+        return DropLocationResource::collection($dropLocations);    
     }
 }

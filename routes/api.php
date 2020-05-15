@@ -101,7 +101,7 @@ Route::group(['middleware' => ['localization']], function() {
 				Route::get('/startTripForDestination/{order_id}','BookingController@startTripForDestination');
 				Route::post('/arrivedAtDropLocation/{order_id}','BookingController@arrivedAtDropLocation');
 
-				Route::post('/change/dropLocation/{order_id}','BookingController@changeDropLocation');
+				Route::post('/add/dropLocation/{order_id}','BookingController@addDropLocation');
 			});
 
 			// Route::post('/acceptOrder','DriverOrderController@acceptOrder');
