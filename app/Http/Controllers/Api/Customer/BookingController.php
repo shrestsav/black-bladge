@@ -276,7 +276,7 @@ class BookingController extends Controller
     public function checkCoupon(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'promo_code'  => 'required|string|min:4|max:15'
+            'promo_code'  => 'required|string|min:4|max:15|exists:coupons,code'
         ]);
 
         if ($validator->fails()) {
