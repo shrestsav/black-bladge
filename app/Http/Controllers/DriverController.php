@@ -127,7 +127,7 @@ class DriverController extends Controller
             'phone'      => 'nullable|unique:users',
             'username'   => 'required|string|max:191',
             'license_no' => 'required|string|max:191',
-            'vehicle_id' => 'required|numeric|exists:vehicles,id|unique:users,vehicle_id',
+            'vehicle_id' => 'required|numeric|exists:vehicles,id',
             'photo_file' => 'nullable|mimes:jpeg,jpg,bmp,png|max:15072',
             'password'   => 'required|string|min:4|max:4',
         ]);
@@ -202,7 +202,7 @@ class DriverController extends Controller
             'lname'      => 'nullable|max:191',
             'username'   => 'required|string|max:191',
             'license_no' => 'required|string|max:191',
-            'vehicle_id' => 'required|numeric|exists:vehicles,id|unique:users,vehicle_id,'.$id,
+            'vehicle_id' => 'required|numeric|exists:vehicles,id',
             'email'      => 'nullable|email|max:191|unique:users,email,'.$id,
             'phone'      => 'nullable|unique:users,phone,'.$id,
             'photo_file' => 'nullable|mimes:jpeg,jpg,bmp,png|max:15072',

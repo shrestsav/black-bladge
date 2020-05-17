@@ -36,13 +36,13 @@ class DriverController extends Controller
         $vehicle = Vehicle::findOrFail($vehicle_id);
 
         // check if already in use
-        $exists = User::where('vehicle_id',$vehicle_id)->exists();
+        // $exists = User::where('vehicle_id',$vehicle_id)->exists();
 
-        if($exists){
-            return response()->json([
-                'message' => 'Forbidden, vehicle is already in use'
-            ], 403);
-        }
+        // if($exists){
+        //     return response()->json([
+        //         'message' => 'Forbidden, vehicle is already in use'
+        //     ], 403);
+        // }
 
         Auth::user()->update([
             'vehicle_id' => $vehicle_id
