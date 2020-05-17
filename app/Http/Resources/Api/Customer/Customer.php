@@ -25,6 +25,7 @@ class Customer extends JsonResource
             'full_name'     => $this->full_name,
             'photo_src'     => $this->photo_src,
             'title'         => $this->gender,
+            'total_trip'    => 'N/A',
             'referral_id'   => $this->details ? $this->details->referral_id : null,
         ];
     }
