@@ -88,6 +88,7 @@ Route::group(['middleware' => ['localization']], function() {
 		Route::group(['namespace' => 'Driver', 'prefix' => 'driver', 'middleware' => ['role:driver']], function() {
 			Route::get('/details','DriverController@index');
 			Route::get('/vehicle/set/{vehicle_id}','DriverController@setVehicle');
+			Route::get('/vehicles','DriverController@vehicles');
 			Route::group(['prefix' => 'booking'], function() {
 				Route::get('/new','BookingController@new');
 				Route::get('/active','BookingController@active');

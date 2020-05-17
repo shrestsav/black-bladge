@@ -31,6 +31,13 @@ class DriverController extends Controller
         return response()->json($data);
     }
 
+    public function vehicles()
+    {
+        $vehicles = Vehicle::all();
+
+        return VehicleResource::collection($vehicles);
+    }
+
     public function setVehicle($vehicle_id)
     {
         $vehicle = Vehicle::findOrFail($vehicle_id);

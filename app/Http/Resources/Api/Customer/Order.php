@@ -27,6 +27,9 @@ class Order extends JsonResource
             'additional_locations' => $this->additionalLocations(),
             'estimated_distance'   => $this->estimated_distance,
             'estimated_price'      => $this->estimated_price,
+            'VAT_percentage'       => 5,
+            'VAT'                  => $this->estimated_price ? (5/100)*$this->estimated_price : null,
+            'VAT_price'            => $this->estimated_price ? ((5/100)*$this->estimated_price+$this->estimated_price) : null,
             'booked_at'            => $this->created_at,
             'promo_code'           => $this->promo_code,
 
