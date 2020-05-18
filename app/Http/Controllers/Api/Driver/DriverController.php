@@ -25,7 +25,7 @@ class DriverController extends Controller
             'user'            =>  new DriverResource(Auth::user()),
             'configs'         =>  new AppDefaultResource($appDefaults),
             'vehicles'        =>  VehicleResource::collection($vehicles),
-            'active_booking'  =>  new OrderResource(Auth::user()->activeDriverBooking()),
+            'active_booking'  =>  Auth::user()->activeDriverBooking() ? new OrderResource(Auth::user()->activeDriverBooking()) : null,
         ];
 
         return response()->json($data);
