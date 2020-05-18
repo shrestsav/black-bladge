@@ -17,9 +17,6 @@ class BookingController extends Controller
 {
     /**
      * List of new booking orders.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
      */
     public function new()
     {
@@ -34,13 +31,25 @@ class BookingController extends Controller
 
     /**
      * List of active booking orders.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
      */
     public function active()
     {
         $active = Order::where('status','>',0)
+                        ->where('status','<',6)
+                        ->where('driver_id', Auth::id())
+                        ->with('customer')
+                        ->orderBy('created_at','DESC')
+                        ->simplePaginate(10);
+
+        return OrderResource::collection($active);
+    } 
+
+    /**
+     * List of completed booking orders.
+     */
+    public function completed()
+    {
+        $active = Order::where('status','>',5)
                         ->where('driver_id', Auth::id())
                         ->with('customer')
                         ->orderBy('created_at','DESC')
@@ -241,6 +250,35 @@ class BookingController extends Controller
         // User::notifyAcceptOrder($id);
         
         return response()->json(['message' => 'Reached Drop Location']);
+    }
+
+     /**
+     * Payment Done and closed
+     */
+    public function paymentDone($id)
+    {
+        $order = Order::findOrFail($id);
+
+        if($order->status != 5 || $order->driver_id != Auth::id()){
+            return response()->json([
+                'message'=>'Forbidden, status or driver id problem'
+            ],403);
+        }
+        
+        $order->update([
+            'status' => 6
+        ]);
+        
+        $orderDetails = OrderDetail::updateOrCreate(
+            ['order_id' => $order->id],
+            [
+                'PT' => Date('Y-m-d h:i:s'),
+            ]
+        );
+
+        // User::notifyAcceptOrder($id);
+        
+        return response()->json(['message' => 'Payment Done and Booking Completed']);
     }
 
     /**
