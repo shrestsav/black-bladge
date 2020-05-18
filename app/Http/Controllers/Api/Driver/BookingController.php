@@ -97,7 +97,7 @@ class BookingController extends Controller
     {
         $order = Order::findOrFail($id);
         
-        $exists = Order::where('driver_id',Auth::id())->whereIn('status',[2,3,4])->exists();
+        $exists = Order::where('driver_id',Auth::id())->whereIn('status',config('settings.driver_active_booking_statuses'))->exists();
 
         if($exists){
             return response()->json([

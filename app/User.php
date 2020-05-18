@@ -228,7 +228,7 @@ class User extends Authenticatable
 
     public function activeBooking()
     {
-        $bookings = $this->orders()->whereIn('status',[0,1,2,3,4])->first();
+        $bookings = $this->orders()->whereIn('status',config('settings.customer_active_booking_statuses'))->first();
         
         if($bookings)
             return true;
@@ -240,13 +240,13 @@ class User extends Authenticatable
     {
         $instantBooking = $this->orders()->with('details','driver')
                                 ->where('type',1)
-                                ->whereIn('status',[0,1,2,3,4])
+                                ->whereIn('status',config('settings.customer_active_booking_statuses'))
                                 ->orderBy('created_at','DESC')
                                 ->first();
         
         $advancedBooking = $this->orders()->with('details','driver')
                                 ->where('type',2)
-                                ->whereIn('status',[0,1,2,3,4])
+                                ->whereIn('status',config('settings.customer_active_booking_statuses'))
                                 ->orderBy('pick_timestamp','DESC')
                                 ->first();
         
@@ -264,10 +264,10 @@ class User extends Authenticatable
     public function checkExistingBooking($pick_timestamp=null, $booked_hours=null)
     {
         if($pick_timestamp && !$booked_hours){
-            $instantBookings = $this->orders()->where('type',1)->whereIn('status',[0,1,2,3,4])->first();
+            $instantBookings = $this->orders()->where('type',1)->whereIn('status',config('settings.customer_active_booking_statuses'))->first();
             $advanceBookings = $this->orders()
                                     ->where('type',2)
-                                    ->whereIn('status',[0,1,2,3,4])
+                                    ->whereIn('status',config('settings.customer_active_booking_statuses'))
                                     ->where('pick_timestamp','<=',$pick_timestamp)
                                     ->where('drop_timestamp','>=',$pick_timestamp)
                                     ->first();
@@ -283,7 +283,7 @@ class User extends Authenticatable
 
             $advanceBookings = $this->orders()
                                     ->where('type',2)
-                                    ->whereIn('status',[0,1,2,3,4])
+                                    ->whereIn('status',config('settings.customer_active_booking_statuses'))
                                     ->where(function($query) use ($pick_timestamp) {
                                         $query->where('pick_timestamp','<=',$pick_timestamp)
                                               ->where('drop_timestamp','>=',$pick_timestamp);
@@ -309,7 +309,7 @@ class User extends Authenticatable
 
     public function activeDriverBooking()
     {
-        $bookings = $this->driverBookings()->whereIn('status',[2,3,4])->first();
+        $bookings = $this->driverBookings()->whereIn('status',config('settings.driver_active_booking_statuses'))->first();
         
         return $bookings;
     }

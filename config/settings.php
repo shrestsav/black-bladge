@@ -33,4 +33,6 @@ return [
         5 => 'Reached Destination',
         6 => 'Payment Done and Closed'
     ],
+    'customer_active_booking_statuses' => [0,1,2,3,4,5],
+    'driver_active_booking_statuses' => [0,1,2,3,4,5],
 ];
