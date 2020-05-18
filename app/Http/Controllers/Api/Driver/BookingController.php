@@ -199,7 +199,7 @@ class BookingController extends Controller
             ],403);
         }
         
-        $validator = Validator::make($data, [
+        $validator = Validator::make($request->all(), [
             'drop_location_name'     => 'required|string|max:100',
             'drop_location_sub_name' => 'required|string|max:100',
             'drop_location_lat'      => 'required|numeric',
