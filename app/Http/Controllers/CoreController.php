@@ -155,14 +155,15 @@ class CoreController extends Controller
         $input = [];
         if($request->saveType=='generalSetting'){
             $validatedData = $request->validate([
-                'OTP_expiry' => 'required|numeric',
-                'app_rows' => 'required|numeric',
-                'sys_rows' => 'required|numeric',
-                'cost_per_km' => 'required|numeric',
-                'cost_per_min' => 'required|numeric',
+                'VAT'           => 'required|numeric',
+                'OTP_expiry'    => 'required|numeric',
+                'app_rows'      => 'required|numeric',
+                'sys_rows'      => 'required|numeric',
+                'cost_per_km'   => 'required|numeric',
+                'cost_per_min'  => 'required|numeric',
             ]);
 
-            $input = $request->only('OTP_expiry','app_rows','sys_rows','cost_per_km','cost_per_min');
+            $input = $request->only('VAT', 'OTP_expiry','app_rows','sys_rows','cost_per_km','cost_per_min');
         }
         if($request->saveType=='supportSetting'){
             $validatedData = $request->validate([
@@ -205,6 +206,21 @@ class CoreController extends Controller
         }
         if($request->saveType=='FAQS'){
             $input = $request->only('FAQS');
+        }
+        if($request->saveType=='copyrights'){
+            $input = $request->only('copyrights');
+        }
+        if($request->saveType=='privacy_policies'){
+            $input = $request->only('privacy_policies');
+        }
+        if($request->saveType=='data_providers'){
+            $input = $request->only('data_providers');
+        }
+        if($request->saveType=='software_licences'){
+            $input = $request->only('software_licences');
+        }
+        if($request->saveType=='local_informations'){
+            $input = $request->only('local_informations');
         }
         if($request->saveType=='OTD'){
             $validatedData = $request->validate([

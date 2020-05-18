@@ -22,12 +22,22 @@ class AppDefault extends Model
 		'referral_grant',
 		'cost_per_km',
 		'cost_per_min',
+		'copyrights',
+		'privacy_policies',
+		'data_providers',
+		'software_licences',
+		'local_informations'
     ];
     
     protected $casts = [
-        'driver_notes' => 'array',
-        'online_chat'  => 'array',
-        'TACS' 		   => 'array',
-        'FAQS' 		   => 'array',
+        'driver_notes' 		 => 'array',
+        'online_chat'  		 => 'array',
+        'TACS' 		   		 => 'array',
+        'FAQS' 		   		 => 'array',
+        'copyrights' 		 => 'array',
+        'privacy_policies' 	 => 'array',
+        'data_providers' 	 => 'array',
+        'software_licences'  => 'array',
+        'local_informations' => 'array'
     ];
 }

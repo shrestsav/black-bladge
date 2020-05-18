@@ -3,7 +3,7 @@
     <div class="card-header">
       <div class="row">
         <div class="col">
-          <h3 class="mb-0">Terms and Conditions</h3>
+          <h3 class="mb-0">الأحكام والشروط</h3>
         </div>
         <div class="col-auto">
           <button type="button" class="btn btn-primary btn-sm" @click="toggleModule">{{module.icon}}</button>

@@ -18,6 +18,29 @@
             <div class="row">
                 <div class="col-md-4">
                     <div class="form-group">
+                        <label class="form-control-label">VAT (%)</label>
+                        <div class="input-group input-group-merge">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <i class="fas fa-user"></i>
+                                </span>
+                            </div>
+                            <input
+                                class="form-control"
+                                type="number"
+                                v-model="appDefaults.VAT"
+                                :class="{'not-validated':errors.VAT}"
+                            />
+                            <div
+                                class="invalid-feedback"
+                                style="display: block;"
+                                v-if="errors.VAT"
+                            >{{errors.VAT[0]}}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
                         <label class="form-control-label">Cost Per KM</label>
                         <div class="input-group input-group-merge">
                             <div class="input-group-prepend">

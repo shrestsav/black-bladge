@@ -15,6 +15,7 @@ class AppDefault extends JsonResource
     public function toArray($request)
     {
         return [
+            'VAT'          => $this->VAT, 
             'pricing_unit' => 'DHS',
             'cost_per_km'  => $this->cost_per_km,
             'cost_per_min' => $this->cost_per_min,
