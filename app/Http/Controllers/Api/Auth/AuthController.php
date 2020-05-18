@@ -286,7 +286,7 @@ class AuthController extends Controller
             'role'            =>  $role,
             'user'            =>  new DriverResource($user),
             'configs'         =>  new AppDefaultResource($appDefaults),
-            'active_booking'  =>  new OrderResource($user->activeDriverBooking()),
+            'active_booking'  =>  $user->activeDriverBooking() ? new OrderResource($user->activeDriverBooking()) : null,
         ];
 
         return response()->json($result);
