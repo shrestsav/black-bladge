@@ -381,6 +381,10 @@ class BookingController extends Controller
         {
             $distance = $request->distance;
             $price =  $request->distance*$appDefaults->cost_per_km;
+            $order->update([
+                'estimated_price'    => $distance,
+                'estimated_distance' => $price
+            ]);
         }
 
         if($request->type==1){
@@ -395,8 +399,8 @@ class BookingController extends Controller
                     'longitude' => $request->drop_location_long,
                     'info'      => isset($request->drop_location_info) ? $request->drop_location_info : null,
                 ],
-                'distance'      => $distance,
-                'price'         => $price,
+                'distance'      => null,
+                'price'         => null,
             ]);
         }
         elseif($request->type==2){
@@ -415,8 +419,8 @@ class BookingController extends Controller
                         'longitude' => $request->drop_location_long,
                         'info'      => isset($request->drop_location_info) ? $request->drop_location_info : null,
                     ],
-                    'distance'      => $distance,
-                    'price'         => $price,
+                    'distance'      => null,
+                    'price'         => null,
                 ]
             );
         }
@@ -426,10 +430,10 @@ class BookingController extends Controller
             ], 403);
         }
 
-        if($order->type==1)
-        {
-            $order->updatePriceAndDistanceForInstant();
-        }
+        // if($order->type==1)
+        // {
+        //     $order->updatePriceAndDistanceForInstant();
+        // }
         
         return response()->json([
             'message' => 'Drop location has been added',
