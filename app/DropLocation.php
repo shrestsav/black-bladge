@@ -9,6 +9,8 @@ class DropLocation extends Model
     protected $fillable = [
         'order_id',
         'drop_location',
+        'distance',
+        'price',
         'type',
         'added_by'
     ];

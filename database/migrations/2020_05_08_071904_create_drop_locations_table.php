@@ -17,6 +17,8 @@ class CreateDropLocationsTable extends Migration
             $table->bigIncrements('id');
             $table->bigInteger('order_id');
             $table->text('drop_location');
+            $table->decimal('distance', 8, 4)->nullable()->comment('Distance from previous location');
+            $table->decimal('price', 8, 2)->nullable()->comment('Price of distance from previous location');
             $table->smallInteger('type')->comment('1: Additional, 2: Final');
             $table->bigInteger('added_by');
             $table->timestamps();

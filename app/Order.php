@@ -80,4 +80,24 @@ class Order extends Model
 
         return DropLocationResource::collection($dropLocations);    
     }
+
+    //Call this method only if distance /CPM needs to be updated or added in instant bookings
+    public function updatePriceAndDistanceForInstant()
+    {
+        $dropLocations = $this->dropLocations;
+        $price = 0;
+        $distance = 0;
+
+        foreach($dropLocations as $dropLocation){
+            $price += $dropLocation->price;
+            $distance += $dropLocation->distance;
+        }
+        
+        $this->update([
+            'estimated_price'    => $price,
+            'estimated_distance' => $distance,
+        ]);
+
+        return true;
+    }
 }

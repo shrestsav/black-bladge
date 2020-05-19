@@ -6,6 +6,7 @@ use Auth;
 use App\User;
 use App\Order;
 use Validator;
+use App\AppDefault;
 use App\BookingLog;
 use App\OrderDetail;
 use App\DropLocation;
@@ -348,6 +349,8 @@ class BookingController extends Controller
     {
         $order = Order::findOrFail($id);
 
+        $appDefaults = AppDefault::firstOrFail();
+        
         if($order->driver_id != Auth::id()){
             return response()->json([
                 'message'=>'Forbidden'
@@ -355,36 +358,81 @@ class BookingController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
+            'order_type'             => 'required|numeric',
             'type'                   => 'required|numeric',
             'drop_location_name'     => 'required|string|max:100',
             'drop_location_sub_name' => 'required|string|max:100',
             'drop_location_lat'      => 'required|numeric',
             'drop_location_long'     => 'required|numeric',
-            'drop_location_info'     => 'nullable|string|max:500'
+            'drop_location_info'     => 'nullable|string|max:500',
+            'distance'               => 'required_if:order_type,==,1|numeric'
         ]);
-
+        
         if ($validator->fails()) {
             return response()->json([
                 'message' => 'Validation Failed',
                 'errors' => $validator->errors(),
             ], 422);
         }
+        
+        $distance = null;
+        $price =  null;
+        if($order->type==1)
+        {
+            $distance = $request->distance;
+            $price =  $request->distance*$appDefaults->cost_per_km;
+        }
 
-        $dropLocation = DropLocation::create([
-            'order_id'      => $order->id,
-            'type'          => $request->type,
-            'added_by'      => Auth::id(),
-            'drop_location' => [
-                'name'      => $request->drop_location_name,
-                'sub_name'  => $request->drop_location_sub_name,
-                'latitude'  => $request->drop_location_lat,
-                'longitude' => $request->drop_location_long,
-                'info'      => isset($request->drop_location_info) ? $request->drop_location_info : null,
-            ]
-        ]);
+        if($request->type==1){
+            $dropLocation = DropLocation::create([
+                'order_id'      => $order->id,
+                'type'          => $request->type,
+                'added_by'      => Auth::id(),
+                'drop_location' => [
+                    'name'      => $request->drop_location_name,
+                    'sub_name'  => $request->drop_location_sub_name,
+                    'latitude'  => $request->drop_location_lat,
+                    'longitude' => $request->drop_location_long,
+                    'info'      => isset($request->drop_location_info) ? $request->drop_location_info : null,
+                ],
+                'distance'      => $distance,
+                'price'         => $price,
+            ]);
+        }
+        elseif($request->type==2){
 
+            // There will be only one final destination of type 2
+            $dropLocation = DropLocation::updateOrCreate(
+                [
+                    'order_id' => $order->id, 
+                    'type'     => 2],
+                [
+                    'added_by' => Auth::id(), 
+                    'drop_location' => [
+                        'name'      => $request->drop_location_name,
+                        'sub_name'  => $request->drop_location_sub_name,
+                        'latitude'  => $request->drop_location_lat,
+                        'longitude' => $request->drop_location_long,
+                        'info'      => isset($request->drop_location_info) ? $request->drop_location_info : null,
+                    ],
+                    'distance'      => $distance,
+                    'price'         => $price,
+                ]
+            );
+        }
+        else{
+            return response()->json([
+                'message' => 'Forbidden, Drop location type error'
+            ], 403);
+        }
+
+        if($order->type==1)
+        {
+            $order->updatePriceAndDistanceForInstant();
+        }
+        
         return response()->json([
-            'message' => 'Drop location has been changed',
+            'message' => 'Drop location has been added',
             'order'   => new OrderResource($order),
         ]);
     }

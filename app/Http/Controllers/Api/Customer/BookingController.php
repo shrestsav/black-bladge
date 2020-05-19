@@ -119,6 +119,8 @@ class BookingController extends Controller
             'order_id'      => $order->id,
             'type'          => 2,
             'added_by'      => Auth::id(),
+            'price'         => $data['estimated_distance']*$appDefaults->cost_per_km,
+            'distance'      => $data['estimated_distance'],
             'drop_location' => [
                 'name'      => $data['drop_location_name'],
                 'sub_name'  => $data['drop_location_sub_name'],

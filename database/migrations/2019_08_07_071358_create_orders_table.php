@@ -29,7 +29,7 @@ class CreateOrdersTable extends Migration
             $table->datetime('drop_timestamp')->nullable()->comment('this timestamp is in respective timezone, only for advanced');
             
             $table->decimal('booked_hours', 8, 2)->nullable();
-            $table->decimal('estimated_distance', 8, 2)->nullable();
+            $table->decimal('estimated_distance', 8, 4)->nullable();
             $table->decimal('estimated_price', 8, 2)->nullable();
 
             $table->smallInteger('payment')->default(0)->comment('0:Pending, 1:Paid');
