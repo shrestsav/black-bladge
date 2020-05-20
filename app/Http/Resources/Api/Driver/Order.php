@@ -40,6 +40,7 @@ class Order extends JsonResource
             'customer_full_name'   => ucfirst(strtolower($this->customer['gender'])).'. '.$this->customer['full_name'],
             'customer_phone'       => $this->customer['phone'],
             'booked_hours'         => $this->when($this->type==2, $this->booked_hours),
+            'total_booked_min'     => $this->totalBookedMinute(),
         ];
     }
 }

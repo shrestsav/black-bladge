@@ -73,6 +73,17 @@ class Order extends Model
         return $this->hasMany(BookingAddedTime::class,'order_id');
     }
 
+    public function totalBookedMinute()
+    {
+        $bookedTime = 0;
+
+        foreach($this->bookingExtendedTime as $BAT){
+            $bookedTime += $BAT->minutes;
+        }
+
+        return $bookedTime;
+    }
+
     public function dropLocation()
     {
         $dropLocation = $this->dropLocations()->where('type',2)->orderBy('created_at','DESC')->first();

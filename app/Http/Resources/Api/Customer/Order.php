@@ -46,6 +46,8 @@ class Order extends JsonResource
 
             'booked_hours'         => $this->when($this->type==2, $this->booked_hours),
             
+            'total_booked_min'     => $this->totalBookedMinute(),
+            
             'cancellation_reason'  => $this->when($this->deleted_at, $this->cancellation_reason),
         ];
     }
