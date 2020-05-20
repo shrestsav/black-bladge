@@ -106,6 +106,7 @@ Route::group(['middleware' => ['localization']], function() {
 				Route::get('/paymentDone/{order_id}','BookingController@paymentDone');
 
 				Route::post('/add/dropLocation/{order_id}','BookingController@addDropLocation');
+				Route::post('/add/time/{order_id}','BookingController@addTime');
 			});
 
 			// Route::post('/acceptOrder','DriverOrderController@acceptOrder');

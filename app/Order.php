@@ -2,10 +2,11 @@
 
 namespace App;
 
+use Auth;
+use App\AppDefault;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Http\Resources\Api\DropLocation as DropLocationResource;
-use Auth;
 
 class Order extends Model
 {
@@ -67,6 +68,11 @@ class Order extends Model
         return $this->hasMany(DropLocation::class,'order_id');
     }
 
+    public function bookingExtendedTime()
+    {
+        return $this->hasMany(BookingAddedTime::class,'order_id');
+    }
+
     public function dropLocation()
     {
         $dropLocation = $this->dropLocations()->where('type',2)->orderBy('created_at','DESC')->first();
@@ -96,6 +102,48 @@ class Order extends Model
         $this->update([
             'estimated_price'    => $price,
             'estimated_distance' => $distance,
+        ]);
+
+        return true;
+    }
+
+    public function updatePriceForInstant()
+    {
+        $appDefaults = AppDefault::firstOrFail();
+        
+        $bookingAddedTime = $this->bookingExtendedTime;
+        $bookedTimePrice = 0;
+
+        foreach($bookingAddedTime as $BAT){
+            $bookedTimePrice += $BAT->price;
+        }
+
+        $totalDistance = $this->estimated_distance;
+        $distancePrice = $this->estimated_distance*$appDefaults->cost_per_km;
+
+        $this->update([
+            'estimated_price' => $bookedTimePrice+$distancePrice
+        ]);
+
+        return true;
+    }
+
+    public function updatePriceForAdvance()
+    {
+        $appDefaults = AppDefault::firstOrFail();
+        
+        $bookingAddedTime = $this->bookingExtendedTime;
+        $bookedTimePrice = 0;
+
+        foreach($bookingAddedTime as $BAT){
+            $bookedTimePrice += $BAT->price;
+        }
+
+        $clientBookedHours = $this->booked_hours;
+        $clientBookedPrice = $clientBookedHours*60*$appDefaults->cost_per_min;
+
+        $this->update([
+            'estimated_price' => $bookedTimePrice+$clientBookedPrice
         ]);
 
         return true;

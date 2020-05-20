@@ -10,6 +10,7 @@ use App\AppDefault;
 use App\BookingLog;
 use App\OrderDetail;
 use App\DropLocation;
+use App\BookingAddedTime;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\Driver\Order as OrderResource;
@@ -440,14 +441,58 @@ class BookingController extends Controller
             ], 403);
         }
 
-        // if($order->type==1)
-        // {
-        //     $order->updatePriceAndDistanceForInstant();
-        // }
+        if($order->type==1)
+        {
+            $order->updatePriceForInstant();
+        }
         
         return response()->json([
             'message' => 'Drop location has been added',
             'order'   => new OrderResource($order),
         ]);
     }
+
+    public function addTime(Request $request, $id)
+    {
+        $order = Order::findOrFail($id);
+
+        $appDefaults = AppDefault::firstOrFail();
+        
+        if($order->driver_id != Auth::id()){
+            return response()->json([
+                'message'=>'Forbidden'
+            ],403);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'minutes' => 'required|numeric'
+        ]);
+        
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation Failed',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $bookingAddedTime = BookingAddedTime::create([
+            'order_id' => $order->id,
+            'added_by' => Auth::id(),
+            'minutes'  => $request->minutes,
+            'price'    => $request->minutes*$appDefaults->cost_per_min,
+        ]);
+
+        if($order->type==1){
+            $order->updatePriceForInstant();
+        }
+        elseif($order->type==2){
+            $order->updatePriceForAdvance();
+        }
+        
+        return response()->json([
+            'message' => 'Time has been Added',
+            'order'   => new OrderResource($order),
+        ]);
+    }
+
 }
