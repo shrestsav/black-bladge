@@ -50,6 +50,7 @@ class BookingController extends Controller
                         ->where('status','<',6)
                         ->where('driver_id', Auth::id())
                         ->with('customer')
+                        ->orderBy('status','DESC')
                         ->orderBy('created_at','DESC')
                         ->simplePaginate(10);
 
