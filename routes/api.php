@@ -91,6 +91,7 @@ Route::group(['middleware' => ['localization']], function() {
 			Route::get('/vehicle/set/{vehicle_id}','DriverController@setVehicle');
 			Route::get('/vehicles','DriverController@vehicles');
 			Route::group(['prefix' => 'booking'], function() {
+				Route::get('/details/{booking_id}','BookingController@details');
 				Route::get('/new','BookingController@new');
 				Route::get('/active','BookingController@active');
 				Route::get('/completed','BookingController@completed');

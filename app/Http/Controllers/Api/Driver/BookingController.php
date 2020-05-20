@@ -17,6 +17,16 @@ use App\Http\Resources\Api\Driver\Order as OrderResource;
 class BookingController extends Controller
 {
     /**
+     * Details of booking
+     */
+    public function details($id)
+    {
+        $booking = Order::findOrFail($id);
+
+        return new OrderResource($booking);
+    }
+    
+    /**
      * List of new booking orders.
      */
     public function new()
@@ -382,8 +392,8 @@ class BookingController extends Controller
             $distance = $request->distance;
             $price =  $request->distance*$appDefaults->cost_per_km;
             $order->update([
-                'estimated_price'    => $distance,
-                'estimated_distance' => $price
+                'estimated_price'    => $price,
+                'estimated_distance' => $distance
             ]);
         }
 
