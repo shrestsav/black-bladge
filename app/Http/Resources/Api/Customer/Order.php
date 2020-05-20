@@ -28,7 +28,7 @@ class Order extends JsonResource
             'drop_timestamp'       => $this->when($this->type==2, $this->drop_timestamp),
             'drop_location'        => $this->dropLocation(),
             'additional_locations' => $this->additionalLocations(),
-            'booking_added_time'   => $this->bookingExtendedTime(),
+            'booking_added_time'   => $this->bookingExtendedTime,
             'estimated_distance'   => $this->estimated_distance,
             'estimated_price'      => $this->estimated_price,
             'VAT_percentage'       => $appDefaults->VAT ? $appDefaults->VAT : 5,
