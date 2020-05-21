@@ -318,7 +318,7 @@ class BookingController extends Controller
             ],403);
         }
 
-        if($order->status==1 && $order->driver_id==Auth::id() && $order->details->PAB==Auth::id()){
+        if(($order->status==1 || $order->status==2 || $order->status==3) && $order->details->PAB==Auth::id()){
 
             $order->details->update([
                 'PAB'  =>  null
@@ -343,7 +343,7 @@ class BookingController extends Controller
                 'message'=>'Booking Pickup Cancelled'
             ]);
         }
-        elseif($order->status==1 && $order->driver_id==Auth::id() && $order->details->PAB!=Auth::id()){
+        elseif(($order->status==1 || $order->status==2 || $order->status==3) && $order->details->PAB!=Auth::id()){
             return response()->json([
                 'message'=>'Please contact your manager to cancel this pickup'
             ],403);
