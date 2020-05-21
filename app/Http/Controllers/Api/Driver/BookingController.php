@@ -249,18 +249,21 @@ class BookingController extends Controller
             $order->updatePriceForInstant();
         }
         
-        $dropLocation = DropLocation::create([
-            'order_id'      => $order->id,
-            'type'          => 2,
-            'added_by'      => Auth::id(),
-            'drop_location' => [
-                'name'      => $request->drop_location_name,
-                'sub_name'  => $request->drop_location_sub_name,
-                'latitude'  => $request->drop_location_lat,
-                'longitude' => $request->drop_location_long,
-                'info'      => isset($request->drop_location_info) ? $request->drop_location_info : null,
+        $dropLocation = DropLocation::updateOrCreate(
+            [
+                'order_id' => $order->id, 
+                'type'     => 2],
+            [
+                'added_by' => Auth::id(), 
+                'drop_location' => [
+                    'name'      => $request->drop_location_name,
+                    'sub_name'  => $request->drop_location_sub_name,
+                    'latitude'  => $request->drop_location_lat,
+                    'longitude' => $request->drop_location_long,
+                    'info'      => isset($request->drop_location_info) ? $request->drop_location_info : null,
+                ]
             ]
-        ]);
+        );
 
         $order->update([
             'status' => 5
