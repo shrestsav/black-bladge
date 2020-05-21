@@ -275,7 +275,10 @@ class BookingController extends Controller
 
         // User::notifyAcceptOrder($id);
         
-        return response()->json(['message' => 'Reached Drop Location']);
+        return response()->json([
+            'message' => 'Reached Drop Location',
+            'order'   => new OrderResource($order),
+        ]);
     }
 
      /**
@@ -304,7 +307,10 @@ class BookingController extends Controller
 
         // User::notifyAcceptOrder($id);
         
-        return response()->json(['message' => 'Payment Done and Booking Completed']);
+        return response()->json([
+            'message' => 'Payment Done and Booking Completed',
+            'order'   => new OrderResource($order),
+        ]);
     }
 
     /**
