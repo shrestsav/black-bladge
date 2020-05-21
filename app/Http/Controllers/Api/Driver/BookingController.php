@@ -215,6 +215,8 @@ class BookingController extends Controller
     {
         $order = Order::findOrFail($id);
 
+        $appDefaults = AppDefault::firstOrFail();
+
         if($order->status != 4 || $order->driver_id != Auth::id()){
             return response()->json([
                 'message'=>'Forbidden, status or driver id problem'
@@ -252,7 +254,8 @@ class BookingController extends Controller
         $dropLocation = DropLocation::updateOrCreate(
             [
                 'order_id' => $order->id, 
-                'type'     => 2],
+                'type'     => 2
+            ],
             [
                 'added_by' => Auth::id(), 
                 'drop_location' => [
