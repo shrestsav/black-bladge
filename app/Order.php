@@ -75,7 +75,7 @@ class Order extends Model
 
     public function totalBookedMinute()
     {
-        $customerBooked = $this->booked_hours ? $this->booked_hours*60 : 0;
+        $customerBooked = $this->booked_hours ? $this->booked_hours*60 : 0;  //converting hours to minutes if exists
         
         $bookedTime = 0;
 
@@ -152,7 +152,7 @@ class Order extends Model
             $bookedTimePrice += $BAT->price;
         }
 
-        $clientBookedHours = $this->booked_hours;
+        $clientBookedHours = $this->booked_hours; //this one is on hours
         $clientBookedPrice = $clientBookedHours*60*$appDefaults->cost_per_min;
 
         $this->update([

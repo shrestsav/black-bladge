@@ -227,6 +227,8 @@ class BookingController extends Controller
             'drop_location_lat'      => 'required|numeric',
             'drop_location_long'     => 'required|numeric',
             'drop_location_info'     => 'nullable|string|max:500',
+            'order_type'             => 'required|numeric',
+            'distance'               => 'required_if:order_type,==,1|numeric'
         ]);
 
         if ($validator->fails()) {
@@ -234,6 +236,17 @@ class BookingController extends Controller
                 'message' => trans('response.validation_failed'),
                 'errors' => $validator->errors(),
             ], 422);
+        }
+        
+        if($order->type==1)
+        {
+            $distance = $request->distance;
+            $price =  $request->distance*$appDefaults->cost_per_km;
+            $order->update([
+                'estimated_price'    => $price,
+                'estimated_distance' => $distance
+            ]);
+            $order->updatePriceForInstant();
         }
         
         $dropLocation = DropLocation::create([
@@ -397,6 +410,7 @@ class BookingController extends Controller
                 'estimated_price'    => $price,
                 'estimated_distance' => $distance
             ]);
+            $order->updatePriceForInstant();
         }
 
         if($request->type==1){
@@ -440,11 +454,6 @@ class BookingController extends Controller
             return response()->json([
                 'message' => 'Forbidden, Drop location type error'
             ], 403);
-        }
-
-        if($order->type==1)
-        {
-            $order->updatePriceForInstant();
         }
         
         return response()->json([
