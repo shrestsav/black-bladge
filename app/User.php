@@ -282,14 +282,16 @@ class User extends Authenticatable
             $drop_timestamp = \Carbon\Carbon::parse($pick_timestamp)->addHours($booked_hours); 
 
             $advanceBookings = $this->orders()
-                                    ->where('type',2)
-                                    ->whereIn('status',config('settings.customer_active_booking_statuses'))
                                     ->where(function($query) use ($pick_timestamp) {
-                                        $query->where('pick_timestamp','<=',$pick_timestamp)
+                                        $query->where('type',2)
+                                              ->whereIn('status',config('settings.customer_active_booking_statuses'))
+                                              ->where('pick_timestamp','<=',$pick_timestamp)
                                               ->where('drop_timestamp','>=',$pick_timestamp);
                                     })
                                     ->orWhere(function($query) use ($drop_timestamp) {
-                                        $query->where('pick_timestamp','<=',$drop_timestamp)
+                                        $query->where('type',2)
+                                              ->whereIn('status',config('settings.customer_active_booking_statuses'))
+                                              ->where('pick_timestamp','<=',$drop_timestamp)
                                               ->where('drop_timestamp','>=',$drop_timestamp);
                                     })
                                     ->first();
