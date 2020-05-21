@@ -75,13 +75,15 @@ class Order extends Model
 
     public function totalBookedMinute()
     {
+        $customerBooked = $this->booked_hours ? $this->booked_hours*60 : 0;
+        
         $bookedTime = 0;
 
         foreach($this->bookingExtendedTime as $BAT){
             $bookedTime += $BAT->minutes;
         }
 
-        return $bookedTime;
+        return $bookedTime+$customerBooked;
     }
 
     public function dropLocation()
