@@ -58,7 +58,7 @@ Route::group(['middleware' => ['localization']], function() {
 			
 			Route::group(['prefix' => 'page'], function() {
 				Route::get('/legal','PageController@legalDocs');
-				Route::get('/contact','PageController@contact');
+				Route::get('/contact-info','PageController@contact');
 			});
 
 

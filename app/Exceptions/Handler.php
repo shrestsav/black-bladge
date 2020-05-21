@@ -71,7 +71,7 @@ class Handler extends ExceptionHandler
             if($exception instanceof HttpException){
                 return response()->json([
                     'message' => $exception->getMessage()
-                ], 405);
+                ], 403);
             }
         }
         return parent::render($request, $exception);
