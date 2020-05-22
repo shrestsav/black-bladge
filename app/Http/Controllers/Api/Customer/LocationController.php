@@ -50,6 +50,60 @@ class LocationController extends Controller
         ]);
     }
 
+    public function saveNearbyHistory(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name'        => 'required|string',
+            'sub_name'    => 'required|string',
+            'lattitude'   => 'required|numeric',
+            'longitude'   => 'required|numeric',
+            'custom_name' => 'nullable|string|max:191',
+            'details'     => 'nullable|string|max:500',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => trans('response.validation_failed'),
+                'errors'  => $validator->errors(),
+            ], 422);
+        }
+
+        //Check if exists
+        $exists = LocationSearchHistory::where('user_id',Auth::id())
+                                       ->where('lattitude',$request->lattitude)
+                                       ->where('longitude',$request->longitude);
+        
+        if($exists->exists()){
+            $history = $exists->first();
+            $history->update([
+                'name'        =>  $request->name,
+                'sub_name'    =>  $request->sub_name,
+                'lattitude'   =>  $request->lattitude,
+                'longitude'   =>  $request->longitude,
+                'custom_name' =>  $request->custom_name,
+                'details'     =>  $request->details,
+                'favorite'    =>  1,
+            ]);
+        }
+        else{
+            $history = LocationSearchHistory::create([
+                'user_id'     =>  Auth::id(),
+                'name'        =>  $request->name,
+                'sub_name'    =>  $request->sub_name,
+                'lattitude'   =>  $request->lattitude,
+                'longitude'   =>  $request->longitude,
+                'custom_name' =>  $request->custom_name,
+                'details'     =>  $request->details,
+                'favorite'    =>  1,
+            ]);
+        }
+        
+        return response()->json([
+            'history' => $history,
+            'message' => 'Location History has been recorded'
+        ]);
+    }
+
     public function saveRecentHistory(Request $request)
     {
         $validator = Validator::make($request->all(), [
