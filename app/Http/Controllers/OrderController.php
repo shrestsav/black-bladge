@@ -30,56 +30,61 @@ class OrderController extends Controller
     {
       $statusArr = [];
 
-      if($status==='New Booking')
-        $statusArr = ['0'];
-      else if($status==='Active Booking')
-        $statusArr = ['1','2','3'];
+      if($status==='Active')
+        $statusArr = config('settings.active');
+      else if($status==='Unassigned')
+        $statusArr = config('settings.unassigned');
+      else if($status==='Assigned')
+        $statusArr = config('settings.assigned');
       else if($status==='Completed')
-        $statusArr = ['4'];
+        $statusArr = config('settings.completed');
 
-      $orders = Order::whereIn('status',$statusArr)
-                      ->with('customer','driver')
-                      ->orderBy('created_at','DESC')
+      $orders = Order::with('customer','driver');
+
+      if($status==='Cancelled')
+    		$orders->onlyTrashed();
+      else
+        $orders->whereIn('status',$statusArr);
+
+      $orders = $orders->orderBy('created_at','DESC')
                       ->orderBy('status','ASC')
                       ->paginate(Session::get('rows'));
 
       return OrderResource::collection($orders);
     }
 
-    public function searchOrders(Request $request, $Collection)
+    public function searchOrders(Request $request, $status)
     {
       $statusArr = [];
 
-      if($Collection==='New Booking')
-        $statusArr = ['0'];
-      else if($Collection==='Active Booking')
-        $statusArr = ['1','2','3'];
-      else if($Collection==='Completed')
-        $statusArr = ['4'];
+      if($status==='Active')
+        $statusArr = config('settings.active');
+      else if($status==='Unassigned')
+        $statusArr = config('settings.unassigned');
+      else if($status==='Assigned')
+        $statusArr = config('settings.assigned');
+      else if($status==='Completed')
+        $statusArr = config('settings.completed');
       
       $orders = Order::whereIn('status',$statusArr)
                       ->with('customer','driver');
 
       if($request->orderID){
-        $orders->where('orders.id','like','%'.$request->orderID.'%');
+        $orders->where('id','like','%'.$request->orderID.'%');
       }
       if($request->pick_location){
-        $orders->join('user_addresses as PL','PL.id','orders.pick_location')
-               ->where('PL.name','like','%'.$request->pick_location.'%');
+        $orders->where('pick_location->name','like','%'.$request->pick_location.'%');
       }
       if($request->drop_location){
-        $orders->join('user_addresses as DL','DL.id','orders.drop_location')
-               ->where('DL.name','like','%'.$request->drop_location.'%');
+        $orders->where('drop_location->name','like','%'.$request->drop_location.'%');
       }
       if($request->type)
-        $orders->where('orders.type',$request->type);
+        $orders->where('type',$request->type);
       if($request->orderStatus || $request->orderStatus=='0')
-        $orders->where('orders.status',$request->orderStatus);
+        $orders->where('status',$request->orderStatus);
       if($request->pick_date)
-        $orders->whereDate('orders.pick_date',$request->pick_date);
-      if($request->pick_location)
-        $orders->where('UA.name','like','%'.$request->pick_date.'%');
-
+				$orders->whereDate('pick_timestamp',$request->pick_date);
+				
       $orders = $orders->orderBy('orders.created_at','DESC')
                        ->orderBy('orders.status','ASC')
                        ->get();
@@ -105,15 +110,8 @@ class OrderController extends Controller
       if($request->pick_driver){
         $pick_driver = $request->pick_driver;
         $orders = $orders->filter(function ($item) use ($pick_driver) {
-          if($item->pickDriver)
-            return false !== stristr($item->pickDriver->full_name, $pick_driver);
-        });
-      }
-      if($request->drop_driver){
-        $drop_driver = $request->drop_driver;
-        $orders = $orders->filter(function ($item) use ($drop_driver) {
-          if($item->dropDriver)
-            return false !== stristr($item->dropDriver->full_name, $drop_driver);
+          if($item->driver)
+            return false !== stristr($item->driver->full_name, $pick_driver);
         });
       }
 
@@ -126,30 +124,26 @@ class OrderController extends Controller
 
     public function getOrdersCount()
     {
-      $newBooking = ['0'];
-      $activeBooking = ['1','2','3'];
-      $completed = ['4'];
+      $active = config('settings.active');
+      $unassigned = config('settings.unassigned');
+      $assigned = config('settings.assigned');
+      $completed = config('settings.completed');
 
-      $newBookingOrders = Order::whereIn('status',$newBooking)->count();
-      $activeBookingOrders = Order::whereIn('status',$activeBooking)->count();
-      $completedOrders = Order::whereIn('status',$completed)->count();
+      $activeBookings = Order::whereIn('status',$active)->count();
+      $unassignedBookings = Order::whereIn('status',$unassigned)->count();
+      $assignedBookings = Order::whereIn('status',$assigned)->count();
+      $completedBookings = Order::whereIn('status',$completed)->count();
+      $cancelledBookings = Order::onlyTrashed()->count();
 
       $collection = collect([
-        'New Booking'     => $newBookingOrders,
-        'Active Booking'  => $activeBookingOrders,
-        'Completed'       => $completedOrders,
+        'Active'      => $activeBookings,
+        'Unassigned'  => $unassignedBookings,
+        'Assigned'    => $assignedBookings,
+        'Completed'   => $completedBookings,
+        'Cancelled'   => $cancelledBookings
       ]);
 
       return response()->json($collection);
-    }
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -198,29 +192,6 @@ class OrderController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
@@ -234,10 +205,11 @@ class OrderController extends Controller
     public function destroyMultipleOrders(Request $request)
     {
         foreach($request->orderIds as $id){
-          $order = Order::find($id);
+          $order = Order::findOrFail($id);
           if($order && $order->status<4){
-            OrderDetail::where('order_id',$id)->delete();
-            OrderItem::where('order_id',$id)->delete();
+						// $order->details()->delete();
+						// $order->dropLocations()->delete();
+						// $order->bookingExtendedTime()->delete();
             $order->delete();
           }
           elseif($order->status>=4){

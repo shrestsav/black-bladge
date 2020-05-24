@@ -11,17 +11,37 @@ return [
     'OTP_expiry'  => 5,
     'VAT'         => 5,
     'delivery_charge'  => 105,
+    // 'orderStatus' => [
+    //     'New Booking' => [
+    //         '0' => 'Pending',
+    //     ],
+    //     'Active Booking' => [
+    //         '1' => 'Assigned',
+    //         '2' => 'Picked',
+    //         '3' => 'Dropped'
+    //     ],
+    //     'Completed' => [
+    //         '4' => 'Payment Done'
+    //     ]
+    // ],
     'orderStatus' => [
-        'New Booking' => [
-            '0' => 'Pending',
+        'Active' => [
+            2 => 'Start Trip',
+            3 => 'Arrived at Customer',
+            4 => 'Start Trip for Destination',
+            5 => 'Reached Destination',
         ],
-        'Active Booking' => [
-            '1' => 'Assigned',
-            '2' => 'Picked',
-            '3' => 'Dropped'
+        'Unassigned' => [
+            0 => 'New',
+        ],
+        'Assigned' => [
+            1 => 'Assigned',
         ],
         'Completed' => [
-            '4' => 'Payment Done'
+            6 => 'Payment Done and Closed'
+        ],
+        'Cancelled' => [
+            999 => 'Payment Done'
         ]
     ],
     'orderStatuses' => [
@@ -33,6 +53,11 @@ return [
         5 => 'Reached Destination',
         6 => 'Payment Done and Closed'
     ],
+    'active' => [2,3,4,5],
+    'unassigned' => [0],
+    'assigned'   => [1],
+    'completed'  => [6],
+    'cancelled'  => [999],
     'customer_active_booking_statuses' => [0,1,2,3,4,5],
     'driver_active_booking_statuses' => [2,3,4,5],
 ];
