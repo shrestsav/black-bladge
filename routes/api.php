@@ -62,6 +62,8 @@ Route::group(['middleware' => ['localization']], function() {
 				Route::get('/company-contacts','PageController@contact');
 			});
 
+			
+
 
 
 
@@ -140,7 +142,7 @@ Route::group(['middleware' => ['localization']], function() {
 		});
 
 		Route::get('/appConfigs','CoreController@appDefaults');
-
+		Route::post('/feedback','FeedbackController@feedback');
 
 
 
