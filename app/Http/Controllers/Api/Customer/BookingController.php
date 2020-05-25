@@ -21,7 +21,23 @@ class BookingController extends Controller
 
         return OrderResource::collection($bookings);
     }
-    
+
+    /**
+     * Details of booking
+     */
+    public function details($id)
+    {
+        $booking = Order::findOrFail($id);
+
+        if($booking->customer_id != Auth::id()){
+            return response()->json([
+                "message" => "Forbidden, you donot have any authorization to see details of this booking"
+            ], 403);
+        }
+
+        return new OrderResource($booking);
+    }
+
     /**
      * Create Booking Order
      *

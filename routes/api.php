@@ -36,7 +36,7 @@ Route::group(['middleware' => ['localization']], function() {
 			Route::group(['prefix' => 'booking'], function() {
 				Route::get('/list','BookingController@list');
 				Route::post('/create/{type}','BookingController@create');
-
+				Route::get('/details/{booking_id}','BookingController@details');
 				Route::get('/active','BookingController@active');
 				Route::get('/active/list','BookingController@activeList');
 				Route::get('/completed','BookingController@completed');
