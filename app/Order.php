@@ -48,6 +48,11 @@ class Order extends Model
         return $this->type==2 ? \Carbon\Carbon::parse($this->pick_timestamp)->addHours($this->booked_hours) : null;
     }
 
+    public function coupon()
+    {
+        return $this->belongsTo(Coupon::class,'promo_code','code');
+    }
+    
     public function customer()
     {
         return $this->belongsTo(User::class,'customer_id');
@@ -73,15 +78,22 @@ class Order extends Model
         return $this->hasMany(BookingAddedTime::class,'order_id');
     }
 
-    public function totalBookedMinute()
+    public function additionalBookedMinute()
     {
-        $customerBooked = $this->booked_hours ? $this->booked_hours*60 : 0;  //converting hours to minutes if exists
-        
         $bookedTime = 0;
 
         foreach($this->bookingExtendedTime as $BAT){
             $bookedTime += $BAT->minutes;
         }
+
+        return $bookedTime;
+    }
+
+    public function totalBookedMinute()
+    {
+        $customerBooked = $this->booked_hours ? $this->booked_hours*60 : 0;  //converting hours to minutes if exists
+        
+        $bookedTime = $this->additionalBookedMinute();
 
         return $bookedTime+$customerBooked;
     }

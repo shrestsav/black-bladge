@@ -25,7 +25,9 @@ class Order extends JsonResource
             'status_str'           => config('settings.orderStatuses')[$this->status],
             'type'                 => $this->type,
             'order_type'           => $this->type == 1 ? 'Instant' : 'Advanced',
+            'pick_timestamp'       => $this->pick_timestamp,
             'pick_location'        => $this->pick_location,
+            'drop_timestamp'       => $this->when($this->type==2, $this->drop_timestamp),
             'drop_location'        => $this->dropLocation(),
             'additional_locations' => $this->additionalLocations(),
             'booking_added_time'   => BookingAddedTimeResource::collection($this->bookingExtendedTime),
@@ -35,14 +37,20 @@ class Order extends JsonResource
             'VAT'                  => $this->estimated_price ? (5/100)*$this->estimated_price : null,
             'VAT_price'            => $this->estimated_price ? ((5/100)*$this->estimated_price+$this->estimated_price) : null,
             'booked_at'            => $this->created_at,
+            'promo_code'           => $this->promo_code,
+
+            'booked_hours'         => $this->when($this->type==2, $this->booked_hours),
+            'total_booked_min'     => $this->totalBookedMinute(),
+            'cancellation_reason'  => $this->when($this->deleted_at, $this->cancellation_reason),
+
+            //Customer Details
             'customer_id'          => $this->customer_id,
             'customer_fname'       => $this->customer['fname'],
             'customer_lname'       => $this->customer['lname'],
             'customer_photo_src'   => $this->customer['photo_src'],
             'customer_full_name'   => ucfirst(strtolower($this->customer['gender'])).'. '.$this->customer['full_name'],
             'customer_phone'       => $this->customer['phone'],
-            'booked_hours'         => $this->when($this->type==2, $this->booked_hours),
-            'total_booked_min'     => $this->totalBookedMinute(),
+            'customer_photo_src'   => $this->customer['photo_src'],
         ];
     }
 }

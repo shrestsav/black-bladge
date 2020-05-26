@@ -301,13 +301,15 @@ class BookingController extends Controller
         }
         
         $order->update([
-            'status' => 6
+            'status'    => 6,
+            'payment'   => 1
         ]);
         
         $orderDetails = OrderDetail::updateOrCreate(
             ['order_id' => $order->id],
             [
-                'PT' => Date('Y-m-d h:i:s'),
+                'PT'            => Date('Y-m-d h:i:s'),
+                'payment_type'  => 1
             ]
         );
 

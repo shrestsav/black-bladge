@@ -3,7 +3,7 @@
     <div class="card-header">
       <div class="row align-items-center">
         <div class="col-8">
-          <h6 class="heading-small text-muted">Order Information</h6>
+          <h6 class="heading-small text-muted">Booking Information</h6>
         </div>
         <div class="col-4 text-right">
           <button type="button" class="btn btn-primary btn-sm" v-b-modal.orderTimeline>Timeline</button>
@@ -17,84 +17,62 @@
             <div class="form-group">
               <label class="form-control-label">Customer Name</label>
               <br>
-              <span>{{details.customer.fname}} {{details.customer.lname}}</span>
+              <span>{{details.customer_full_name}}</span>
             </div>
           </div>
           <div class="col-lg-3">
             <div class="form-group">
               <label class="form-control-label">Order Status</label>
               <br>
-              <span>{{orderStatus(details.status)}}</span>
+              <span>{{details.status_str}}</span>
             </div>
           </div>
           <div class="col-lg-3">
             <div class="form-group">
               <label class="form-control-label">Order Type</label>
               <br>
-              <span>{{orderType(details.type)}}</span>
+              <span>{{details.order_type}}</span>
             </div>
           </div>
           <div class="col-lg-3">
             <div class="form-group">
-              <label class="form-control-label">Pick Assigned Driver</label>
+              <label class="form-control-label">Assigned Driver</label>
               <br>
-              <span v-if="details.pick_driver">{{details.pick_driver.fname}} {{details.pick_driver.lname}}</span>
+              <span v-if="details.driver_full_name">{{details.driver_full_name}}</span>
               <span v-else>Not Assigned</span>
             </div>
           </div>
-          <div class="col-lg-3">
+          <div class="col-lg-6">
             <div class="form-group">
               <label class="form-control-label">Pickup Location</label>
               <br>
-              <span>{{details.pick_location_details.name}}</span>
+              <span>{{details.pick_location.name}} ({{details.pick_location.sub_name}})</span>
             </div>
           </div>
           <div class="col-lg-3">
             <div class="form-group">
-              <label class="form-control-label">Pickup Date</label>
+              <label class="form-control-label">Pickup Timestamp</label>
               <br>
-              <span>{{details.pick_date}}</span>
+              <span>{{details.pick_timestamp}}</span>
             </div>
           </div>
-          <div class="col-lg-3">
-            <div class="form-group">
-              <label class="form-control-label">Pickup Timerange</label>
-              <br>
-              <span>{{details.pick_timerange}}</span>
-            </div>
-          </div>
-          <div class="col-lg-3">
-            <div class="form-group">
-              <label class="form-control-label">Drop Assigned Driver</label>
-              <br>
-              <span v-if="details.drop_driver">{{details.drop_driver.fname}} {{details.drop_driver.lname}}</span>
-              <span v-else>Not Assigned</span>
-            </div>
-          </div>
-          <div class="col-lg-3" v-if="details.drop_location_details">
+          <div class="col-lg-3" v-if="details.drop_location">
             <div class="form-group">
               <label class="form-control-label">Drop Location</label>
               <br>
-              <span>{{details.drop_location_details.name}}</span>
+              <span>{{details.drop_location.name}}</span>
             </div>
           </div>
-          <div class="col-lg-3" v-if="details.drop_date">
+          <div class="col-lg-3" v-if="details.drop_timestamp">
             <div class="form-group">
-              <label class="form-control-label">Drop Date</label>
+              <label class="form-control-label">Drop Timestamp</label>
               <br>
-              <span>{{details.drop_date}}</span>
-            </div>
-          </div>
-          <div class="col-lg-3" v-if="details.drop_timerange">
-            <div class="form-group">
-              <label class="form-control-label">Drop Timerange</label>
-              <br>
-              <span>{{details.drop_timerange}}</span>
+              <span>{{details.drop_timestamp}}</span>
             </div>
           </div>
         </div>
       </div>
-      <template v-if="invoice && invoice.items_details.length">
+      <!-- <template v-if="invoice && invoice.items_details.length">
         <hr class="my-4"/>
         <h6 class="heading-small text-muted mb-4">Invoice</h6>
         <div class="row">
@@ -131,7 +109,7 @@
               </tr>
             </thead>
             <tbody class="list">
-              <tr  v-for="item,index in invoice.items_details">
+              <tr  v-for="(item,index) in invoice.items_details" :key="index">
                 <td>{{index+1}}</td>
                 <td>{{item.item}}</td>
                 <td>{{item.quantity}}</td>
@@ -178,7 +156,7 @@
             </thead>
           </table>
         </div>
-      </template>
+      </template> -->
     </div>
     <timeline></timeline>
   </div>
@@ -213,23 +191,11 @@
       this.$store.dispatch('getOrderDetails',this.orderID)
     },
     methods:{
-      orderType(type){
-        if(type==1)
-          return 'Normal'
-        else if(type==2)
-          return 'Urgent'
-      },
-      orderStatus(status){
-        return settings.orderStatuses[status]
-      },
     },
     computed: {
       details(){
-        return this.$store.getters.orderDetails.details
-      },
-      invoice(){
-        return this.$store.getters.orderDetails.invoice
-      },
+        return this.$store.getters.orderDetails
+      }
     }
 
   }

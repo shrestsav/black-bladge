@@ -29,15 +29,40 @@ class DriverController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $drivers = User::whereHas('roles', function ($query) {
                             $query->where('name', '=', 'driver');
                         })
-                        ->with('vehicle')
-                        ->paginate(Session::get('rows'));
+                        ->with('vehicle');
+        
+        if($request->license_no)
+            $drivers->where('license_no',$request->license_no);
 
-        return DriverResource::collection($drivers);
+        if($request->vehicle_id)
+            $drivers->where('vehicle_id',$request->vehicle_id);
+        
+        if($request->username)
+            $drivers->where('username',$request->username);
+        
+        if($request->full_name){
+            $drivers = $drivers->get();
+            $full_name = $request->full_name;
+            $drivers = $drivers->filter(function ($item) use ($full_name) {
+                return false !== stristr($item->full_name, $full_name);
+            });
+
+            $drivers = collect([
+                'data' => DriverResource::collection($drivers)
+            ]);
+
+            return $drivers;
+        }
+        else{
+            $drivers = $drivers->paginate(Session::get('rows'));
+            return DriverResource::collection($drivers);
+        }
+        
     }
 
     public function allDrivers()

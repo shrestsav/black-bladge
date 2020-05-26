@@ -15,8 +15,9 @@ class BookingAddedTime extends JsonResource
     public function toArray($request)
     {
         return [
-            'minutes'   => $this->minutes,
-            'price'     => $this->price
+            'minutes'     => $this->minutes,
+            'price'       => $this->price,
+            'created_at'  => $this->created_at
         ];
     }
 }

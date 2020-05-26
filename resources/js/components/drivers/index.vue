@@ -131,6 +131,61 @@
                                 <th>Vehicle Number</th>
                                 <th>Contact</th>
                             </tr>
+                            <tr>
+                                <th>
+                                    <div
+                                        class="icon icon-shape bg-gradient-red text-white rounded-circle shadow"
+                                    >
+                                        <i class="fas fa-search"></i>
+                                    </div>
+                                </th>
+                                <th></th>
+                                <th>
+                                    <input
+                                        v-model="search.full_name"
+                                        @change="getDrivers(1)"
+                                        type="text"
+                                        placeholder="ID"
+                                        class="form-control searchRow"
+                                    />
+                                </th>
+                                <th>
+                                    <input
+                                        v-model="search.license_no"
+                                        @change="getDrivers(1)"
+                                        type="text"
+                                        placeholder="Customer Name"
+                                        class="form-control searchRow"
+                                    />
+                                </th>
+                                <th>
+                                    <input
+                                        v-model="search.username"
+                                        @change="getDrivers(1)"
+                                        type="text"
+                                        placeholder="ID"
+                                        class="form-control searchRow"
+                                    />
+                                </th>
+                                <th>
+                                    <select
+                                        v-model="search.vehicle_id"
+                                        @change="getDrivers(1)"
+                                        class="form-control searchRow"
+                                    >
+                                        <option :value="vehicle.id" v-for="(vehicle,index) in vehicles" :key="index">{{vehicle.vehicle_number}}</option>
+                                    </select>
+                                </th>
+                                <th>
+                                    <input
+                                        v-model="search.contact"
+                                        @change="getDrivers(1)"
+                                        type="text"
+                                        placeholder="Address"
+                                        class="form-control searchRow"
+                                    />
+                                </th>
+                            </tr>
                         </thead>
                         <tbody class="list">
                             <tr v-for="(item,key) in drivers.data" :key="key">
@@ -194,6 +249,13 @@ export default {
     },
     data() {
         return {
+            search:{
+                full_name: "",
+                license_no: "",
+                username: "",
+                phone: "",
+                vehicle_id: ""
+            },
             fields: {},
             errors: {},
             active: {
@@ -222,8 +284,15 @@ export default {
                 .then(response => (this.fields = response.data));
         },
         getDrivers(page = 1) {
+            var search = this.search;
+            var hitURL = "/drivers?page=" + page +
+                         "&full_name=" + search.full_name +
+                         "&license_no=" + search.license_no +
+                         "&username=" + search.username +
+                         "&phone=" + search.phone +
+                         "&vehicle_id=" + search.vehicle_id;
             this.active.page = page;
-            axios.get("/drivers?page=" + page).then(response => {
+            axios.get(hitURL).then(response => {
                 this.drivers = response.data;
             });
         },

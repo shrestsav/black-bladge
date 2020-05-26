@@ -75,7 +75,7 @@
             </tr>
           </thead>
           <tbody class="list">
-            <tr v-for="item,key in orders.data">
+            <tr v-for="(item,key) in orders.data" :key="key">
               <td>{{++key}}</td>
               <td>{{item.id}}</td>
               <td>{{dateTime(item.created_at)}}</td>

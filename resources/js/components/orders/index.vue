@@ -181,11 +181,10 @@
                                             <div
                                                 class="dropdown-menu dropdown-menu-right dropdown-menu-arrow"
                                             >
-											<!-- @click="details(item.id)" -->
                                                 <a
                                                     class="dropdown-item"
                                                     href="javascript:;"
-                                                    
+                                                    @click="details(item.id)"
                                                     data-toggle="modal"
                                                     data-target="#orderDetails"
                                                     title="Show Order Details"

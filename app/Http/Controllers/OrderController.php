@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 
-use App\Http\Resources\Order\Order as OrderResource;
+use App\Http\Resources\Api\Admin\Order as OrderResource;
 
 class OrderController extends Controller
 {
@@ -22,7 +22,8 @@ class OrderController extends Controller
      */
     public function index()
     {
-      $orders = Order::with('customer','pickDriver','dropDriver')->get();
+      $orders = Order::with('customer','driver')->get();
+      
       return $orders;
     }
 
@@ -179,16 +180,9 @@ class OrderController extends Controller
      */
     public function show($id)
     {
-      $order = Order::where('id',$id)
-                    ->with('details','customer','pickDriver','pick_location_details','dropDriver','drop_location_details')
-                    ->first();
-      $invoice = $order->generateInvoice();
+      $booking = Order::with('details','customer','driver')->findOrFail($id);
 
-      $response = [
-        'details' => $order,
-        'invoice' => $invoice
-      ];
-      return response()->json($response);
+      return new OrderResource($booking);
     }
 
     /**
