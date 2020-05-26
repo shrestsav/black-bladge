@@ -188,11 +188,10 @@
                                                     data-toggle="modal"
                                                     data-target="#orderDetails"
                                                     title="Show Order Details"
-                                                >Details Coming Soon</a>
+                                                >Details</a>
 
-                                                <!-- <a class="dropdown-item" href="javascript:;" @click="assign(index,'pickAssign')"  data-toggle="modal" data-target="#assignOrder" title="Assign Pending Order" v-if="item.status == 0">Assign for Pickup</a> -->
+                                                <a class="dropdown-item" href="javascript:;" @click="assign(index,'pickAssign')"  data-toggle="modal" data-target="#assignOrder" title="Assign Pending Order" v-if="item.status == 0">Assign Driver</a>
 
-                                                <!-- <a class="dropdown-item" href="javascript:;" @click="assign(index,'dropAssign')"  data-toggle="modal" data-target="#assignOrder" title="Assign Drop Order" v-if="item.status == 4">Assign for Delivery</a> -->
                                             </div>
                                         </div>
                                     </td>

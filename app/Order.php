@@ -112,6 +112,26 @@ class Order extends Model
         return DropLocationResource::collection($dropLocations);    
     }
 
+    public function bookingRoute()
+    {
+        $pickLocation = $this->pick_location;
+        $dropLocations = $this->dropLocations;
+        $destination = DropLocationResource::collection($dropLocations->where('type',2));
+        $additional = DropLocationResource::collection($dropLocations->where('type',1));
+        
+        $route = [$pickLocation];
+
+        foreach($additional as $a){
+            array_push($route,$a);
+        }
+
+        if(count($destination))
+            array_push($route,$destination[0]);
+
+        return $route;
+
+    }
+
     //Call this method only if distance /CPM needs to be updated or added in instant bookings
     public function updatePriceAndDistanceForInstant()
     {
