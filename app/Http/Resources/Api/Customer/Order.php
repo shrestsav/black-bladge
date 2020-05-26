@@ -40,13 +40,16 @@ class Order extends JsonResource
             'drop_location'        => $this->dropLocation(),
             'additional_locations' => $this->additionalLocations(),
             'booking_added_time'   => BookingAddedTimeResource::collection($this->bookingExtendedTime),
-            'estimated_distance'   => $this->estimated_distance,
-            'pricing_unit'         => 'DHS',
-            'estimated_price'      => $estimatedPrice,
+            'estimated_distance'   => $this->estimated_distance, 
             'booked_at'            => $this->created_at,
             'promo_code'           => $this->promo_code,
+            'booked_hours'         => $this->when($this->type==2, $this->booked_hours),
+            'total_booked_min'     => $this->totalBookedMinute(),
+            'cancellation_reason'  => $this->when($this->deleted_at, $this->cancellation_reason),
 
             //Invoicing
+            'pricing_unit'         => 'DHS',
+            'estimated_price'      => $estimatedPrice,
             'payment_method'       => $this->when($this->status==6, ($this->details['payment_type']==1) ? 'Cash on Delivery' : (($this->details['payment_type']==2) ? 'Card' : 'Cash on Delivery')),
             'total_cost'           => $totalCost,
             'additional_price'     => $additionalPrice,
@@ -55,10 +58,6 @@ class Order extends JsonResource
             'VAT_percentage'       => $VATPercentage,
             'VAT'                  => $VAT,
             'grand_total'          => $grandTotal,
-
-            'booked_hours'         => $this->when($this->type==2, $this->booked_hours),
-            'total_booked_min'     => $this->totalBookedMinute(),
-            'cancellation_reason'  => $this->when($this->deleted_at, $this->cancellation_reason),
             
             //Driver Details
             'driver_id'            => $this->when($this->driver_id, $this->driver_id),
