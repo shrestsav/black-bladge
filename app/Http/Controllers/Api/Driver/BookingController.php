@@ -65,7 +65,7 @@ class BookingController extends Controller
         $active = Order::where('status','>',5)
                         ->where('driver_id', Auth::id())
                         ->with('customer')
-                        ->orderBy('created_at','DESC')
+                        ->orderBy('updated_at','DESC')
                         ->simplePaginate(10);
 
         return OrderResource::collection($active);

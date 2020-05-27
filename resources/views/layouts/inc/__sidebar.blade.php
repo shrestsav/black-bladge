@@ -77,21 +77,6 @@
           </a>
           <div class="collapse" id="navbar-config">
             <ul class="nav nav-sm flex-column">
-              {{-- <li class="nav-item">
-                <router-link :to="{ name: 'services'}" >
-                  <a href="{{url('/v/services')}}" :href="''" class="nav-link" v-bind:class="{active: currentPage=='services'}">Services</a>
-                </router-link>
-              </li>
-              <li class="nav-item">
-                <router-link :to="{ name: 'categories'}" >
-                  <a href="{{url('/v/categories')}}" :href="''" class="nav-link" v-bind:class="{active: currentPage=='categories'}">Categories</a>
-                </router-link>
-              </li>
-              <li class="nav-item">
-                <router-link :to="{ name: 'items'}" >
-                  <a href="{{url('/v/items')}}" :href="''" class="nav-link" v-bind:class="{active: currentPage=='items'}">Items</a>
-                </router-link>
-              </li> --}}
               <li class="nav-item">
                 <router-link :to="{ name: 'appDefaults'}" >
                   <a href="{{url('/v/appDefaults')}}" :href="''" class="nav-link" v-bind:class="{active: currentPage=='appDefaults'}">Other</a>

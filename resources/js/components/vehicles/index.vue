@@ -137,13 +137,13 @@
                                             <a
                                                 class="dropdown-item"
                                                 href="javascript:;"
-                                                @click="edit(key-1)"
+                                                @click="edit(key)"
                                                 title="Edit Vehicle Information"
                                             >Edit Info</a>
                                         </div>
                                     </div>
                                 </td>
-                                <td>{{++key}}</td>
+                                <td>{{key+1}}</td>
                                 <td>{{item.vehicle_number}}</td>
                                 <td>{{item.brand}}</td>
                                 <td>{{item.description}}</td>
@@ -186,6 +186,7 @@ export default {
                 .then(response => (this.fields = response.data));
         },
         getVehicles(page = 1) {
+            //Page not used right now
             this.active.page = page;
             axios.get("/vehicles?page=" + page).then(response => {
                 this.vehicles = response.data;
@@ -193,7 +194,7 @@ export default {
         },
         edit(key) {
             this.active.edit = true;
-            this.vehicle = this.vehicles.data[key];
+            this.vehicle = this.vehicles[key];
         },
         discardEdit() {
             this.active.edit = false;
