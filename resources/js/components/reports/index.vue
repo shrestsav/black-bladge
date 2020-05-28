@@ -12,8 +12,8 @@
                     </div>
                     <div class="col-3" v-if="report.type=='driver'">
                         <h6 class="text-light text-uppercase ls-1 mb-1">SELECT DRIVER</h6>
-                        <select class="form-control bg-transparent" v-model="report.driver" @change="getDriversReport()">
-                            <option :value="driver" v-for="(driver,index) in drivers" :key="index">{{driver.full_name}}</option>
+                        <select class="form-control bg-transparent" v-model="report.driver_id" @change="getDriversReport()">
+                            <option :value="driver.id" v-for="(driver,index) in drivers" :key="index">{{driver.full_name}}</option>
                         </select>
                     </div>
                 </div>
@@ -22,7 +22,7 @@
         <div class="row">
             <div class="col-xl-12">
                 <!-- <totalSales></totalSales> -->
-                <driver v-if="report.type=='driver'" :driver="report.driver" ref="driverReport"></driver>
+                <driver :driver_id="report.driver_id" ref="driverReport"></driver>
             </div>
         </div>
     </div>
@@ -42,7 +42,7 @@ export default {
         return {
             report: {
 				type: "driver",
-				driver:null
+				driver_id:null
             },
 			errors: {},
 			drivers:[]
@@ -52,19 +52,20 @@ export default {
         this.$store.commit("changeCurrentPage", "reports");
         this.$store.commit("changeCurrentMenu", "reportsMenu");
 
+        
+    },
+    mounted() {
+		this.$store.dispatch("getOrdersCount");
+        this.getAllDrivers();
+        
         //If refreshed the page
         if (this.$route.query.report_type != undefined) {
             this.report.type = this.$route.query.report_type
             if(this.$route.query.driver_id != undefined) {
-                
+                this.report.driver_id = this.$route.query.driver_id
+                this.getDriversReport();
             }
-        } else {
-            this.orderID = this.$route.query.orderID;
         }
-    },
-    mounted() {
-		this.$store.dispatch("getOrdersCount");
-		this.getAllDrivers();
     },
     methods: {
         goto() {
@@ -82,11 +83,11 @@ export default {
             this.$router.replace({ 
                 name: "reports", 
                 query:{
-                    driver_id: this.report.driver.id,
-                    report_type: this.report.type
+                    report_type: this.report.type,
+                    driver_id: this.report.driver_id
                 }
             });
-			this.$refs.driverReport.init(this.report.driver.id);
+			this.$refs.driverReport.init(this.report.driver_id);
 		}
     },
     computed: {

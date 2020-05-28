@@ -1,5 +1,5 @@
 <template>
-    <div class="card" v-if="driver">
+    <div class="card" v-if="driver_id!=null">
         <div class="card-header">
             <div class="row align-items-center">
                 <div class="col-3">
@@ -133,7 +133,7 @@ export default {
     components: {
         DatePicker
     },
-    props: ["driver"],
+    props: ["driver_id"],
     data() {
         return {
             reports: {
@@ -143,6 +143,7 @@ export default {
                 year: "",
                 year_month: ""
             },
+            driver:{},
             drivers: [],
             orders: [],
             orderStatus: [],
@@ -200,6 +201,7 @@ export default {
                 .then(response => {
                     this.orders = response.data.data;
                     this.pricingUnit = response.data.meta.pricing_unit;
+                    this.driver = response.data.meta.driver;
                 });
         }
     },

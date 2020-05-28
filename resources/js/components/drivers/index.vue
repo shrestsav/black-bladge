@@ -309,8 +309,15 @@ export default {
             this.active.driver_id = "";
         },
         driverOrders(id) {
-            this.$refs.driverOrderModal.init(id);
-            this.active.driver_id = id;
+            this.$router.push({ 
+                name: "reports", 
+                query:{
+                    report_type: 'driver',
+                    driver_id: id
+                }
+            });
+            // this.$refs.driverOrderModal.init(id);
+            // this.active.driver_id = id;
         },
         edit(key) {
             this.active.edit = true;

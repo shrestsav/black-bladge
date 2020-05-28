@@ -102,9 +102,12 @@ class DriverController extends Controller
 
         $orders = $orders->get();
 
+        $driver = User::find($driver_id);
+
         return OrderResource::collection($orders)
                             ->additional(['meta' => [
                                     'pricing_unit' => config('settings.currency'),
+                                    'driver'       => $driver
                                 ]
                             ]);
     }
