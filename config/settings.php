@@ -3,7 +3,7 @@
 return [
     'USD_TO_AED'  => 3.6725,  
     'timezone'    => 'Asia/Dubai',
-    'currency'    => 'AED',
+    'currency'    => 'DHS',
     'date_format' => 'Y-m-d',
     'time_format' => 'g:i A',
     'dateTime'    => 'Y-m-d h:i:s',

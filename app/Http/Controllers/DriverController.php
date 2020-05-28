@@ -12,6 +12,7 @@ use Validator;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\Api\Driver\Driver as DriverResource;
+use App\Http\Resources\Api\Admin\Order as OrderResource;
 
 class DriverController extends Controller
 {
@@ -79,36 +80,10 @@ class DriverController extends Controller
     public function driverOrders(Request $request, $driver_id)
     {
         $this->validate($request, [
-            'type'     => 'required|string',
-            'job_type' => 'required|string'
+            'type'     => 'required|string'
         ]);
 
-        $orders = Order::with('details','customer:id,fname,lname','pick_location_details.mainArea');
-
-        if($request->job_type=='pick'){
-            $orders = $orders->where('driver_id',$driver_id)
-                             ->where(function ($query) use ($driver_id){
-                                $query->where('drop_driver_id','!=',$driver_id)
-                                      ->orWhereNull('drop_driver_id');
-                             });
-        }
-        elseif($request->job_type=='drop'){
-            $orders = $orders->where('drop_driver_id',$driver_id)
-                             ->where(function ($query) use ($driver_id){
-                                $query->where('driver_id','!=',$driver_id)
-                                      ->orWhereNull('driver_id');
-                             });
-        }
-        elseif($request->job_type=='pick_drop'){
-            $orders = $orders->where('driver_id',$driver_id)
-                             ->where('drop_driver_id',$driver_id);
-        }
-        elseif($request->job_type=='any'){
-            $orders = $orders->where(function ($query) use ($driver_id){
-                                $query->where('driver_id',$driver_id)
-                                      ->orWhere('drop_driver_id',$driver_id);
-                            });
-        }
+        $orders = Order::where('driver_id',$driver_id)->where('status',6)->with('details','customer','driver');
         
         if($request->type=='monthly'){
             $this->validate($request, [
@@ -125,17 +100,13 @@ class DriverController extends Controller
           $orders = $orders->whereYear('created_at', '=', $request->year);
         }
 
-        $orders = $orders->paginate(Session::get('rows'));
-                        
-        $orders->setCollection( $orders->getCollection()->makeVisible('total_amount'));
+        $orders = $orders->get();
 
-        $driverDetails = User::find($driver_id);
-
-        return response()->json([
-            'driver'      =>  $driverDetails,
-            'orders'      =>  $orders,
-            'orderStatus' => config('settings.orderStatuses')
-        ]);
+        return OrderResource::collection($orders)
+                            ->additional(['meta' => [
+                                    'pricing_unit' => config('settings.currency'),
+                                ]
+                            ]);
     }
 
     /**

@@ -49,7 +49,7 @@ class Order extends JsonResource
             'cancellation_reason'  => $this->when($this->deleted_at, $this->cancellation_reason),
 
             //Invoicing
-            'pricing_unit'         => 'DHS',
+            'pricing_unit'         => config('settings.currency'),
             'estimated_price'      => $estimatedPrice,
             'payment_method'       => $this->when($this->status==6, ($this->details['payment_type']==1) ? 'Cash on Delivery' : (($this->details['payment_type']==2) ? 'Card' : 'Cash on Delivery')),
             'total_cost'           => $totalCost,
