@@ -44,15 +44,21 @@ class BookingController extends Controller
     /**
      * List of active booking orders.
      */
-    public function active()
+    public function active(Request $request)
     {
         $active = Order::where('status','>',0)
                         ->where('status','<',6)
                         ->where('driver_id', Auth::id())
-                        ->with('customer')
-                        ->orderBy('status','DESC')
-                        ->orderBy('created_at','DESC')
-                        ->simplePaginate(10);
+                        ->with('customer');
+        
+        if(isset($request->booking_type) && $request->booking_type!='')
+            $active->where('type',$request->booking_type);
+        if(isset($request->booked_date) && $request->booked_date!='')
+            $active->where('created_at',$request->booked_date);
+        
+        $active = $active->orderBy('status','DESC')
+                         ->orderBy('created_at','DESC')
+                         ->simplePaginate(10);
 
         return OrderResource::collection($active);
     } 
@@ -60,15 +66,21 @@ class BookingController extends Controller
     /**
      * List of completed booking orders.
      */
-    public function completed()
+    public function completed(Request $request)
     {
-        $active = Order::where('status','>',5)
+        $completed = Order::where('status','>',5)
                         ->where('driver_id', Auth::id())
-                        ->with('customer')
-                        ->orderBy('updated_at','DESC')
-                        ->simplePaginate(10);
+                        ->with('customer');
+        
+        if(isset($request->booking_type) && $request->booking_type!='')
+            $completed->where('type',$request->booking_type);
+        if(isset($request->booked_date) && $request->booked_date!='')
+            $completed->where('created_at',$request->booked_date);
 
-        return OrderResource::collection($active);
+        $completed = $completed->orderBy('updated_at','DESC')
+                         ->simplePaginate(10);
+
+        return OrderResource::collection($completed);
     } 
 
     /**
