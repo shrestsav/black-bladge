@@ -56,9 +56,15 @@ class BookingController extends Controller
         if(isset($request->booked_date) && $request->booked_date!='')
             $active->whereDate('created_at',$request->booked_date);
         
-        $active = $active->orderBy('status','DESC')
-                         ->orderBy('created_at','DESC')
-                         ->simplePaginate(10);
+        
+        $active->orderBy('status','DESC');
+
+        if(isset($request->order) && $request->order=='asc')
+            $active->orderBy('created_at','ASC');
+        else
+            $active->orderBy('created_at','DESC');
+
+        $active = $active->simplePaginate(10);
 
         return OrderResource::collection($active);
     } 
@@ -77,8 +83,12 @@ class BookingController extends Controller
         if(isset($request->booked_date) && $request->booked_date!='')
             $completed->whereDate('created_at',$request->booked_date);
 
-        $completed = $completed->orderBy('updated_at','DESC')
-                         ->simplePaginate(10);
+        if(isset($request->order) && $request->order=='asc')
+            $completed->orderBy('updated_at','ASC');
+        else
+            $completed->orderBy('updated_at','DESC');
+
+        $completed = $completed->simplePaginate(10);
 
         return OrderResource::collection($completed);
     } 
