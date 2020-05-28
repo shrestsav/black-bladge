@@ -54,7 +54,7 @@ class BookingController extends Controller
         if(isset($request->booking_type) && $request->booking_type!='')
             $active->where('type',$request->booking_type);
         if(isset($request->booked_date) && $request->booked_date!='')
-            $active->where('created_at',$request->booked_date);
+            $active->whereDate('created_at',$request->booked_date);
         
         $active = $active->orderBy('status','DESC')
                          ->orderBy('created_at','DESC')
@@ -75,7 +75,7 @@ class BookingController extends Controller
         if(isset($request->booking_type) && $request->booking_type!='')
             $completed->where('type',$request->booking_type);
         if(isset($request->booked_date) && $request->booked_date!='')
-            $completed->where('created_at',$request->booked_date);
+            $completed->whereDate('created_at',$request->booked_date);
 
         $completed = $completed->orderBy('updated_at','DESC')
                          ->simplePaginate(10);
