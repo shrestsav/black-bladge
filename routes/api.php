@@ -144,6 +144,7 @@ Route::group(['middleware' => ['localization']], function() {
 		Route::get('/appConfigs','CoreController@appDefaults');
 		Route::post('/feedback','FeedbackController@feedback');
 
+		Route::get('/offers','CoreController@offers');
 
 
 
@@ -177,7 +178,7 @@ Route::group(['middleware' => ['localization']], function() {
 		Route::get('/orderDefaults','CoreController@orderDefaults');
 		Route::get('/configs/{configType}','CoreController@getSettings');
 		Route::get('/mainAreas','CoreController@mainAreas');
-		Route::get('/offers','CoreController@offers');
+		
 		
 		Route::get('/orderTypeDesc','CoreController@orderTypeDesc');
 		Route::get('/servicesPlusItems','CoreController@servicesPlusItems');

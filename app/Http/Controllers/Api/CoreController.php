@@ -10,6 +10,7 @@ use App\Offer;
 use App\Service;
 use Illuminate\Http\Request;
 use App\Http\Resources\Api\AppDefault as AppDefaultResource;
+use App\Http\Resources\Api\Offer as OfferResource;
 
 class CoreController extends Controller
 {
@@ -60,5 +61,12 @@ class CoreController extends Controller
         $FAQS = AppDefault::firstOrFail()->FAQS[$local];
         
         return response()->json($FAQS);
+    }
+
+    public function offers()
+    {
+        $offers = Offer::where('status',1)->where('display_type',2)->get();
+        
+        return OfferResource::collection($offers);
     }
 }
