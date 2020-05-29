@@ -76,7 +76,7 @@ class CustomerController extends Controller
                     'referral_id' => $referral_id
                 ]);
         
-        $offers = Offer::where('display_type',1)->orderBy('id','DESC')->get();
+        $offers = Offer::where('display_type',1)->where('status',1)->orderBy('id','DESC')->get();
 
         return response()->json([
             'message' => trans('response.profile.create'),
