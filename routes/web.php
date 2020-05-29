@@ -49,7 +49,6 @@ Auth::routes();
 Route::middleware(['auth'])->group(function () {
 	Route::apiResource('/drivers','DriverController');
 	Route::get('/driver/all','DriverController@allDrivers');
-	Route::get('/driver/orders/{driver_id}','DriverController@driverOrders');
 
 	Route::apiResource('/customers','CustomerController');
 	Route::get('/unverifiedCustomers','CustomerController@unverifiedCustomers');
@@ -61,30 +60,55 @@ Route::middleware(['auth'])->group(function () {
 	Route::apiResource('/vehicles','VehicleController');
 
 
+	//REPORT GENERATION
+	Route::group(['prefix' => 'reports'], function() {
+		Route::get('/driver/orders/{driver_id}','ReportController@driverOrders');
+		Route::get('/customer/orders/{customer_id}','ReportController@customerOrders');
 
 
 
 
+	    // Route::post('/totalOrders','ReportController@totalOrders');
+	    // Route::post('/totalCustomers','ReportController@totalCustomers');
+	    // Route::post('/totalSales','ReportController@totalSales');
+	    // Route::get('/topCustomers','ReportController@topCustomers');
+	    // //Exports
+	    // Route::get('/export','ReportController@export');
+	});
+	
+	// Banners
+	Route::get('/offers','CoreController@offers');
+	Route::post('/offers','CoreController@addOffer');
+	Route::post('/offers/edit/{id}','CoreController@editOffer');
+	Route::post('/changeOfferStatus','CoreController@changeOfferStatus');
+	Route::delete('/offers/{id}','CoreController@deleteOffer');	
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	//App Defaults
+	Route::get('/appDefaults','CoreController@appDefaults');
+	Route::post('/appDefaults','CoreController@updateAppDefaults');
 
 	Route::get('/authUser','CoreController@authUser');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
 	Route::get('/v/{any}', 'HomeController@index')->where('any', '.*');
 	Route::group(['prefix' => 'admin', 'middleware' => ['role:superAdmin']], function() {
 	    Route::resource('roles','RoleController');
@@ -104,15 +128,9 @@ Route::middleware(['auth'])->group(function () {
 
 	Route::get('/filterCraps','OrderController@filterCraps');
 	
-	Route::get('/appDefaults','CoreController@appDefaults');
-	Route::post('/appDefaults','CoreController@updateAppDefaults');
-	
-	Route::get('/offers','CoreController@offers');
-	Route::post('/offers','CoreController@addOffer');
-	Route::post('/offers/edit/{id}','CoreController@editOffer');
-	Route::post('/changeOfferStatus','CoreController@changeOfferStatus');
-	Route::delete('/offers/{id}','CoreController@deleteOffer');	
 
+	
+	
 	Route::apiResource('/coupons','CouponController');
 	Route::get('/coupon/referral','CouponController@referralCoupons');
 	Route::get('/coupon/orders/{code}','CouponController@redeemedOrders');
@@ -134,15 +152,7 @@ Route::middleware(['auth'])->group(function () {
 	Route::get('getSettings/{settingType}','CoreController@getSettings');
 	Route::get('orderTime','CoreController@orderTime');
 
-	//REPORT GENERATION
-	Route::group(['prefix' => 'reports'], function() {
-	    Route::post('/totalOrders','ReportController@totalOrders');
-	    Route::post('/totalCustomers','ReportController@totalCustomers');
-	    Route::post('/totalSales','ReportController@totalSales');
-	    Route::get('/topCustomers','ReportController@topCustomers');
-	    //Exports
-	    Route::get('/export','ReportController@export');
-	});
+	
 	
 	//PAYPAL INTEGRATION
 	Route::get('/payment',function(){

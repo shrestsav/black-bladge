@@ -3,136 +3,136 @@
         <div class="col-lg-12">
             <div class="card-wrapper">
                 <general></general>
-                <!-- <offers></offers>
-        <order></order>
-        <div class="card">
-          <div class="card-header">
-            <div class="row">
-              <div class="col">
-                <h3 class="mb-0">Support Page</h3>
-              </div>
-              <div class="col-auto">
-                <button type="button" class="btn btn-primary btn-sm" @click="toggleModule('supportPage')">{{modules.supportPage.icon}}</button>
-              </div>
-            </div>
-          </div>
-          <div class="card-body" v-if="modules.supportPage.display">
-            <div class="row">
-              <div class="col-md-4">
-                <img :src="appDefaults.company_logo_url" class="img-center img-fluid" style="height: 109px;">
-                <br>
-                <div class="custom-file">
-                  <input type="file" class="custom-file-input" lang="en" ref="file" v-on:change="logoFileUpload()">
-                  <label class="custom-file-label">Company Logo</label>
-                </div>                
-              </div>
-              <div class="col-md-8">
-                <div class="row">
-                  <div class="col-md-6">
-                    <div class="form-group">
-                      <label class="form-control-label">Company Email</label>
-                      <div class="input-group input-group-merge">
-                        <div class="input-group-prepend">
-                          <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                        </div>
-                        <input class="form-control" type="text" v-model="appDefaults.company_email">
+                <offers></offers>
+                <!-- <order></order>
+                <div class="card">
+                  <div class="card-header">
+                    <div class="row">
+                      <div class="col">
+                        <h3 class="mb-0">Support Page</h3>
+                      </div>
+                      <div class="col-auto">
+                        <button type="button" class="btn btn-primary btn-sm" @click="toggleModule('supportPage')">{{modules.supportPage.icon}}</button>
                       </div>
                     </div>
                   </div>
-                  <div class="col-md-6">
-                    <div class="form-group">
-                      <label class="form-control-label">FAQ Link</label>
-                      <div class="input-group input-group-merge">
-                        <div class="input-group-prepend">
-                          <span class="input-group-text"><i class="fas fa-user"></i></span>
-                        </div>
-                        <input class="form-control" type="text" v-model="appDefaults.FAQ_link">
+                  <div class="card-body" v-if="modules.supportPage.display">
+                    <div class="row">
+                      <div class="col-md-4">
+                        <img :src="appDefaults.company_logo_url" class="img-center img-fluid" style="height: 109px;">
+                        <br>
+                        <div class="custom-file">
+                          <input type="file" class="custom-file-input" lang="en" ref="file" v-on:change="logoFileUpload()">
+                          <label class="custom-file-label">Company Logo</label>
+                        </div>                
                       </div>
-                    </div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="form-group">
-                      <label class="form-control-label">Online Chat</label>
-                      <div class="row">
-                        <div class="col-md-5">
-                          <div class="input-group input-group-merge">
-                            <div class="input-group-prepend">
-                              <span class="input-group-text"><i class="fas fa-clock"></i></span>
+                      <div class="col-md-8">
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label class="form-control-label">Company Email</label>
+                              <div class="input-group input-group-merge">
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                </div>
+                                <input class="form-control" type="text" v-model="appDefaults.company_email">
+                              </div>
                             </div>
-                            <input class="form-control" type="text" v-model="appDefaults.online_chat.time">
+                          </div>
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label class="form-control-label">FAQ Link</label>
+                              <div class="input-group input-group-merge">
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                </div>
+                                <input class="form-control" type="text" v-model="appDefaults.FAQ_link">
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label class="form-control-label">Online Chat</label>
+                              <div class="row">
+                                <div class="col-md-5">
+                                  <div class="input-group input-group-merge">
+                                    <div class="input-group-prepend">
+                                      <span class="input-group-text"><i class="fas fa-clock"></i></span>
+                                    </div>
+                                    <input class="form-control" type="text" v-model="appDefaults.online_chat.time">
+                                  </div>
+                                </div>
+                                <div class="col-md-7">
+                                  <div class="input-group input-group-merge">
+                                    <div class="input-group-prepend">
+                                      <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                    </div>
+                                    <input class="form-control" type="text" v-model="appDefaults.online_chat.url">
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label class="form-control-label">Hotline Contact No</label>
+                              <div class="input-group input-group-merge">
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                </div>
+                                <input class="form-control" type="text" v-model="appDefaults.hotline_contact">
+                              </div>
+                            </div>
                           </div>
                         </div>
-                        <div class="col-md-7">
-                          <div class="input-group input-group-merge">
-                            <div class="input-group-prepend">
-                              <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                            </div>
-                            <input class="form-control" type="text" v-model="appDefaults.online_chat.url">
-                          </div>
-                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="form-group">
-                      <label class="form-control-label">Hotline Contact No</label>
-                      <div class="input-group input-group-merge">
-                        <div class="input-group-prepend">
-                          <span class="input-group-text"><i class="fas fa-phone"></i></span>
-                        </div>
-                        <input class="form-control" type="text" v-model="appDefaults.hotline_contact">
-                      </div>
+                    <div class="float-right">
+                      <button class="btn btn-outline-primary" @click="save('supportSetting')">Save</button>
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
-            <div class="float-right">
-              <button class="btn btn-outline-primary" @click="save('supportSetting')">Save</button>
-            </div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-header">
-            <div class="row">
-              <div class="col">
-                <h3 class="mb-0">Main Areas</h3>
-              </div>
-              <div class="col-auto">
-                <button type="button" class="btn btn-primary btn-sm" @click="toggleModule('mainArea')">{{modules.mainArea.icon}}</button>
-              </div>
-            </div>
-          </div>
-          <div class="card-body" v-if="modules.mainArea.display">
-            <div class="row">
-              <div class="bootstrap-tagsinput">
-                <span class="tag badge badge-primary" v-for="(item,index) in mainAreas" :key="index">
-                  {{item.name}}
-                  <span data-role="remove" @click="deleteArea(item.id)"></span>
-                </span>
-              </div>
-            </div>
-            <br>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group">
-                  <label class="form-control-label">Area Name</label>
-                  <div class="input-group input-group-merge">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text"><i class="fas fa-map-marker"></i></span>
+                <div class="card">
+                  <div class="card-header">
+                    <div class="row">
+                      <div class="col">
+                        <h3 class="mb-0">Main Areas</h3>
+                      </div>
+                      <div class="col-auto">
+                        <button type="button" class="btn btn-primary btn-sm" @click="toggleModule('mainArea')">{{modules.mainArea.icon}}</button>
+                      </div>
                     </div>
-                    <input :class="{'not-validated':errors.name}" class="form-control" type="text" v-model="mainArea.name">
                   </div>
-                  <div class="invalid-feedback" style="display: block;" v-if="errors.name">
-                    {{errors.name[0]}}
+                  <div class="card-body" v-if="modules.mainArea.display">
+                    <div class="row">
+                      <div class="bootstrap-tagsinput">
+                        <span class="tag badge badge-primary" v-for="(item,index) in mainAreas" :key="index">
+                          {{item.name}}
+                          <span data-role="remove" @click="deleteArea(item.id)"></span>
+                        </span>
+                      </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div class="form-group">
+                          <label class="form-control-label">Area Name</label>
+                          <div class="input-group input-group-merge">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text"><i class="fas fa-map-marker"></i></span>
+                            </div>
+                            <input :class="{'not-validated':errors.name}" class="form-control" type="text" v-model="mainArea.name">
+                          </div>
+                          <div class="invalid-feedback" style="display: block;" v-if="errors.name">
+                            {{errors.name[0]}}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="float-right">
+                      <button class="btn btn-outline-primary" @click="saveMainArea()">Create</button>
+                    </div>
                   </div>
-                </div>
-              </div>
-            </div>
-            <div class="float-right">
-              <button class="btn btn-outline-primary" @click="saveMainArea()">Create</button>
-            </div>
-          </div>
                 </div>-->
                 <!-- <TACS></TACS> -->
 

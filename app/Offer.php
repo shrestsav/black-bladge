@@ -13,6 +13,7 @@ class Offer extends Model
     	'name',
 		'description',
 		'status',
-		'image'
+		'image',
+		'display_type'
     ];
 }

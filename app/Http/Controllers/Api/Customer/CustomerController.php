@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use Intervention\Image\Facades\Image;
 use Validator;
 use App\Http\Resources\Api\Customer\Customer as CustomerResource;
+use App\Http\Resources\Api\Offer as OfferResource;
 
 class CustomerController extends Controller
 {
@@ -74,10 +75,13 @@ class CustomerController extends Controller
                     'referred_by' => $request->referred_by,
                     'referral_id' => $referral_id
                 ]);
+        
+        $offers = Offer::where('display_type',1)->orderBy('id','DESC')->get();
 
         return response()->json([
-            'message'=> trans('response.profile.create'),
-        ],200);
+            'message' => trans('response.profile.create'),
+            'banner'  => OfferResource::collection($offers)
+        ]);
     }
 
     public function updateProfile(Request $request)

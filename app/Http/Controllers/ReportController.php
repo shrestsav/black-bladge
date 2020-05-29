@@ -7,9 +7,107 @@ use App\User;
 use Illuminate\Http\Request;
 use Excel;
 use App\Exports\Report;
+use App\Http\Resources\Api\Driver\Driver as DriverResource;
+use App\Http\Resources\Api\Admin\Order as OrderResource;
 
 class ReportController extends Controller
 {
+  	public function driverOrders(Request $request, $driver_id)
+  	{
+		$this->validate($request, [
+			'type'     => 'required|string'
+		]);
+
+		$orders = Order::where('driver_id',$driver_id)->where('status',6)->with('details','customer','driver');
+		
+		if($request->type=='monthly'){
+			$this->validate($request, [
+				'year_month' => 'required|string'
+			]);
+			$year_month = explode('-',$request->year_month);
+			$orders = $orders->whereYear('created_at', '=', $year_month[0])
+							->whereMonth('created_at','=', $year_month[1]);
+		}
+		elseif($request->type=='yearly'){
+			$this->validate($request, [
+				'year' => 'required|string',
+			]);
+			$orders = $orders->whereYear('created_at', '=', $request->year);
+		}
+
+		$orders = $orders->get();
+
+		$driver = User::find($driver_id);
+
+		return OrderResource::collection($orders)
+							->additional(['meta' => [
+									'pricing_unit' => config('settings.currency'),
+									'driver'       => $driver
+								]
+							]);
+	}
+	
+  	public function customerOrders(Request $request, $customer_id)
+	{
+		$this->validate($request, [
+			'type'  => 'required|string'
+		]);
+
+		$orders = Order::where('customer_id',$customer_id)->where('status',6)->with('details','customer','driver');
+		
+		if($request->type=='monthly'){
+			$this->validate($request, [
+				'year_month' => 'required|string'
+			]);
+			$year_month = explode('-',$request->year_month);
+			$orders = $orders->whereYear('created_at', '=', $year_month[0])->whereMonth('created_at','=', $year_month[1]);
+		}
+		elseif($request->type=='yearly'){
+			$this->validate($request, [
+				'year' => 'required|string',
+			]);
+			$orders = $orders->whereYear('created_at', '=', $request->year);
+		}
+
+		$orders = $orders->get();
+
+		$customer = User::find($customer_id);
+
+		return OrderResource::collection($orders)
+							->additional(['meta' => [
+									'pricing_unit' => config('settings.currency'),
+									'customer'     => $customer
+								]
+							]);
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public function totalOrders(Request $request)
     {
       $this->validate($request, [
@@ -385,205 +483,205 @@ class ReportController extends Controller
       return Excel::download(new Report($data,$head), $fileName.'.xlsx');
     }
 
-    public function driverOrders($request)
-    {
-      $this->validate($request, [
-        'driver_id'  => 'required|numeric'
-      ]);
+    // public function driverOrders($request)
+    // {
+    //   $this->validate($request, [
+    //     'driver_id'  => 'required|numeric'
+    //   ]);
 
-      $driver_id = $request->driver_id;
+    //   $driver_id = $request->driver_id;
 
-      $orders = Order::with('customer:id,fname,lname,phone',
-                             'details:order_id,PFC,DTC,PT',
-                             'pickDriver:id,fname,lname,phone',
-                             'dropDriver:id,fname,lname,phone',
-                             'orderItems:order_id,service_id',
-                             'orderItems.service:id,name',
-                             'pick_location_details:id,area_id',
-                             'pick_location_details.mainArea:id,name');
+    //   $orders = Order::with('customer:id,fname,lname,phone',
+    //                          'details:order_id,PFC,DTC,PT',
+    //                          'pickDriver:id,fname,lname,phone',
+    //                          'dropDriver:id,fname,lname,phone',
+    //                          'orderItems:order_id,service_id',
+    //                          'orderItems.service:id,name',
+    //                          'pick_location_details:id,area_id',
+    //                          'pick_location_details.mainArea:id,name');
 
-      if($request->job_type=='pick'){
-            $orders = $orders->where('driver_id',$driver_id)
-                             ->where(function ($query) use ($driver_id){
-                                $query->where('drop_driver_id','!=',$driver_id)
-                                      ->orWhereNull('drop_driver_id');
-                             });
-        }
-        elseif($request->job_type=='drop'){
-            $orders = $orders->where('drop_driver_id',$driver_id)
-                             ->where(function ($query) use ($driver_id){
-                                $query->where('driver_id','!=',$driver_id)
-                                      ->orWhereNull('driver_id');
-                             });
-        }
-        elseif($request->job_type=='pick_drop'){
-            $orders = $orders->where('driver_id',$driver_id)
-                             ->where('drop_driver_id',$driver_id);
-        }
-        elseif($request->job_type=='any'){
-            $orders = $orders->where(function ($query) use ($driver_id){
-                                $query->where('driver_id',$driver_id)
-                                      ->orWhere('drop_driver_id',$driver_id);
-                            });
-        }
+    //   if($request->job_type=='pick'){
+    //         $orders = $orders->where('driver_id',$driver_id)
+    //                          ->where(function ($query) use ($driver_id){
+    //                             $query->where('drop_driver_id','!=',$driver_id)
+    //                                   ->orWhereNull('drop_driver_id');
+    //                          });
+    //     }
+    //     elseif($request->job_type=='drop'){
+    //         $orders = $orders->where('drop_driver_id',$driver_id)
+    //                          ->where(function ($query) use ($driver_id){
+    //                             $query->where('driver_id','!=',$driver_id)
+    //                                   ->orWhereNull('driver_id');
+    //                          });
+    //     }
+    //     elseif($request->job_type=='pick_drop'){
+    //         $orders = $orders->where('driver_id',$driver_id)
+    //                          ->where('drop_driver_id',$driver_id);
+    //     }
+    //     elseif($request->job_type=='any'){
+    //         $orders = $orders->where(function ($query) use ($driver_id){
+    //                             $query->where('driver_id',$driver_id)
+    //                                   ->orWhere('drop_driver_id',$driver_id);
+    //                         });
+    //     }
 
-      if($request->type=='monthly'){
-        $this->validate($request, [
-            'year_month' => 'required|string'
-        ]);
-        $fileName = 'Monthly-'.$request->year_month;
-        $year_month = explode('-',$request->year_month);
+    //   if($request->type=='monthly'){
+    //     $this->validate($request, [
+    //         'year_month' => 'required|string'
+    //     ]);
+    //     $fileName = 'Monthly-'.$request->year_month;
+    //     $year_month = explode('-',$request->year_month);
 
-        $orders = $orders->whereYear('orders.created_at', '=', $year_month[0])
-                         ->whereMonth('orders.created_at','=', $year_month[1]);
-      }
+    //     $orders = $orders->whereYear('orders.created_at', '=', $year_month[0])
+    //                      ->whereMonth('orders.created_at','=', $year_month[1]);
+    //   }
 
-      if($request->type=='yearly'){
-        $this->validate($request, [
-            'year' => 'required|string',
-        ]);
-        $fileName = 'Yearly-'.$request->year;
-        $orders = $orders->whereYear('orders.created_at', '=', $request->year);
-      }
+    //   if($request->type=='yearly'){
+    //     $this->validate($request, [
+    //         'year' => 'required|string',
+    //     ]);
+    //     $fileName = 'Yearly-'.$request->year;
+    //     $orders = $orders->whereYear('orders.created_at', '=', $request->year);
+    //   }
 
-      $orders = $orders->get()
-                       ->makeVisible('total_amount')
-                       ->toArray();
+    //   $orders = $orders->get()
+    //                    ->makeVisible('total_amount')
+    //                    ->toArray();
 
-      $data = [];
-      $totalAmount = 0;
-      foreach ($orders as $order) {
-        $dataArr = [];
+    //   $data = [];
+    //   $totalAmount = 0;
+    //   foreach ($orders as $order) {
+    //     $dataArr = [];
 
-        $dataArr['id'] = $order['id'];
+    //     $dataArr['id'] = $order['id'];
 
-        $job = '';
-        if($order['driver_id']==$driver_id && $order['drop_driver_id']==$driver_id)
-          $job = 'Pick and Drop';
-        elseif($order['driver_id']==$driver_id && $order['drop_driver_id']!=$driver_id)
-          $job = 'Pick';
-        if($order['driver_id']!=$driver_id && $order['drop_driver_id']==$driver_id)
-          $job = 'Drop';
-        $dataArr['job'] = $job;
+    //     $job = '';
+    //     if($order['driver_id']==$driver_id && $order['drop_driver_id']==$driver_id)
+    //       $job = 'Pick and Drop';
+    //     elseif($order['driver_id']==$driver_id && $order['drop_driver_id']!=$driver_id)
+    //       $job = 'Pick';
+    //     if($order['driver_id']!=$driver_id && $order['drop_driver_id']==$driver_id)
+    //       $job = 'Drop';
+    //     $dataArr['job'] = $job;
 
-        $orderType = 'Not Mentioned';
-        if($order['type']==1)
-          $orderType = 'Normal';
-        elseif($order['type']==2)
-          $orderType = 'Urgent';
+    //     $orderType = 'Not Mentioned';
+    //     if($order['type']==1)
+    //       $orderType = 'Normal';
+    //     elseif($order['type']==2)
+    //       $orderType = 'Urgent';
 
-        $dataArr['type'] = $orderType;
+    //     $dataArr['type'] = $orderType;
 
-        $dataArr['ordered_date'] = \Carbon\Carbon::parse($order['created_at'])->format('M-d-Y');
-        $dataArr['customer_name'] = $order['customer']['full_name'];
-        $dataArr['customer_phone'] = ' '.$order['customer']['phone'];
-        $dataArr['PFC'] = \Carbon\Carbon::parse($order['details']['PFC'])->format('M-d-Y');
-        $dataArr['PDN'] = $order['pick_driver']['full_name'];
-        $dataArr['DTC'] = \Carbon\Carbon::parse($order['details']['DTC'])->format('M-d-Y');
-        $dataArr['DDN'] = $order['drop_driver']['full_name'];
-        $dataArr['MA'] = $order['pick_location_details']['main_area']['name'];
+    //     $dataArr['ordered_date'] = \Carbon\Carbon::parse($order['created_at'])->format('M-d-Y');
+    //     $dataArr['customer_name'] = $order['customer']['full_name'];
+    //     $dataArr['customer_phone'] = ' '.$order['customer']['phone'];
+    //     $dataArr['PFC'] = \Carbon\Carbon::parse($order['details']['PFC'])->format('M-d-Y');
+    //     $dataArr['PDN'] = $order['pick_driver']['full_name'];
+    //     $dataArr['DTC'] = \Carbon\Carbon::parse($order['details']['DTC'])->format('M-d-Y');
+    //     $dataArr['DDN'] = $order['drop_driver']['full_name'];
+    //     $dataArr['MA'] = $order['pick_location_details']['main_area']['name'];
 
-        $paymentType = 'Not Mentioned';
-        if($order['details']['PT']==1)
-          $paymentType = 'Cash on Delivery';
-        elseif($order['details']['PT']==2)
-          $paymentType = 'Card';
-        elseif($order['details']['PT']==3)
-          $paymentType = 'Paypal';
+    //     $paymentType = 'Not Mentioned';
+    //     if($order['details']['PT']==1)
+    //       $paymentType = 'Cash on Delivery';
+    //     elseif($order['details']['PT']==2)
+    //       $paymentType = 'Card';
+    //     elseif($order['details']['PT']==3)
+    //       $paymentType = 'Paypal';
 
-        $dataArr['PT'] = $paymentType;
+    //     $dataArr['PT'] = $paymentType;
 
-        $st = '';
-        if($order['order_items']){
-          $st = $order['order_items'][0]['service']['name'];
-        }
+    //     $st = '';
+    //     if($order['order_items']){
+    //       $st = $order['order_items'][0]['service']['name'];
+    //     }
 
-        $dataArr['ST'] = $st;            
-        $dataArr['amount'] = $order['total_amount'] ? 'AED '.$order['total_amount'] : '';
-        $totalAmount += $dataArr['amount'] ? $order['total_amount'] : 0;
-        array_push($data, $dataArr);
+    //     $dataArr['ST'] = $st;            
+    //     $dataArr['amount'] = $order['total_amount'] ? 'AED '.$order['total_amount'] : '';
+    //     $totalAmount += $dataArr['amount'] ? $order['total_amount'] : 0;
+    //     array_push($data, $dataArr);
 
-      }
+    //   }
 
-      $totalArr = [
-        '1'   =>  '',
-        '2'   =>  '',
-        '3'   =>  '',
-        '4'   =>  '',
-        '5'   =>  '',
-        '6'   =>  '',
-        '7'   =>  '',
-        '8'   =>  '',
-        '9'   =>  '',
-        '10'  =>  '',
-        '11'  =>  '',
-        '12'  =>  '',
-        '13'  =>  'Grand Total',
-        '14'  =>  $totalAmount
-      ];
-      array_push($data, $totalArr);
+    //   $totalArr = [
+    //     '1'   =>  '',
+    //     '2'   =>  '',
+    //     '3'   =>  '',
+    //     '4'   =>  '',
+    //     '5'   =>  '',
+    //     '6'   =>  '',
+    //     '7'   =>  '',
+    //     '8'   =>  '',
+    //     '9'   =>  '',
+    //     '10'  =>  '',
+    //     '11'  =>  '',
+    //     '12'  =>  '',
+    //     '13'  =>  'Grand Total',
+    //     '14'  =>  $totalAmount
+    //   ];
+    //   array_push($data, $totalArr);
 
-      $totalOrdArr = [
-        '1'   =>  '',
-        '2'   =>  '',
-        '3'   =>  '',
-        '4'   =>  '',
-        '5'   =>  '',
-        '6'   =>  '',
-        '7'   =>  '',
-        '8'   =>  '',
-        '9'   =>  '',
-        '10'  =>  '',
-        '11'  =>  '',
-        '12'  =>  '',
-        '13'  =>  'Total Order',
-        '14'  =>  count($orders)
-      ];
-      array_push($data, $totalOrdArr);
+    //   $totalOrdArr = [
+    //     '1'   =>  '',
+    //     '2'   =>  '',
+    //     '3'   =>  '',
+    //     '4'   =>  '',
+    //     '5'   =>  '',
+    //     '6'   =>  '',
+    //     '7'   =>  '',
+    //     '8'   =>  '',
+    //     '9'   =>  '',
+    //     '10'  =>  '',
+    //     '11'  =>  '',
+    //     '12'  =>  '',
+    //     '13'  =>  'Total Order',
+    //     '14'  =>  count($orders)
+    //   ];
+    //   array_push($data, $totalOrdArr);
 
-      $driver = User::find($driver_id);
+    //   $driver = User::find($driver_id);
 
-      $driverArr = [
-        '1'   =>  '',
-        '2'   =>  '',
-        '3'   =>  '',
-        '4'   =>  '',
-        '5'   =>  '',
-        '6'   =>  '',
-        '7'   =>  '',
-        '8'   =>  '',
-        '9'   =>  '',
-        '10'  =>  '',
-        '11'  =>  '',
-        '12'  =>  '',
-        '13'  =>  'Driver Name',
-        '14'  =>  $driver->full_name
-      ];
-      array_push($data, $driverArr);
+    //   $driverArr = [
+    //     '1'   =>  '',
+    //     '2'   =>  '',
+    //     '3'   =>  '',
+    //     '4'   =>  '',
+    //     '5'   =>  '',
+    //     '6'   =>  '',
+    //     '7'   =>  '',
+    //     '8'   =>  '',
+    //     '9'   =>  '',
+    //     '10'  =>  '',
+    //     '11'  =>  '',
+    //     '12'  =>  '',
+    //     '13'  =>  'Driver Name',
+    //     '14'  =>  $driver->full_name
+    //   ];
+    //   array_push($data, $driverArr);
 
-      $head = [
-        'ORDER ID',
-        'JOB',
-        'TYPE',
-        'ORDERED DATE',
-        'CUSTOMER NAME',
-        'CUSTOMER CONTACT',
-        'PICKED AT',
-        'PICK DRIVER',
-        'DELIVERED At',
-        'DROP DRIVER',
-        'MAIN AREA',
-        'PAYMENT TYPE',
-        'SERVICE TYPE',
-        'TOTAL AMOUNT'
-      ];
+    //   $head = [
+    //     'ORDER ID',
+    //     'JOB',
+    //     'TYPE',
+    //     'ORDERED DATE',
+    //     'CUSTOMER NAME',
+    //     'CUSTOMER CONTACT',
+    //     'PICKED AT',
+    //     'PICK DRIVER',
+    //     'DELIVERED At',
+    //     'DROP DRIVER',
+    //     'MAIN AREA',
+    //     'PAYMENT TYPE',
+    //     'SERVICE TYPE',
+    //     'TOTAL AMOUNT'
+    //   ];
 
-      if(!count($data)){
-        return back()->with('error','Empty Data');
-      }
+    //   if(!count($data)){
+    //     return back()->with('error','Empty Data');
+    //   }
 
-      return Excel::download(new Report($data,$head), $fileName.'.xlsx');
-    }
+    //   return Excel::download(new Report($data,$head), $fileName.'.xlsx');
+    // }
 
     public function deliveredOrders($request)
     {

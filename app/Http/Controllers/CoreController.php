@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Validator;
 use Auth;
 use Illuminate\Support\Str;
+use App\Http\Resources\Api\Offer as OfferResource;
 
 class CoreController extends Controller
 {
@@ -130,44 +131,25 @@ class CoreController extends Controller
         return response()->json('Successfully Updated');
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public function offers()
     {
         $offers = Offer::orderBy('id','DESC')->get();
-        return response()->json($offers);
+        return OfferResource::collection($offers);
     }
 
     public function addOffer(Request $request)
     {
         $validatedData = $request->validate([
-            'offer_name' => 'required|string',
-            'offer_description' => 'required|string',
-            'offer_image' => 'required|mimes:jpeg,png|max:3072',
+            'offer_name'         => 'required|string',
+            'offer_description'  => 'required|string',
+            'offer_display_type' => 'required|numeric',
+            'offer_image'        => 'required|mimes:jpeg,png|max:3072',
         ]);
 
         $offer = new Offer();
         $offer->name = $request['offer_name'];
         $offer->description = $request['offer_description'];
+        $offer->display_type = $request['offer_display_type'];
         $offer->status = $request['status'];
 
         $offer->save();
@@ -187,13 +169,15 @@ class CoreController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string',
             'description' => 'required|string',
+            'display_type' => 'required|numeric',
         ]);
 
         $offer = Offer::findOrFail($id);
         $offer->update([
-            'name' => $request['name'],
-            'description' => $request['description'],
-            'status' => $request['status']
+            'name'         => $request['name'],
+            'description'  => $request['description'],
+            'display_type' => $request['display_type'],
+            'status'       => $request['status']
         ]);
 
         if ($request->hasFile('offer_image')) {
@@ -231,6 +215,27 @@ class CoreController extends Controller
         $offer->delete();
         return response()->json('Offer Deleted');
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

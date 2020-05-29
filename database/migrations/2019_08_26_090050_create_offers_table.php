@@ -19,6 +19,7 @@ class CreateOffersTable extends Migration
             $table->string('image')->nullable();
             $table->text('description');
             $table->smallInteger('status')->default(0);
+            $table->smallInteger('display_type')->comment('1: Signup, 2:Homescreen');
             $table->timestamps();
             $table->softDeletes();
         });

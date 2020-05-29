@@ -1,5 +1,5 @@
 <template>
-    <div class="card" v-if="driver_id!=null">
+    <div class="card" v-if="driver_id!=null && reportType=='driver'">
         <div class="card-header">
             <div class="row align-items-center">
                 <div class="col-3">
@@ -153,6 +153,7 @@ export default {
     },
     methods: {
         init(driver_id) {
+            this.orders = [];
             var today = new Date();
             this.reports = {
                 driver_id: driver_id,
@@ -187,7 +188,7 @@ export default {
         driverOrders(page = 1) {
             axios
                 .get(
-                    "/driver/orders/" +
+                    "/reports/driver/orders/" +
                         this.reports.driver_id +
                         "?page=" +
                         page +
@@ -216,6 +217,9 @@ export default {
             }, 0);
 
             return total;
+        },
+        reportType(){
+            return this.$parent.report.type
         }
     }
 };

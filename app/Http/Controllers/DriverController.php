@@ -77,41 +77,6 @@ class DriverController extends Controller
         return response()->json($drivers);
     }
 
-    public function driverOrders(Request $request, $driver_id)
-    {
-        $this->validate($request, [
-            'type'     => 'required|string'
-        ]);
-
-        $orders = Order::where('driver_id',$driver_id)->where('status',6)->with('details','customer','driver');
-        
-        if($request->type=='monthly'){
-            $this->validate($request, [
-                'year_month' => 'required|string'
-            ]);
-            $year_month = explode('-',$request->year_month);
-            $orders = $orders->whereYear('created_at', '=', $year_month[0])
-                             ->whereMonth('created_at','=', $year_month[1]);
-        }
-        elseif($request->type=='yearly'){
-          $this->validate($request, [
-              'year' => 'required|string',
-          ]);
-          $orders = $orders->whereYear('created_at', '=', $request->year);
-        }
-
-        $orders = $orders->get();
-
-        $driver = User::find($driver_id);
-
-        return OrderResource::collection($orders)
-                            ->additional(['meta' => [
-                                    'pricing_unit' => config('settings.currency'),
-                                    'driver'       => $driver
-                                ]
-                            ]);
-    }
-
     /**
      * Store a newly created resource in storage.
      *
