@@ -50,7 +50,7 @@ trait NotificationLogics
                               ->toArray();
 
         $notification = [
-            'notifyType' => 'new_order',
+            'notifyType' => 'new_booking',
             'message'    => $order->customer->full_name. ' placed a new booking order #'.$order->id,
             'model'      => 'order',
             'url'        => $order->id
@@ -59,14 +59,14 @@ trait NotificationLogics
         $customer = User::find($order->customer_id);
 
         $notifyCustomer = [
-            'notifyType' => 'new_order',
+            'notifyType' => 'new_booking',
             'message'   => "Booking ID: #".$order->id. ". We will contact you soon.",
             'model'     => 'order',
             'url'       => $order->id
         ];
 
         // $customerMailData = [
-        //     'emailType' => 'new_order',
+        //     'emailType' => 'new_booking',
         //     'name'      => $customer->full_name,
         //     'email'     => $customer->email,
         //     'orderID'   => $order->id,

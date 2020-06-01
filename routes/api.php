@@ -146,16 +146,17 @@ Route::group(['middleware' => ['localization']], function() {
 
 		Route::get('/offers','CoreController@offers');
 
-
-
-
-
-
-		// Using these
+		// Others
 		Route::get('/termsAndConditions','CoreController@termsAndConditions');
 		Route::get('/FAQS','CoreController@FAQS');
 
+		//Notifications
+		Route::get('/notifications','AuthController@notifications');
+		Route::get('/countUnreadNotifications','AuthController@countUnreadNotifications');
+		Route::get('/markAsRead/{notificationID}','AuthController@markAsRead');
+		Route::get('/markAllAsRead','AuthController@markAllAsRead');
 
+		Route::post('/deviceToken/remove','AuthController@removeDeviceToken');
 
 
 
@@ -182,13 +183,5 @@ Route::group(['middleware' => ['localization']], function() {
 		
 		Route::get('/orderTypeDesc','CoreController@orderTypeDesc');
 		Route::get('/servicesPlusItems','CoreController@servicesPlusItems');
-
-		Route::get('/notifications','AuthController@notifications');
-		Route::get('/countUnreadNotifications','AuthController@countUnreadNotifications');
-		Route::get('/markAsRead/{notificationID}','AuthController@markAsRead');
-		Route::get('/markAllAsRead','AuthController@markAllAsRead');
-
-		Route::post('/deviceToken/remove','AuthController@removeDeviceToken');
-
 	});
 });

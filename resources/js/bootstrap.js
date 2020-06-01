@@ -55,7 +55,7 @@ window.Pusher = require('pusher-js');
 // });
 window.Echo = new Echo({
     broadcaster: 'pusher',
-    key: '1c3b43241047001c8931',
-    cluster: 'ap2',
+    key: 'bd418cf2b9102865c0af',
+    cluster: 'ap1',
     encrypted: true
 });
