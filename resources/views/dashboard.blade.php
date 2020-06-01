@@ -17,5 +17,5 @@
 
 @push('vueScripts')
 <!-- Vue js -->
-<script type="text/javascript" src="{{asset('js/system.js')}}"></script>
+<script type="text/javascript" src="{{mix('js/system.js')}}"></script>
 @endpush

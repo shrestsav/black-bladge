@@ -17,3 +17,7 @@ mix.js('resources/js/system.js', 'public/js')
 var url='http://localhost:8000';
 
 mix.browserSync(url);
+
+if (mix.inProduction()) {
+    mix.version();
+}
