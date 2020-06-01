@@ -129,7 +129,7 @@ class BookingController extends Controller
             ]
         );
 
-        // User::notifyAcceptOrder($id);
+        User::notifyAcceptBooking($order);
         
         return response()->json(['message' => 'Successfully Accepted']);
     }

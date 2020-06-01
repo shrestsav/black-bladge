@@ -214,6 +214,8 @@ class BookingController extends Controller
             'estimated_price'  => $data['booked_hours']*60*$appDefaults->cost_per_min,
             'promo_code'       => isset($coupon) ? $coupon->code : null,
         ]);
+        
+        User::notifyNewBooking($order);
 
         return response()->json([
             "order"   => new OrderResource($order),
@@ -262,10 +264,10 @@ class BookingController extends Controller
                 'errors' => $validator->errors(),
             ], 422);
         }
-
-        // User::notifyOrderCancelled($order_id);
         
         $order = Order::findOrFail($order_id);
+
+        User::notifyBookingCancelled($order);
 
         if(Auth::id()!=$order->customer_id){
             return response()->json([

@@ -151,12 +151,14 @@ Route::group(['middleware' => ['localization']], function() {
 		Route::get('/FAQS','CoreController@FAQS');
 
 		//Notifications
-		Route::get('/notifications','AuthController@notifications');
-		Route::get('/countUnreadNotifications','AuthController@countUnreadNotifications');
-		Route::get('/markAsRead/{notificationID}','AuthController@markAsRead');
-		Route::get('/markAllAsRead','AuthController@markAllAsRead');
+		Route::group(['namespace' => 'Auth'], function() {
+			Route::get('/notifications','AuthController@notifications');
+			Route::get('/countUnreadNotifications','AuthController@countUnreadNotifications');
+			Route::get('/markAsRead/{notificationID}','AuthController@markAsRead');
+			Route::get('/markAllAsRead','AuthController@markAllAsRead');
 
-		Route::post('/deviceToken/remove','AuthController@removeDeviceToken');
+			Route::post('/deviceToken/remove','AuthController@removeDeviceToken');
+		});
 
 
 

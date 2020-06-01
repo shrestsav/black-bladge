@@ -95,9 +95,8 @@ trait NotificationLogics
     /**
     * Notify Admins and Customer of that specific order
     */
-    public static function notifyAcceptOrder($order_id)
+    public static function notifyAcceptBooking($order)
     {  
-        $order = Order::find($order_id);
         $superAdmin_ids = User::whereHas('roles', function ($query) {
                                     $query->where('name', '=', 'superAdmin');
                                 })
@@ -106,17 +105,17 @@ trait NotificationLogics
         $customer_id = $order->customer_id;
 
         $notifyCustomer = [
-            'notifyType' => 'order_accepted',
-            'message'    => 'Your Order #'.$order->id.' has been accepted by '. $order->pickDriver->fname. ' for pickup, please keep your items ready.',
+            'notifyType' => 'booking_accepted',
+            'message'    => 'Your Booking Order #'.$order->id.' has been accepted by '. $order->driver->full_name. ' for pickup, be ready.',
             'model'      => 'order',
             'url'        => $order->id
         ];
 
         $notifyAdmin = [
-            'notifyType' => 'order_accepted',
-            'message' => 'Order #'.$order->id.' has been accepted by '. $order->pickDriver->fname. ' for pickup, please keep your items ready.',
-            'model' => 'order',
-            'url' => $order->id
+            'notifyType' => 'booking_accepted',
+            'message'    => 'Booking Order #'.$order->id.' has been accepted by '. $order->driver->full_name. ' for pickup.',
+            'model'      => 'order',
+            'url'        => $order->id
         ];
 
         // Send Order Accepted Notification to All Superadmins
@@ -129,13 +128,14 @@ trait NotificationLogics
         
         // Email Notification to Customer
         $customer = User::find($order->customer_id);
+
         $customerMailData = [
-            'emailType' => 'order_accepted',
+            'emailType' => 'booking_accepted',
             'name'      => $customer->full_name,
             'email'     => $customer->email,
             'orderID'   => $order_id,
-            'subject'   => "BLACK-BLADGE: Order: #".$order_id. " Accepted",
-            'message'   => 'Your Order #'.$order->id.' has been accepted by '. $order->pickDriver->fname. ' for pickup, please keep your items ready.'
+            'subject'   => "BLACK-BLADGE: Booking Order: #".$order_id. " Accepted",
+            'message'   => 'Your Order #'.$order->id.' has been accepted by '. $order->pickDriver->fname. ' for pickup, be ready'
         ];
         
         // Notify Customer in email
@@ -147,9 +147,8 @@ trait NotificationLogics
     /**
     * Notify Admins
     */
-    public static function notifyOrderCancelled($order_id)
+    public static function notifyBookingCancelled($order)
     {  
-        $order = Order::find($order_id);
         $superAdmin_ids = User::whereHas('roles', function ($query) {
                                     $query->where('name', '=', 'superAdmin');
                                 })
@@ -158,7 +157,7 @@ trait NotificationLogics
 
         $notification = [
             'notifyType' => 'order_cancelled',
-            'message' => $order->customer->fname. ' has cancelled Order #'.$order->id,
+            'message' => $order->customer->full_name. ' has cancelled Order #'.$order->id,
             'model' => 'order',
             'url' => $order->id
         ];
@@ -238,7 +237,7 @@ trait NotificationLogics
         $driver_id = $order->driver_id;
 
         $notifyCustomer = [
-            'notifyType' => 'order_accepted',
+            'notifyType' => 'booking_accepted',
             'message' => 'Your Order #'.$order->id.' has been accepted by '. $order->pickDriver->fname. ' for pickup, please keep your items ready.',
             'model' => 'order',
             'url' => $order->id
@@ -271,7 +270,7 @@ trait NotificationLogics
         // Email Notification to Customer
         $customer = User::find($order->customer_id);
         $customerMailData = [
-            'emailType' => 'order_accepted',
+            'emailType' => 'booking_accepted',
             'name'      => $customer->full_name,
             'email'     => $customer->email,
             'orderID'   => $order_id,
