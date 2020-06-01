@@ -37,23 +37,21 @@ trait NotificationLogics
     */
     public static function notifyNewBooking($order)
     {  
-        // $driver_ids = User::whereHas('roles', function ($query) {
-        //                         $query->where('name', '=', 'driver');
-        //                     })
-        //                     ->join('user_details as ud','users.id','=','ud.user_id')
-        //                     ->where('ud.area_id','=',$area_id)
-        //                     ->pluck('users.id')
-        //                     ->toArray();
+        $driver_ids = User::whereHas('roles', function ($query) {
+                                $query->where('name', '=', 'driver');
+                            })
+                            ->pluck('id')
+                            ->toArray();
 
-        // $superAdmin_ids = User::whereHas('roles', function ($query) {
-        //                             $query->where('name', '=', 'superAdmin');
-        //                         })
-        //                       ->pluck('id')
-        //                       ->toArray();
+        $superAdmin_ids = User::whereHas('roles', function ($query) {
+                                    $query->where('name', '=', 'superAdmin');
+                                })
+                              ->pluck('id')
+                              ->toArray();
 
         $notification = [
             'notifyType' => 'new_order',
-            'message'    => $order->customer->fname. ' placed a new order #'.$order->id,
+            'message'    => $order->customer->full_name. ' placed a new booking order #'.$order->id,
             'model'      => 'order',
             'url'        => $order->id
         ];
@@ -80,14 +78,14 @@ trait NotificationLogics
         // Mail::send(new notifyMail($customerMailData));
 
         // Send Notification to All Superadmins
-        // foreach($superAdmin_ids as $id){
-        //     User::find($id)->pushNotification($notification);
-        // }
+        foreach($superAdmin_ids as $id){
+            User::find($id)->pushNotification($notification);
+        }
 
         // Send Notification to All Drivers of that particular area
-        // foreach($driver_ids as $driver_id){
-        //     User::find($driver_id)->AppNotification($notification);
-        // }
+        foreach($driver_ids as $id){
+            User::find($id)->AppNotification($notification);
+        }
         
         $customer->AppNotification($notifyCustomer); 
         
