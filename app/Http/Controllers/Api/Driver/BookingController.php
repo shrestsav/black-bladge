@@ -301,7 +301,7 @@ class BookingController extends Controller
             ]
         );
 
-        // User::notifyAcceptOrder($id);
+        User::notifyArrivedAtDropLocation($order);
         
         return response()->json([
             'message' => 'Reached Drop Location',
@@ -491,6 +491,8 @@ class BookingController extends Controller
                 'message' => 'Forbidden, Drop location type error'
             ], 403);
         }
+
+        User::notifyAddDropLocation($order);
         
         return response()->json([
             'message' => 'Drop location has been added',
@@ -535,6 +537,8 @@ class BookingController extends Controller
             $order->updatePriceForAdvance();
         }
         
+        User::notifyAddTime($order);
+
         return response()->json([
             'message' => 'Time has been Added',
             'order'   => new OrderResource($order),

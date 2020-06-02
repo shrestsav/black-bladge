@@ -190,18 +190,6 @@ trait NotificationLogics
         $adminMessage = $order->customer->full_name. ' placed a new booking order #'.$order->id;
         $customerMessage = "Booking ID: #".$order->id. ". We will contact you soon.";
 
-        // $customerMailData = [
-        //     'emailType' => 'new_booking',
-        //     'name'      => $customer->full_name,
-        //     'email'     => $customer->email,
-        //     'orderID'   => $order->id,
-        //     'subject'   => "BLACK-BLADGE: Your Order: #".$order_id. " has been placed",
-        //     'message'   => "We've received your New Order: #".$order_id. ". We will contact you soon.",
-        // ];
-        
-        // Notify Customer in email
-        // Mail::send(new notifyMail($customerMailData));
-
         // Send Notification to All Superadmins
         foreach($superAdmin_ids as $id){
             self::notifyApp($order, 'new_booking', $id, $adminMessage);
@@ -222,49 +210,18 @@ trait NotificationLogics
     */
     public static function notifyAcceptBooking($order)
     {  
-        $superAdmin_ids = User::whereHas('roles', function ($query) {
-                                    $query->where('name', '=', 'superAdmin');
-                                })
-                                ->pluck('id')->toArray();
+        $superAdmin_ids = self::getUserRoleIDs('superAdmin');
 
-        $customer_id = $order->customer_id;
-
-        $notifyCustomer = [
-            'notifyType' => 'booking_accepted',
-            'message'    => 'Driver: ' . $order->driver->full_name. ' just accepted your booking #' . $order->id. '.',
-            'model'      => 'order',
-            'url'        => $order->id
-        ];
-
-        $notifyAdmin = [
-            'notifyType' => 'booking_accepted',
-            'message'    => 'Booking Order #'.$order->id.' has been accepted by '. $order->driver->full_name. ' for pickup.',
-            'model'      => 'order',
-            'url'        => $order->id
-        ];
+        $adminMessage = 'Booking Order #'.$order->id.' has been accepted by '. $order->driver->full_name. ' for pickup.';
+        $customerMessage = 'Driver: ' . $order->driver->full_name. ' just accepted your booking #' . $order->id. '.';
 
         // Send Order Accepted Notification to All Superadmins
         foreach($superAdmin_ids as $id){
-            User::find($id)->pushNotification($notifyAdmin);
+            self::notifyApp($order, 'booking_accepted', $id, $adminMessage);
         }
 
         // Send Order Accepted Notification to Customer    
-        User::find($customer_id)->AppNotification($notifyCustomer); 
-        
-        // Email Notification to Customer
-        $customer = User::find($order->customer_id);
-
-        $customerMailData = [
-            'emailType' => 'booking_accepted',
-            'name'      => $customer->full_name,
-            'email'     => $customer->email,
-            'orderID'   => $order_id,
-            'subject'   => "BLACK-BLADGE: Booking Order: #".$order_id. " Accepted",
-            'message'   => 'Your Order #'.$order->id.' has been accepted by '. $order->driver->full_name. ' for pickup, be ready'
-        ];
-        
-        // Notify Customer in email
-        Mail::send(new notifyMail($customerMailData));
+        self::notifyApp($order, 'booking_accepted', $order->customer_id, $customerMessage);
 
         return true;
     }
@@ -274,34 +231,18 @@ trait NotificationLogics
     */
     public static function notifyStartTripForPickup($order)
     {  
-        $superAdmin_ids = User::whereHas('roles', function ($query) {
-                                    $query->where('name', '=', 'superAdmin');
-                                })
-                                ->pluck('id')->toArray();
+        $superAdmin_ids = self::getUserRoleIDs('superAdmin');
 
-        $customer_id = $order->customer_id;
-
-        $notifyCustomer = [
-            'notifyType' => 'trip_to_pick_location',
-            'message'    => 'Driver: ' . $order->driver->full_name. ' is on the way to pick you for booking #' . $order->id. '.',
-            'model'      => 'order',
-            'url'        => $order->id
-        ];
-
-        $notifyAdmin = [
-            'notifyType' => 'trip_to_pick_location',
-            'message'    => 'Booking Order #'.$order->id.' trip for pick has been started by Driver: '. $order->driver->full_name. '.',
-            'model'      => 'order',
-            'url'        => $order->id
-        ];
+        $adminMessage = 'Booking Order #'.$order->id.' trip for pick has been started by Driver: '. $order->driver->full_name. '.';
+        $customerMessage = 'Driver: ' . $order->driver->full_name. ' is on the way to pick you for booking #' . $order->id. '.';
 
         // Send Order Accepted Notification to All Superadmins
         foreach($superAdmin_ids as $id){
-            User::find($id)->pushNotification($notifyAdmin);
+            self::notifyApp($order, 'trip_to_pick_location', $id, $adminMessage);
         }
 
         // Send Order Accepted Notification to Customer    
-        User::find($customer_id)->AppNotification($notifyCustomer); 
+        self::notifyApp($order, 'trip_to_pick_location', $order->customer_id, $customerMessage);
 
         return true;
     }
@@ -311,34 +252,18 @@ trait NotificationLogics
     */
     public static function notifyArrivedAtPickLocation($order)
     {  
-        $superAdmin_ids = User::whereHas('roles', function ($query) {
-                                    $query->where('name', '=', 'superAdmin');
-                                })
-                                ->pluck('id')->toArray();
+        $superAdmin_ids = self::getUserRoleIDs('superAdmin');
 
-        $customer_id = $order->customer_id;
-
-        $notifyCustomer = [
-            'notifyType' => 'arrived_at_pick_location',
-            'message'    => 'Driver: ' . $order->driver->full_name. ' is waiting for you. Booking #' . $order->id. '.',
-            'model'      => 'order',
-            'url'        => $order->id
-        ];
-
-        $notifyAdmin = [
-            'notifyType' => 'arrived_at_pick_location',
-            'message'    => 'Booking Order #'.$order->id.', Driver: '. $order->driver->full_name. ' has reached pick location.',
-            'model'      => 'order',
-            'url'        => $order->id
-        ];
+        $adminMessage = 'Booking Order #'.$order->id.', Driver: '. $order->driver->full_name. ' has reached pick location.';
+        $customerMessage = 'Driver: ' . $order->driver->full_name. ' is waiting for you. Booking #' . $order->id. '.';
 
         // Send Order Accepted Notification to All Superadmins
         foreach($superAdmin_ids as $id){
-            User::find($id)->pushNotification($notifyAdmin);
+            self::notifyApp($order, 'arrived_at_pick_location', $id, $adminMessage);
         }
 
         // Send Order Accepted Notification to Customer    
-        User::find($customer_id)->AppNotification($notifyCustomer); 
+        self::notifyApp($order, 'arrived_at_pick_location', $order->customer_id, $customerMessage);
 
         return true;
     }
@@ -348,37 +273,114 @@ trait NotificationLogics
     */
     public static function notifyStartTripForDestination($order)
     {  
-        $superAdmin_ids = User::whereHas('roles', function ($query) {
-                                    $query->where('name', '=', 'superAdmin');
-                                })
-                                ->pluck('id')->toArray();
+        $superAdmin_ids = self::getUserRoleIDs('superAdmin');
 
-        $customer_id = $order->customer_id;
-
-        $notifyCustomer = [
-            'notifyType' => 'start_trip_for_destination',
-            'message'    => 'Booking #' . $order->id. ', Your trip has started. Enjoy your ride.',
-            'model'      => 'order',
-            'url'        => $order->id
-        ];
-
-        $notifyAdmin = [
-            'notifyType' => 'start_trip_for_destination',
-            'message'    => 'Booking Order #'.$order->id.', Driver: '. $order->driver->full_name. ' has started trip for destination',
-            'model'      => 'order',
-            'url'        => $order->id
-        ];
+        $adminMessage = 'Booking Order #'.$order->id.', Driver: '. $order->driver->full_name. ' has started trip for destination';
+        $customerMessage = 'Booking #' . $order->id. ', Your trip has started. Enjoy your ride.';
 
         // Send Order Accepted Notification to All Superadmins
         foreach($superAdmin_ids as $id){
-            User::find($id)->pushNotification($notifyAdmin);
+            self::notifyApp($order, 'start_trip_for_destination', $id, $adminMessage);
         }
 
         // Send Order Accepted Notification to Customer    
-        User::find($customer_id)->AppNotification($notifyCustomer); 
+        self::notifyApp($order, 'start_trip_for_destination', $order->customer_id, $customerMessage);
 
         return true;
     }
+
+    /**
+    * Notify when driver starts trip for destination
+    */
+    public static function notifyArrivedAtDropLocation($order)
+    {  
+        $superAdmin_ids = self::getUserRoleIDs('superAdmin');
+
+        $adminMessage = 'Booking Order #'.$order->id.', Reached Destination';
+        $customerMessage = 'Booking #' . $order->id. ', You have reached the desitnation';
+
+        // Send Order Accepted Notification to All Superadmins
+        foreach($superAdmin_ids as $id){
+            self::notifyApp($order, 'arrived_at_destination', $id, $adminMessage);
+        }
+
+        // Send Order Accepted Notification to Customer    
+        self::notifyApp($order, 'arrived_at_destination', $order->customer_id, $customerMessage);
+
+        return true;
+    }
+
+    /**
+    * Notify when driver adds new drop location
+    */
+    public static function notifyAddDropLocation($order)
+    {  
+        $superAdmin_ids = self::getUserRoleIDs('superAdmin');
+
+        $dropLocationName = $order->dropLocations()->orderBY('created_at','DESC')->first()->drop_location['name'];
+
+        $adminMessage = 'Booking Order #'.$order->id.', Added new drop location '. $dropLocationName;
+        $customerMessage = 'Booking #' . $order->id. ', New destination '.$dropLocationName.' added to your ride.';
+
+        // Send Order Accepted Notification to All Superadmins
+        foreach($superAdmin_ids as $id){
+            self::notifyApp($order, 'added_drop_location', $id, $adminMessage);
+        }
+
+        // Send Order Accepted Notification to Customer    
+        self::notifyApp($order, 'added_drop_location', $order->customer_id, $customerMessage);
+
+        return true;
+    }
+
+    /**
+    * Notify when driver adds time
+    */
+    public static function notifyAddTime($order)
+    {  
+        $superAdmin_ids = self::getUserRoleIDs('superAdmin');
+
+        $extendedMinutes = $order->bookingExtendedTime()->orderBy('created_at','DESC')->first()->minutes;
+        $adminMessage = 'Booking Order #'.$order->id.', Extended time by ' . $extendedMinutes . 'minutes.';
+        $customerMessage = 'Booking #' . $order->id. ', Your trip has been extended by ' . $extendedMinutes . ' minutes.';
+
+        // Send Order Accepted Notification to All Superadmins
+        foreach($superAdmin_ids as $id){
+            self::notifyApp($order, 'extended_time', $id, $adminMessage);
+        }
+
+        // Send Order Accepted Notification to Customer    
+        self::notifyApp($order, 'extended_time', $order->customer_id, $customerMessage);
+
+        return true;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /**
     * Notify Admins if customer cancels booking order
