@@ -267,7 +267,7 @@ class BookingController extends Controller
         
         $order = Order::findOrFail($order_id);
 
-        User::notifyBookingCancelled($order);
+        // User::notifyBookingCancelled($order);
 
         if(Auth::id()!=$order->customer_id){
             return response()->json([
