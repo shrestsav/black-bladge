@@ -30,13 +30,20 @@ class BookingController extends Controller
     /**
      * List of new booking orders.
      */
-    public function new()
+    public function new(Request $request)
     {
         $new = Order::where('status',0)
                         ->whereNull('driver_id')
-                        ->with('customer')
-                        ->orderBy('created_at','DESC')
-                        ->simplePaginate(10);
+                        ->with('customer');
+        
+        if(isset($request->booking_type) && $request->booking_type!='')
+            $new->where('type',$request->booking_type);
+        if(isset($request->order) && $request->order=='asc')
+            $new->orderBy('created_at','ASC');
+        else
+            $new->orderBy('created_at','DESC');
+
+        $new = $new->simplePaginate(10);
         
         return OrderResource::collection($new);
     } 
