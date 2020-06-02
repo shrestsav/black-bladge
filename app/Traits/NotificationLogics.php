@@ -108,7 +108,7 @@ trait NotificationLogics
         return true;
     }
        
-    public function notifyApp($order, $notifyType, $notifyID, $message)
+    public static function notifyApp($order, $notifyType, $notifyID, $message)
     {
         $notification = [
             'notifyType' => $notifyType,
@@ -121,7 +121,7 @@ trait NotificationLogics
         User::find($notifyID)->AppNotification($notification); 
     }
 
-    public function getUserRoleIDs($type)
+    public static function getUserRoleIDs($type)
     {
         $IDs = User::whereHas('roles', function ($query) use ($type) {
                         $query->where('name', '=', $type);
