@@ -108,7 +108,7 @@ trait NotificationLogics
         return true;
     }
        
-    public function notify($order, $notifyType, $notifyID, $message)
+    public function notifyApp($order, $notifyType, $notifyID, $message)
     {
         $notification = [
             'notifyType' => $notifyType,
@@ -204,15 +204,15 @@ trait NotificationLogics
 
         // Send Notification to All Superadmins
         foreach($superAdmin_ids as $id){
-            self::notify($order, 'new_booking', $id, $adminMessage);
+            self::notifyApp($order, 'new_booking', $id, $adminMessage);
         }
 
         // Send Notification to All Drivers of that particular area
         foreach($driver_ids as $id){
-            self::notify($order, 'new_booking', $id, $adminMessage);
+            self::notifyApp($order, 'new_booking', $id, $adminMessage);
         }
         
-        self::notify($order, 'new_booking', $order->customer_id, $customerMessage);
+        self::notifyApp($order, 'new_booking', $order->customer_id, $customerMessage);
         
         return true;
     }
