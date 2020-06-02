@@ -3,7 +3,7 @@
         <div class="col-lg-12">
             <div class="card-wrapper">
                 <general></general>
-                <!-- <offers></offers> -->
+                <offers></offers>
                 <!-- <order></order>
                 <div class="card">
                   <div class="card-header">

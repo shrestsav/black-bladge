@@ -167,7 +167,7 @@ class BookingController extends Controller
             ]
         );
 
-        // User::notifyAcceptOrder($id);
+        User::notifyStartTripForPickup($order);
         
         return response()->json(['message' => 'Trip Started, Please proceed to customer Location']);
     }
@@ -196,7 +196,7 @@ class BookingController extends Controller
             ]
         );
 
-        // User::notifyAcceptOrder($id);
+        User::notifyArrivedAtPickLocation($order);
         
         return response()->json(['message' => 'Arrived at pick location']);
     }
@@ -225,7 +225,7 @@ class BookingController extends Controller
         //     ]
         // );
 
-        // User::notifyAcceptOrder($id);
+        User::notifyStartTripForDestination($order);
         
         return response()->json(['message' => 'Started trip for drop location']);
     }
