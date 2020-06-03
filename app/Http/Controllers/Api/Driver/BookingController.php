@@ -53,8 +53,7 @@ class BookingController extends Controller
      */
     public function active(Request $request)
     {
-        $active = Order::where('status','>',0)
-                        ->where('status','<',6)
+        $active = Order::where('status',1)
                         ->where('driver_id', Auth::id())
                         ->with('customer');
         
@@ -62,10 +61,6 @@ class BookingController extends Controller
             $active->where('type',$request->booking_type);
         if(isset($request->booked_date) && $request->booked_date!='')
             $active->whereDate('created_at',$request->booked_date);
-        
-        
-        $active->orderBy('status','DESC');
-
         if(isset($request->order) && $request->order=='asc')
             $active->orderBy('created_at','ASC');
         else
