@@ -96,7 +96,7 @@ Route::group(['middleware' => ['localization']], function() {
 			Route::group(['prefix' => 'booking'], function() {
 				Route::get('/details/{booking_id}','BookingController@details');
 				Route::get('/new','BookingController@new');
-				Route::get('/active','BookingController@active');
+				Route::get('/active','BookingController@accepted');
 				Route::get('/completed','BookingController@completed');
 
 				Route::get('/accept/{order_id}','BookingController@accept');

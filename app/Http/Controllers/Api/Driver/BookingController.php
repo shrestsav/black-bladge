@@ -49,9 +49,9 @@ class BookingController extends Controller
     } 
 
     /**
-     * List of active booking orders.
+     * List of accepted booking orders.
      */
-    public function active(Request $request)
+    public function accepted(Request $request)
     {
         $active = Order::where('status',1)
                         ->where('driver_id', Auth::id())
