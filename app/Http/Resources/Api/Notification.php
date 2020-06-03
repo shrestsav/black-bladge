@@ -20,7 +20,7 @@ class Notification extends JsonResource
                 "notifyType" => $this->data['notifyType'],
                 "message"    => $this->data['message'],
                 "url"        => $this->data['url'],
-                "created_at" => $this->data['created_at']
+                "created_at" => $this->created_at
             ],
             'read_at'     => $this->read_at,
             'created_at'  => $this->created_at
