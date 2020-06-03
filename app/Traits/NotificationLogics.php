@@ -187,7 +187,7 @@ trait NotificationLogics
         $driver_ids = self::getUserRoleIDs('driver');
         $superAdmin_ids = self::getUserRoleIDs('superAdmin');
         
-        $adminMessage = $order->customer->full_name. ' placed a new booking order #'.$order->id;
+        $adminMessage = $order->customer->full_name. ' just created new booking #'.$order->id;
         $customerMessage = "Booking ID: #".$order->id. ". We will contact you soon.";
 
         // Send Notification to All Superadmins
@@ -318,7 +318,7 @@ trait NotificationLogics
         $superAdmin_ids = self::getUserRoleIDs('superAdmin');
 
         $adminMessage = 'Booking Order #'.$order->id.', Payment Done and Closed';
-        $customerMessage = 'Booking #' . $order->id. ', Your payment has been successfuly made.';
+        $customerMessage = 'Booking #' . $order->id. ', Your payment has been successfully made.';
 
         // Send Order Accepted Notification to All Superadmins
         foreach($superAdmin_ids as $id){
@@ -432,7 +432,7 @@ trait NotificationLogics
     {  
         $superAdmin_ids = self::getUserRoleIDs('superAdmin');
 
-        $adminMessage = 'Booking Order #' . $order->id . ' has been cancelled by'. $order->customer->full_name;
+        $adminMessage = 'Booking Order #' . $order->id . ' has been cancelled by '. $order->customer->full_name;
         $customerMessage = 'Your Booking #' . $order->id . ', has been cancelled';
 
         // Send Order Accepted Notification to All Superadmins

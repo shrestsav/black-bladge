@@ -24,6 +24,7 @@ use App\Http\Resources\Api\AppDefault as AppDefaultResource;
 use App\Http\Resources\Api\Driver\Driver as DriverResource;
 use App\Http\Resources\Api\Customer\Customer as CustomerResource;
 use App\Http\Resources\Api\Driver\Order as OrderResource;
+use App\Http\Resources\Api\Notification as NotificationResource;
 
 
 
@@ -357,7 +358,8 @@ class AuthController extends Controller
         $user->unreadNotifications()->update(['read_at' => now()]);
 
         // Return notifications 
-        return response()->json($user->notifications->take(50));
+        // return response()->json($user->notifications->take(50));
+        return NotificationResource::collection($user->notifications->take(50));
     }
 
     public function countUnreadNotifications()
