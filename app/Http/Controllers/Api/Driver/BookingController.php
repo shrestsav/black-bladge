@@ -337,7 +337,7 @@ class BookingController extends Controller
             ]
         );
 
-        // User::notifyAcceptOrder($id);
+        User::notifyPaymentDone($order);
         
         return response()->json([
             'message' => 'Payment Done and Booking Completed',
@@ -351,7 +351,7 @@ class BookingController extends Controller
     public function cancel(Request $request, $id)
     {
         $order = Order::findOrFail($id);
-
+        $orderBeforeCancel = $order;
         $validator = Validator::make($request->all(), [
             'remark'     => 'nullable|string|max:500'
         ]);
@@ -389,14 +389,15 @@ class BookingController extends Controller
                 'remark'    =>  $request->remark,
             ]);
             
-            // User::notifyCancelForPickup($request->order_id);
+            User::notifyDriverCancelBooking($orderBeforeCancel);
+
             return response()->json([
                 'message'=>'Booking Pickup Cancelled'
             ]);
         }
         elseif(($order->status==1 || $order->status==2 || $order->status==3) && $order->details->PAB!=Auth::id()){
             return response()->json([
-                'message'=>'Please contact your manager to cancel this pickup'
+                'message'=>'Please contact your manager to cancel this booking'
             ],403);
         }
 

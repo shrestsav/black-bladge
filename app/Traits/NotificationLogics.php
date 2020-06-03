@@ -311,6 +311,27 @@ trait NotificationLogics
     }
 
     /**
+    * Notify when payment done
+    */
+    public static function notifyPaymentDone($order)
+    {  
+        $superAdmin_ids = self::getUserRoleIDs('superAdmin');
+
+        $adminMessage = 'Booking Order #'.$order->id.', Payment Done and Closed';
+        $customerMessage = 'Booking #' . $order->id. ', Your payment has been successfuly made.';
+
+        // Send Order Accepted Notification to All Superadmins
+        foreach($superAdmin_ids as $id){
+            self::notifyApp($order, 'arrived_at_destination', $id, $adminMessage);
+        }
+
+        // Send Order Accepted Notification to Customer    
+        self::notifyApp($order, 'arrived_at_destination', $order->customer_id, $customerMessage);
+
+        return true;
+    }
+
+    /**
     * Notify when driver adds new drop location
     */
     public static function notifyAddDropLocation($order)
@@ -343,6 +364,27 @@ trait NotificationLogics
         $extendedMinutes = $order->bookingExtendedTime()->orderBy('created_at','DESC')->first()->minutes;
         $adminMessage = 'Booking Order #'.$order->id.', Extended time by ' . $extendedMinutes . 'minutes.';
         $customerMessage = 'Booking #' . $order->id. ', Your trip has been extended by ' . $extendedMinutes . ' minutes.';
+
+        // Send Order Accepted Notification to All Superadmins
+        foreach($superAdmin_ids as $id){
+            self::notifyApp($order, 'extended_time', $id, $adminMessage);
+        }
+
+        // Send Order Accepted Notification to Customer    
+        self::notifyApp($order, 'extended_time', $order->customer_id, $customerMessage);
+
+        return true;
+    }
+
+    /**
+    * Notify when driver cancels order
+    */
+    public static function notifyDriverCancelBooking($order)
+    {  
+        $superAdmin_ids = self::getUserRoleIDs('superAdmin');
+
+        $adminMessage = 'Booking Order #'.$order->id.', cancelled by Driver ' .  $order->driver->full_name;
+        $customerMessage = 'Booking #' . $order->id. ', cancelled by Driver ' .  $order->driver->full_name;
 
         // Send Order Accepted Notification to All Superadmins
         foreach($superAdmin_ids as $id){
