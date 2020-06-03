@@ -78,6 +78,11 @@ class Order extends Model
         return $this->hasMany(BookingAddedTime::class,'order_id');
     }
 
+    public function bookingLogs()
+    {
+        return $this->hasMany(BookingLog::class,'order_id');
+    }
+
     public function additionalBookedMinute()
     {
         $bookedTime = 0;

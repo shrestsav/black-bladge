@@ -383,8 +383,9 @@ trait NotificationLogics
     {  
         $superAdmin_ids = self::getUserRoleIDs('superAdmin');
 
-        $adminMessage = 'Booking Order #'.$order->id.', cancelled by Driver ' .  $order->driver->full_name;
-        $customerMessage = 'Booking #' . $order->id. ', cancelled by Driver ' .  $order->driver->full_name;
+        $cancelDriver = $order->bookingLogs()->where('type','assign_cancel')->orderBy('created_at','DESC')->first()->user->full_name;
+        $adminMessage = 'Booking Order #'.$order->id.', cancelled by Driver ' .  $cancelDriver;
+        $customerMessage = 'Booking #' . $order->id. ', cancelled by Driver ' .  $cancelDriver;
 
         // Send Order Accepted Notification to All Superadmins
         foreach($superAdmin_ids as $id){

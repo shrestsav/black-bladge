@@ -351,7 +351,7 @@ class BookingController extends Controller
     public function cancel(Request $request, $id)
     {
         $order = Order::findOrFail($id);
-        $orderBeforeCancel = $order;
+
         $validator = Validator::make($request->all(), [
             'remark'     => 'nullable|string|max:500'
         ]);
@@ -389,7 +389,7 @@ class BookingController extends Controller
                 'remark'    =>  $request->remark,
             ]);
             
-            User::notifyDriverCancelBooking($orderBeforeCancel);
+            User::notifyDriverCancelBooking($order);
 
             return response()->json([
                 'message'=>'Booking Pickup Cancelled'
