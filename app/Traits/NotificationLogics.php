@@ -322,11 +322,11 @@ trait NotificationLogics
 
         // Send Order Accepted Notification to All Superadmins
         foreach($superAdmin_ids as $id){
-            self::notifyApp($order, 'arrived_at_destination', $id, $adminMessage);
+            self::notifyApp($order, 'payment_successfull', $id, $adminMessage);
         }
 
         // Send Order Accepted Notification to Customer    
-        self::notifyApp($order, 'arrived_at_destination', $order->customer_id, $customerMessage);
+        self::notifyApp($order, 'payment_successfull', $order->customer_id, $customerMessage);
 
         return true;
     }
@@ -430,47 +430,18 @@ trait NotificationLogics
     */
     public static function notifyBookingCancelled($order)
     {  
-        $superAdmin_ids = User::whereHas('roles', function ($query) {
-                                    $query->where('name', '=', 'superAdmin');
-                                })
-                                ->pluck('id')
-                                ->toArray();
+        $superAdmin_ids = self::getUserRoleIDs('superAdmin');
 
-        $notification = [
-            'notifyType' => 'order_cancelled',
-            'message' => $order->customer->full_name. ' has cancelled Order #'.$order->id,
-            'model' => 'order',
-            'url' => $order->id
-        ];
-
-        // Send Cancel Order Mail to Admin
-        $adminMailData = [
-            'emailType' => 'order_cancelled',
-            'name'      => 'BLACK-BLADGE',
-            'email'     => env('ADMIN_EMAIL'),
-            'subject'   => 'BLACK-BLADGE: Order #'.$order->id.' Cancelled',
-            'message'   => $order->customer->fname. ' has cancelled Order #'.$order->id,
-        ];
-
-        Mail::send(new notifyMail($adminMailData));
-
-        // Send Cancel Order Mail to customer
-        $customer = User::find($order->customer_id);
-        
-        $customerMailData = [
-            'emailType' => 'order_cancelled',
-            'name'      => $customer->full_name,
-            'email'     => $customer->email,
-            'subject'   => "BLACK-BLADGE: Order Cancelled",
-            'message'   => "Your Order #".$order_id." has been cancelled",
-        ];
-
-        Mail::send(new notifyMail($customerMailData));
+        $adminMessage = 'Booking Order #' . $order->id . ' has been cancelled by'. $order->customer->full_name;
+        $customerMessage = 'Your Booking #' . $order->id . ', has been cancelled';
 
         // Send Order Accepted Notification to All Superadmins
         foreach($superAdmin_ids as $id){
-            User::find($id)->pushNotification($notification);
+            self::notifyApp($order, 'order_cancelled', $id, $adminMessage);
         }
+
+        // Send Order Accepted Notification to Customer    
+        self::notifyApp($order, 'order_cancelled', $order->customer_id, $customerMessage);
         
         return true;
     }
