@@ -76,6 +76,7 @@
       .then(response => {
         Echo.private('App.User.' + response.data.id)
         .notification((notification) => {
+            console.log(notification)
             this.$swal(notification.message);
             this.newNotifications.push(notification)
         })
