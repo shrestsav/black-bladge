@@ -108,7 +108,7 @@ trait NotificationLogics
         return true;
     }
        
-    public static function notifyApp($order, $notifyType, $notifyID, $message)
+    public static function notifyApp($order, $notifyType, $notifyID, $message, $sendTo)
     {
         $notification = [
             'notifyType' => $notifyType,
@@ -117,8 +117,14 @@ trait NotificationLogics
             'url'        => $order->id
         ];
 
-        // Send Order Accepted Notification to Customer    
-        User::find($notifyID)->AppNotification($notification); 
+        if($sendTo=='web'){
+            // Send Order Accepted Notification to Web Admins    
+            User::find($notifyID)->pushNotification($notification); 
+        }
+        else{
+            // Send Order Accepted Notification to Customer    
+            User::find($notifyID)->AppNotification($notification); 
+        }   
     }
 
     public static function getUserRoleIDs($type)
@@ -192,15 +198,15 @@ trait NotificationLogics
 
         // Send Notification to All Superadmins
         foreach($superAdmin_ids as $id){
-            self::notifyApp($order, 'new_booking', $id, $adminMessage);
+            self::notifyApp($order, 'new_booking', $id, $adminMessage,'web');
         }
 
         // Send Notification to All Drivers of that particular area
         foreach($driver_ids as $id){
-            self::notifyApp($order, 'new_booking', $id, $adminMessage);
+            self::notifyApp($order, 'new_booking', $id, $adminMessage,'mobile');
         }
         
-        self::notifyApp($order, 'new_booking', $order->customer_id, $customerMessage);
+        self::notifyApp($order, 'new_booking', $order->customer_id, $customerMessage,'mobile');
         
         return true;
     }
@@ -217,11 +223,11 @@ trait NotificationLogics
 
         // Send Order Accepted Notification to All Superadmins
         foreach($superAdmin_ids as $id){
-            self::notifyApp($order, 'booking_accepted', $id, $adminMessage);
+            self::notifyApp($order, 'booking_accepted', $id, $adminMessage,'web');
         }
 
         // Send Order Accepted Notification to Customer    
-        self::notifyApp($order, 'booking_accepted', $order->customer_id, $customerMessage);
+        self::notifyApp($order, 'booking_accepted', $order->customer_id, $customerMessage,'mobile');
 
         return true;
     }
@@ -238,11 +244,11 @@ trait NotificationLogics
 
         // Send Order Accepted Notification to All Superadmins
         foreach($superAdmin_ids as $id){
-            self::notifyApp($order, 'trip_to_pick_location', $id, $adminMessage);
+            self::notifyApp($order, 'trip_to_pick_location', $id, $adminMessage,'web');
         }
 
         // Send Order Accepted Notification to Customer    
-        self::notifyApp($order, 'trip_to_pick_location', $order->customer_id, $customerMessage);
+        self::notifyApp($order, 'trip_to_pick_location', $order->customer_id, $customerMessage,'mobile');
 
         return true;
     }
@@ -259,11 +265,11 @@ trait NotificationLogics
 
         // Send Order Accepted Notification to All Superadmins
         foreach($superAdmin_ids as $id){
-            self::notifyApp($order, 'arrived_at_pick_location', $id, $adminMessage);
+            self::notifyApp($order, 'arrived_at_pick_location', $id, $adminMessage,'web');
         }
 
         // Send Order Accepted Notification to Customer    
-        self::notifyApp($order, 'arrived_at_pick_location', $order->customer_id, $customerMessage);
+        self::notifyApp($order, 'arrived_at_pick_location', $order->customer_id, $customerMessage,'mobile');
 
         return true;
     }
@@ -280,11 +286,11 @@ trait NotificationLogics
 
         // Send Order Accepted Notification to All Superadmins
         foreach($superAdmin_ids as $id){
-            self::notifyApp($order, 'start_trip_for_destination', $id, $adminMessage);
+            self::notifyApp($order, 'start_trip_for_destination', $id, $adminMessage,'web');
         }
 
         // Send Order Accepted Notification to Customer    
-        self::notifyApp($order, 'start_trip_for_destination', $order->customer_id, $customerMessage);
+        self::notifyApp($order, 'start_trip_for_destination', $order->customer_id, $customerMessage,'mobile');
 
         return true;
     }
@@ -301,11 +307,11 @@ trait NotificationLogics
 
         // Send Order Accepted Notification to All Superadmins
         foreach($superAdmin_ids as $id){
-            self::notifyApp($order, 'arrived_at_destination', $id, $adminMessage);
+            self::notifyApp($order, 'arrived_at_destination', $id, $adminMessage,'web');
         }
 
         // Send Order Accepted Notification to Customer    
-        self::notifyApp($order, 'arrived_at_destination', $order->customer_id, $customerMessage);
+        self::notifyApp($order, 'arrived_at_destination', $order->customer_id, $customerMessage,'mobile');
 
         return true;
     }
@@ -322,11 +328,11 @@ trait NotificationLogics
 
         // Send Order Accepted Notification to All Superadmins
         foreach($superAdmin_ids as $id){
-            self::notifyApp($order, 'payment_successfull', $id, $adminMessage);
+            self::notifyApp($order, 'payment_successfull', $id, $adminMessage,'web');
         }
 
         // Send Order Accepted Notification to Customer    
-        self::notifyApp($order, 'payment_successfull', $order->customer_id, $customerMessage);
+        self::notifyApp($order, 'payment_successfull', $order->customer_id, $customerMessage,'mobile');
 
         return true;
     }
@@ -345,11 +351,11 @@ trait NotificationLogics
 
         // Send Order Accepted Notification to All Superadmins
         foreach($superAdmin_ids as $id){
-            self::notifyApp($order, 'added_drop_location', $id, $adminMessage);
+            self::notifyApp($order, 'added_drop_location', $id, $adminMessage,'web');
         }
 
         // Send Order Accepted Notification to Customer    
-        self::notifyApp($order, 'added_drop_location', $order->customer_id, $customerMessage);
+        self::notifyApp($order, 'added_drop_location', $order->customer_id, $customerMessage,'mobile');
 
         return true;
     }
@@ -367,11 +373,11 @@ trait NotificationLogics
 
         // Send Order Accepted Notification to All Superadmins
         foreach($superAdmin_ids as $id){
-            self::notifyApp($order, 'extended_time', $id, $adminMessage);
+            self::notifyApp($order, 'extended_time', $id, $adminMessage,'web');
         }
 
         // Send Order Accepted Notification to Customer    
-        self::notifyApp($order, 'extended_time', $order->customer_id, $customerMessage);
+        self::notifyApp($order, 'extended_time', $order->customer_id, $customerMessage,'mobile');
 
         return true;
     }
@@ -389,11 +395,11 @@ trait NotificationLogics
 
         // Send Order Accepted Notification to All Superadmins
         foreach($superAdmin_ids as $id){
-            self::notifyApp($order, 'extended_time', $id, $adminMessage);
+            self::notifyApp($order, 'extended_time', $id, $adminMessage,'web');
         }
 
         // Send Order Accepted Notification to Customer    
-        self::notifyApp($order, 'extended_time', $order->customer_id, $customerMessage);
+        self::notifyApp($order, 'extended_time', $order->customer_id, $customerMessage,'mobile');
 
         return true;
     }
@@ -437,11 +443,11 @@ trait NotificationLogics
 
         // Send Order Accepted Notification to All Superadmins
         foreach($superAdmin_ids as $id){
-            self::notifyApp($order, 'order_cancelled', $id, $adminMessage);
+            self::notifyApp($order, 'order_cancelled', $id, $adminMessage,'web');
         }
 
         // Send Order Accepted Notification to Customer    
-        self::notifyApp($order, 'order_cancelled', $order->customer_id, $customerMessage);
+        self::notifyApp($order, 'order_cancelled', $order->customer_id, $customerMessage,'mobile');
         
         return true;
     }
