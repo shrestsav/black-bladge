@@ -35,15 +35,15 @@ class TestController extends Controller
           'model' => 'order',
           'url' => 1
       ];
-      // $user = User::find($user_id)->pushNotification($notification);
-      $user = User::find($user_id)->AppNotification($notification);
+      $user = User::find($user_id)->pushNotification($notification);
+      // $user = User::find($user_id)->AppNotification($notification);
       // try{
       //   User::find($user_id)->sendFCMNotification($notification);
       // }
       // catch(exception $e){
       //   return 'This User May not have any device tokens';
       // }
-      return 'Notification Sent';
+      return 'Notification Sent right now for admins only';
     }
 
     public function random(Request $request)
