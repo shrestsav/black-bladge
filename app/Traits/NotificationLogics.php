@@ -198,7 +198,7 @@ trait NotificationLogics
 
         // Send Notification to All Superadmins
         foreach($superAdmin_ids as $id){
-            // self::notifyApp($order, 'new_booking', $id, $adminMessage,'web');
+            self::notifyApp($order, 'new_booking', $id, $adminMessage,'web');
         }
 
         // Send Notification to All Drivers of that particular area
