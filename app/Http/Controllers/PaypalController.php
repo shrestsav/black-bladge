@@ -68,7 +68,7 @@ class PaypalController extends Controller
 		$transaction->setAmount($amount)
 		    		->setItemList($itemList)
 		    		->setDescription("Payment description")
-		    		->setInvoiceNumber('GORINSE#'.$request->order_id.'-'.uniqid());
+		    		->setInvoiceNumber('BLACK-BADGE#'.$request->order_id.'-'.uniqid());
 
 		$baseUrl = url('');
 		$redirectUrls = new RedirectUrls();

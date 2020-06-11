@@ -61,32 +61,6 @@ Route::group(['middleware' => ['localization']], function() {
 				Route::get('/legal','PageController@legalDocs');
 				Route::get('/company-contacts','PageController@contact');
 			});
-
-			
-
-
-
-
-
-			// Route::apiResource('/customers','CustomerController');
-				
-			// 	Route::post('/changePhone','CustomerController@changePhone');
-			// 	Route::post('/updatePhone','CustomerController@updatePhone');
-
-			// Route::get('/getAddress','CustomerController@getAddress');
-			// Route::post('/addAddress','CustomerController@addAddress');
-			// Route::post('/updateAddress','CustomerController@updateAddress');
-			// Route::post('/address/setDefault','CustomerController@setDefaultAddress');
-			// Route::delete('/deleteAddress/{id}','CustomerController@deleteAddress');
-
-			// Route::get('/order/active','OrderController@activeOrderListCustomer');
-			// Route::get('/order/history','OrderController@deliveredOrderListCustomer');
-			// Route::get('/generateInvoice/{order_id}','OrderController@customerOrderInvoice');
-			// Route::get('/confirmInvoice/{order_id}','OrderController@customerConfirmInvoice');
-			
-			// Route::delete('/cancelOrderForCustomer/{order_id}','OrderController@cancelOrderForCustomer');
-
-			// 
 		});
 		
 		Route::group(['namespace' => 'Driver', 'prefix' => 'driver', 'middleware' => ['role:driver']], function() {
@@ -111,34 +85,6 @@ Route::group(['middleware' => ['localization']], function() {
 				Route::post('/add/dropLocation/{order_id}','BookingController@addDropLocation');
 				Route::post('/add/time/{order_id}','BookingController@addTime');
 			});
-
-			// Route::post('/acceptOrder','DriverOrderController@acceptOrder');
-			// Route::post('/cancelPickup','DriverOrderController@cancelPickup');
-			
-			// //This API has been divided into three seperate routes below
-			// Route::get('/pendingOrders','DriverOrderController@pendingOrders');
-			
-			// Route::get('/driver/order/pick','DriverOrderController@pickOrders');
-			// Route::get('/driver/order/new','DriverOrderController@newOrders');
-			// Route::get('/driver/order/drop','DriverOrderController@dropOrders');
-
-			// Route::get('/driver/NotifyCounts','DriverOrderController@counts');
-
-			// Route::get('/services','CoreController@services');
-			// Route::get('/items','CoreController@items');
-			// Route::get('/serviceWithItems','CoreController@serviceWithItems');
-
-			// Route::post('/driver/generateInvoice','DriverOrderController@addItemsGenerateInvoice');
-			
-			// Route::get('/driver/generateInvoice/{order_id}','DriverOrderController@driverOrderInvoice');
-			// Route::get('/driver/orders','DriverOrderController@orderListForDriver');
-
-			// Route::post('/sendOrderInvoiceForApproval','DriverOrderController@sendOrderInvoiceForApproval');
-			// Route::get('/dropAtOffice/{order_id}','DriverOrderController@driverDropAtOffice');
-			// Route::get('/pickedFromOffice/{order_id}','DriverOrderController@driverPickedFromOffice');
-			// Route::get('/deliveredToCustomer/{order_id}','DriverOrderController@deliveredToCustomer');
-			
-			// Route::post('/changeMainArea','DriverController@changeMainArea');
 		});
 
 		Route::get('/appConfigs','CoreController@appDefaults');

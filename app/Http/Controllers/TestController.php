@@ -26,6 +26,7 @@ class TestController extends Controller
 
         return 'yes';
     }
+
     public function notification($user_id)
     {
       $notification = [
@@ -35,15 +36,13 @@ class TestController extends Controller
           'model' => 'order',
           'url' => 1
       ];
-      $user = User::find($user_id)->pushNotification($notification);
-      // $user = User::find($user_id)->AppNotification($notification);
-      // try{
-      //   User::find($user_id)->sendFCMNotification($notification);
-      // }
-      // catch(exception $e){
-      //   return 'This User May not have any device tokens';
-      // }
-      return 'Notification Sent right now for admins only';
+      //This is for web
+      // $user = User::find($user_id)->pushNotification($notification);
+
+      //This is for mobile apps
+      $user = User::find($user_id)->AppNotification($notification);
+      
+      return 'Notification Sent right now for apps only';
     }
 
     public function random(Request $request)

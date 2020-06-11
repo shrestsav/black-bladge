@@ -8,9 +8,9 @@ use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class SystemNotification extends Notification
+class SystemNotification extends Notification implements ShouldQueue
 {
-    // use Queueable;
+    use Queueable;
     public $message;
     /**
      * Create a new notification instance.

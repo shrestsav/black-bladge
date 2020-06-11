@@ -72,7 +72,7 @@ class AuthController extends Controller
                 'OTP_timestamp' => $request['OTP_timestamp']
             ]);
 
-            // $customer = $check->first()->sendOTP();
+            $customer = $check->first()->sendOTP();
 
             return response()->json([
                 'message'     => trans('response.OTP_sent'),
@@ -96,7 +96,7 @@ class AuthController extends Controller
             //Assign User as Customer
             $customer->attachRole($role_id);
 
-            // $customer->sendOTP();
+            $customer->sendOTP();
 
             return response()->json([
                 'message'     => trans('response.OTP_sent'),
@@ -307,48 +307,6 @@ class AuthController extends Controller
     {
         return User::find(Auth::id())->tok();
     }
-
-    public function test()
-    {
-        $address = [
-            [
-                'name' => 'bharatpur',
-                'location' => '19.123.4324.123.1234',
-                'Block' => 'D'
-            ],
-            [
-                'name' => 'Chitwan',
-                'location' => '66.112.432.123.132',
-                'Block' => 'E'
-            ],
-        ];
-        UserDetail::where('id',1)->update(['address' => json_encode($address,true)]);
-        return json_decode(UserDetail::find(1)->address);
-        return url('').'/oauth/token';
-        // return 'something';
-        $http = new \GuzzleHttp\Client();
-        // $request = $http->get('google.com');
-        // return $request->getBody();
-        $response = $http->post('http://go.rinse/oauth/token', [
-            'form_params' => [
-                'grant_type' => 'password',
-                'client_id' => 2,
-                'client_secret' => 'wNfEEpIS6VUHVZKVhgUWGNjcNTUvkd5gGtsnCgnb',
-                'username' => '+9779808224917',
-                'password' => '3067',
-                'scope' => '',
-            ],
-        ]);
-
-        // return $response;
-        return json_decode((string) $response->getBody(), true);
-
-        // $getUnregisteredUser = User::where('id',1)->first();
-        // $accessToken = $getUnregisteredUser->createToken('manual token');
-        // $accessToken = $getUnregisteredUser->createToken('manual token')->accessToken;
-        // return $accessToken;
-    }
-
 
     public function notifications()
     {

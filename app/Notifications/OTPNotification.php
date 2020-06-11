@@ -41,7 +41,7 @@ class OTPNotification extends Notification
     public function toTwilio($notifiable)
     {
         return (new TwilioSmsMessage())
-            ->content("Your OTP Code is " . $this->OTP . "\n\n Go Rinse");
+            ->content("Your OTP Code is " . $this->OTP . "\n\n Black Badge");
     }
 
     /**
