@@ -7,6 +7,7 @@ use App\Mail\notifyMail;
 use App\Order;
 use App\User;
 use Mail;
+use App\Http\Resources\Api\Admin\Order as OrderResource;
 
 trait NotificationLogics
 {
@@ -334,6 +335,19 @@ trait NotificationLogics
         // Send Order Accepted Notification to Customer    
         self::notifyApp($order, 'payment_successfull', $order->customer_id, $customerMessage,'mobile');
 
+        $customer = User::find($order->customer_id);
+        
+        $customerMailData = [
+            'emailType' => 'booking_completed',
+            'name'      => $customer->full_name,
+            'email'     => $customer->email,
+            'subject'   => "BLACK-BLADGE: Booking Completed",
+            'message'   => "Thank you ".$customer->full_name." for using Black Badge. Hope you've enjoying the experience. Here are your Trip Details.",
+        ];
+        
+        // Notify Customer in email
+        Mail::send(new notifyMail($customerMailData));
+        
         return true;
     }
 

@@ -143,7 +143,7 @@ class CoreController extends Controller
             'offer_name'         => 'required|string',
             'offer_description'  => 'required|string',
             'offer_display_type' => 'required|numeric',
-            'offer_image'        => 'required|mimes:jpeg,png|max:3072',
+            'offer_image'        => 'required|max:3072',
         ]);
 
         $offer = new Offer();
