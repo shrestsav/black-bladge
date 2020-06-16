@@ -21,6 +21,7 @@ class CreatePaymentCardsTable extends Migration
             $table->bigInteger('card_no');
             $table->string('month_year');
             $table->integer('csv')->unsigned();
+            $table->smallInteger('default')->default(0);
             $table->timestamps();
         });
     }

@@ -56,6 +56,7 @@ Route::group(['middleware' => ['localization']], function() {
 			});
 
 			Route::apiResource('/cards','CardController');
+			Route::get('/card/default/{card_id}','CardController@setDefault');
 			
 			Route::group(['prefix' => 'page'], function() {
 				Route::get('/legal','PageController@legalDocs');

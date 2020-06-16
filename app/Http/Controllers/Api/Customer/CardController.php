@@ -7,6 +7,7 @@ use Validator;
 use App\PaymentCard;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Api\Customer\Card as PaymentCardResource;
 
 class CardController extends Controller
 {
@@ -19,7 +20,7 @@ class CardController extends Controller
     {
         $cards = PaymentCard::where('user_id',Auth::id())->get();
 
-        return response()->json($cards);
+        return PaymentCardResource::collection($cards);
     }
 
     /**
@@ -45,6 +46,11 @@ class CardController extends Controller
             ], 422);
         }
 
+        if(PaymentCard::where('user_id',Auth::id())->exists())
+            $default = 0;
+        else
+            $default = 1;
+
         $card = PaymentCard::create([
             'user_id'     =>  Auth::id(),
             'name'        =>  $request->name,
@@ -52,12 +58,40 @@ class CardController extends Controller
             'card_no'     =>  $request->card_no,
             'month_year'  =>  $request->month_year,
             'csv'         =>  $request->csv,
+            'default'     =>  $default,
         ]);
         
         return response()->json([
-            "card"    => $card,
+            "card"    => new PaymentCardResource($card),
             "message" => trans('response.card.saved'),
         ], 200);
+    }
+
+    public function setDefault($id)
+    {
+        $card = PaymentCard::findOrFail($id);
+
+        if($card->user_id != Auth::id()){
+            return response()->json([
+                "message" => "Forbidden",
+            ], 403);
+        }
+
+        //First set all card as not default
+        $defaultCard = PaymentCard::where('user_id',Auth::id())
+            ->where('default',1)
+            ->update([
+                'default' => 0
+            ]);
+
+        $card->update([
+            'default' => 1
+        ]);
+
+        return response()->json([
+            "card"    => new PaymentCardResource($card),
+            "message" => "Card set as default",
+        ]);
     }
 
     /**

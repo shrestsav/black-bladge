@@ -12,6 +12,7 @@ class PaymentCard extends Model
     	'type',
     	'card_no',
     	'month_year',
-    	'csv'
+    	'csv',
+    	'default'
     ];
 }
