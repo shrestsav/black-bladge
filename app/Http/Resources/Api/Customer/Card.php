@@ -22,7 +22,7 @@ class Card extends JsonResource
             'card_no'     => $this->card_no,
             'month_year'  => $this->month_year,
             'csv'         => $this->csv,
-            'default'     => $this->default ? true : false,
+            'is_default'  => $this->is_default ? true : false,
             'created_at'  => $this->created_at
         ];
     }

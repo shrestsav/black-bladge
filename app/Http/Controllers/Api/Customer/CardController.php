@@ -58,13 +58,13 @@ class CardController extends Controller
             'card_no'     =>  $request->card_no,
             'month_year'  =>  $request->month_year,
             'csv'         =>  $request->csv,
-            'default'     =>  $default,
+            'is_default'  =>  $default,
         ]);
         
         return response()->json([
             "card"    => new PaymentCardResource($card),
-            "message" => trans('response.card.saved'),
-        ], 200);
+            "message" => trans('response.card.saved')
+        ]);
     }
 
     public function setDefault($id)
@@ -79,13 +79,13 @@ class CardController extends Controller
 
         //First set all card as not default
         $defaultCard = PaymentCard::where('user_id',Auth::id())
-            ->where('default',1)
+            ->where('is_default',1)
             ->update([
-                'default' => 0
+                'is_default' => 0
             ]);
 
         $card->update([
-            'default' => 1
+            'is_default' => 1
         ]);
 
         return response()->json([
