@@ -16,6 +16,7 @@ class Card extends JsonResource
     {
         return [
             'id'          => $this->id,
+            'name'        => $this->name,
             'user_id'     => $this->user_id,
             'type'        => $this->type,
             'type_str'    => $this->type==3 ? 'Amex' : ($this->type==4 ? 'Visa' : ($this->type==5 ? 'Master' : 'Unknown')),
