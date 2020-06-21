@@ -6,13 +6,13 @@
                     href="javascript:;"
                     class="btn btn-sm btn-danger"
                     @click="cancelOrders"
-                    v-if="pick.orderIds.length"
+                    v-if="pick.orderIds.length && active.status!='Cancelled' && pick.orders"
                 >Cancel Booking</a>
                 <a
                     href="javascript:;"
                     class="btn btn-sm btn-danger"
                     @click="deleteOrders"
-                    v-if="pick.orderIds.length"
+                    v-if="pick.orderIds.length && pick.orders"
                 >Delete Booking</a>
                 <a
                     href="javascript:;"
@@ -210,6 +210,7 @@
                                                 class="custom-control-input"
                                                 :id="'check_'+index"
                                                 type="checkbox"
+                                                :checked="pick.orderIds.includes(item.id)"
                                                 @change="pickMultipleOrders(item.id,$event)"
                                             />
                                             <label
@@ -296,6 +297,7 @@ export default {
         getOrders(status = "Active") {
             this.active.status = status;
             this.getResults();
+            this.pick.orderIds = [];
             this.$store.dispatch("getOrdersCount");
         },
         getResults(page = 1) {
@@ -367,7 +369,7 @@ export default {
                     axios
                         .post("/cancelMultipleOrders", this.pick)
                         .then(response => {
-                            this.getOrders();
+                            this.getOrders(this.active.status);
                             showNotify("success", response.data.message);
                         })
                         .catch(error => {
@@ -390,7 +392,7 @@ export default {
                     axios
                         .post("/deleteMultipleOrders", this.pick)
                         .then(response => {
-                            this.getOrders();
+                            this.getOrders(this.active.status);
                             showNotify("success", response.data.message);
                         })
                         .catch(error => {

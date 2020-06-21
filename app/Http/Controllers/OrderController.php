@@ -196,22 +196,31 @@ class OrderController extends Controller
         return $request->all();
     }    
 
-    //Just soft deleting bookings / cancel booking
+    /**
+     * Just soft deleting bookings / cancel booking
+     */
     public function cancelMultipleOrders(Request $request)
     {
+      $orders = Order::whereIn('id',$request->orderIds)->delete();
+      return response()->json(['message'=>'Orders have been cancelled']);
+    }
+
+    /**
+     * deleting bookings permanently
+     */
+    public function deleteMultipleOrders(Request $request)
+    {
         foreach($request->orderIds as $id){
-          $order = Order::findOrFail($id);
-          if($order && $order->status<4){
-						// $order->details()->delete();
-						// $order->dropLocations()->delete();
-						// $order->bookingExtendedTime()->delete();
-            $order->delete();
-          }
-          elseif($order->status>=4){
-            return response()->json(['message'=>'Orders cannot be deleted'],404);
+          $order = Order::withTrashed()->where('id',$id)->first();
+          if($order){
+            $order->details()->delete();
+            $order->dropLocations()->delete();
+            $order->bookingExtendedTime()->delete();
+            $order->bookingLogs()->delete();
+            $order->forceDelete();
           }
         }
-        return response()->json(['message'=>'Orders has been deleted']);
+        return response()->json(['message'=>'Orders have been deleted']);
     }
 
     public function assignOrder(Request $request)
