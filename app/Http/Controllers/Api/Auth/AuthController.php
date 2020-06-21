@@ -313,11 +313,11 @@ class AuthController extends Controller
         $user = User::find(Auth::id());
 
         //First Mark All Notifications as read
-        // $user->unreadNotifications()->update(['read_at' => now()]);
+        $user->unreadNotifications()->update(['read_at' => now()]);
 
         // Return notifications 
-        return NotificationResource::collection($user->unreadNotifications->take(50));
-        // return NotificationResource::collection($user->notifications->take(50));
+        // return response()->json($user->notifications->take(50));
+        return NotificationResource::collection($user->notifications->take(50));
     }
 
     public function countUnreadNotifications()
@@ -344,13 +344,26 @@ class AuthController extends Controller
         ],404);
     }
 
+    // public function markAllAsRead()
+    // {
+    //     $user = User::find(Auth::id());
+
+    //     foreach ($user->unreadNotifications as $notification) {
+    //         $notification->markAsRead();
+    //     }
+    //     return response()->json([
+    //         'status' => '200',
+    //         'message'=>'All Notifications Marked as read'
+    //     ],200);
+    // }
+    
+    // Just Literally Deleting 
     public function markAllAsRead()
     {
         $user = User::find(Auth::id());
 
-        foreach ($user->unreadNotifications as $notification) {
-            $notification->markAsRead();
-        }
+        $user->unreadNotifications->delete();
+        
         return response()->json([
             'status' => '200',
             'message'=>'All Notifications Marked as read'
