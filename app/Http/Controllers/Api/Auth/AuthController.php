@@ -344,25 +344,25 @@ class AuthController extends Controller
         ],404);
     }
 
-    // public function markAllAsRead()
-    // {
-    //     $user = User::find(Auth::id());
-
-    //     foreach ($user->unreadNotifications as $notification) {
-    //         $notification->markAsRead();
-    //     }
-    //     return response()->json([
-    //         'status' => '200',
-    //         'message'=>'All Notifications Marked as read'
-    //     ],200);
-    // }
-    
-    // Just Literally Deleting 
     public function markAllAsRead()
     {
         $user = User::find(Auth::id());
 
-        $user->unreadNotifications->delete();
+        foreach ($user->unreadNotifications as $notification) {
+            $notification->markAsRead();
+        }
+        return response()->json([
+            'status' => '200',
+            'message'=>'All Notifications Marked as read'
+        ],200);
+    }
+    
+    // Just Literally Deleting 
+    public function deleteUserNotifications()
+    {
+        $user = User::find(Auth::id());
+
+        $user->notifications()->delete();
         
         return response()->json([
             'status' => '200',

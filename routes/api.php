@@ -102,7 +102,8 @@ Route::group(['middleware' => ['localization']], function() {
 			Route::get('/notifications','AuthController@notifications');
 			Route::get('/countUnreadNotifications','AuthController@countUnreadNotifications');
 			Route::get('/markAsRead/{notificationID}','AuthController@markAsRead');
-			Route::get('/markAllAsRead','AuthController@markAllAsRead');
+			// Route::get('/markAllAsRead','AuthController@markAllAsRead');
+			Route::get('/markAllAsRead','AuthController@deleteUserNotifications');
 
 			Route::post('/deviceToken/remove','AuthController@removeDeviceToken');
 		});
