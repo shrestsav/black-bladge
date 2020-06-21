@@ -5,9 +5,15 @@
                 <a
                     href="javascript:;"
                     class="btn btn-sm btn-danger"
-                    @click="deleteOrders"
+                    @click="cancelOrders"
                     v-if="pick.orderIds.length"
                 >Cancel Booking</a>
+                <a
+                    href="javascript:;"
+                    class="btn btn-sm btn-danger"
+                    @click="deleteOrders"
+                    v-if="pick.orderIds.length"
+                >Delete Booking</a>
                 <a
                     href="javascript:;"
                     class="btn btn-sm btn-neutral"
@@ -347,10 +353,33 @@ export default {
                 }
             }
         },
+        cancelOrders() {
+            this.$swal({
+                title: "Are you sure?",
+                text: "Orders will be cancelled !!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes!"
+            }).then(result => {
+                if (result.value) {
+                    axios
+                        .post("/cancelMultipleOrders", this.pick)
+                        .then(response => {
+                            this.getOrders();
+                            showNotify("success", response.data.message);
+                        })
+                        .catch(error => {
+                            showNotify("danger", error.response.data.message);
+                        });
+                }
+            });
+        },
         deleteOrders() {
             this.$swal({
                 title: "Are you sure?",
-                text: "Orders will be permanently deleted",
+                text: "Orders will be permanently deleted !!",
                 type: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#3085d6",

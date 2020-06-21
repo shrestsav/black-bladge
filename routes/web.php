@@ -124,7 +124,8 @@ Route::middleware(['auth'])->group(function () {
 	Route::get('/orders/count/indStatus','OrderController@getIndividualOrdersCount');
 	Route::post('/assignOrder','OrderController@assignOrder');
 	Route::post('/orders/search/{status}','OrderController@searchOrders');
-	Route::post('/deleteMultipleOrders','OrderController@destroyMultipleOrders');
+	Route::post('/cancelMultipleOrders','OrderController@cancelMultipleOrders');
+	Route::post('/deleteMultipleOrders','OrderController@deleteMultipleOrders');
 
 	Route::get('/filterCraps','OrderController@filterCraps');
 	
@@ -154,7 +155,7 @@ Route::middleware(['auth'])->group(function () {
 
 	
 	
-	//PAYPAL INTEGRATION
+	//PAYPAL INTEGRATION and TESTING
 	Route::get('/payment',function(){
 		return view('test');
 	});

@@ -196,7 +196,8 @@ class OrderController extends Controller
         return $request->all();
     }    
 
-    public function destroyMultipleOrders(Request $request)
+    //Just soft deleting bookings / cancel booking
+    public function cancelMultipleOrders(Request $request)
     {
         foreach($request->orderIds as $id){
           $order = Order::findOrFail($id);
