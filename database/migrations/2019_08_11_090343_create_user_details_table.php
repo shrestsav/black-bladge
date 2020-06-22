@@ -15,7 +15,7 @@ class CreateUserDetailsTable extends Migration
     {
         Schema::create('user_details', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->integer('user_id')->unsigned();
+            $table->bigInteger('user_id')->unsigned();
             $table->smallInteger('home_address')->nullable()->comment('From User Address Table');
             $table->smallInteger('area_id')->nullable(); //Driver's main area ID
             $table->text('description')->nullable();

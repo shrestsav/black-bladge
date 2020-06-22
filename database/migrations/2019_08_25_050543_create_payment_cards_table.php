@@ -15,7 +15,7 @@ class CreatePaymentCardsTable extends Migration
     {
         Schema::create('payment_cards', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->integer('user_id')->unsigned();
+            $table->bigInteger('user_id')->unsigned();
             $table->smallInteger('type')->comment('3: Amex, 4: Visa, 5: Master');
             $table->string('name')->nullable();
             $table->bigInteger('card_no');

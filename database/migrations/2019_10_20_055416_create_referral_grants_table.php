@@ -15,8 +15,8 @@ class CreateReferralGrantsTable extends Migration
     {
         Schema::create('referral_grants', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->integer('referrer_id')->unsigned();
-            $table->integer('receipient_id')->unsigned();
+            $table->bigInteger('referrer_id')->unsigned();
+            $table->bigInteger('receipient_id')->unsigned();
             $table->integer('grant')->unsigned()->default(0)->comment('Granted to Referrer Account');
             $table->unique(['referrer_id', 'receipient_id']);
             $table->timestamps();
