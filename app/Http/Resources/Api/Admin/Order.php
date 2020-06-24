@@ -19,15 +19,7 @@ class Order extends JsonResource
     {
         $appDefaults = AppDefault::first();
 
-        $estimatedPrice = $this->estimated_price;
-        $additionalPrice = $this->additionalBookedMinute()*$appDefaults->cost_per_min;
-        $totalCost = $estimatedPrice - $additionalPrice; //Because in estimated_price field additional cost is already included while adding any additional time
-
-        $couponDiscount = $this->coupon ? $this->coupon['discount'] : 0;
-        $subTotal = $estimatedPrice - $couponDiscount;
-        $VATPercentage = $appDefaults->VAT ? $appDefaults->VAT : 5;
-        $VAT = ($VATPercentage/100)*$subTotal;
-        $grandTotal = $VAT+$subTotal;
+        $invoice = $this->generateInvoice();
 
         return [
             'id'                       => $this->id,
@@ -53,15 +45,16 @@ class Order extends JsonResource
 
             //Invoicing
             'pricing_unit'             => config('settings.currency'),
-            'estimated_price'          => $estimatedPrice,
+            'estimated_price'          => $invoice['estimated_price'],
             'payment_method'           => $this->when($this->status==6, ($this->details['payment_type']==1) ? 'Cash on Delivery' : (($this->details['payment_type']==2) ? 'Card' : 'Cash on Delivery')),
-            'total_cost'               => $totalCost,
-            'additional_price'         => $additionalPrice,
-            'coupon_discount'          => $couponDiscount,
-            'sub_total'                => $subTotal,
-            'VAT_percentage'           => $VATPercentage,
-            'VAT'                      => $VAT,
-            'grand_total'              => $grandTotal,
+            'total_cost'               => $invoice['initial_price'],
+            'additional_price'         => $invoice['additional_price'],
+            'coupon_discount'          => $invoice['coupon_discount'],
+            'sub_total'                => $invoice['sub_total'],
+            'VAT_percentage'           => $invoice['VAT_percentage'],
+            'VAT'                      => $invoice['VAT'],
+            'grand_total'              => $invoice['grand_total'],
+            'paid_amount'              => $this->details['paid_amount'],
         
             //Customer Details
             'customer_id'              => $this->customer_id,

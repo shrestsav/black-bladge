@@ -7,6 +7,7 @@ use App\User;
 use App\Order;
 use App\Coupon;
 use App\AppDefault;
+use App\OrderDetail;
 use App\DropLocation;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -145,6 +146,17 @@ class BookingController extends Controller
                 'info'      => isset($data['drop_location_info']) ? $data['drop_location_info'] : null,
             ]
         ]);
+
+        //Initial payment logic goes here
+        $payableAmount = $order->generateInvoice();
+
+        $intialPaymentDone = true; //Later payment module will go here and if successfull we entry intial payment amoutn on orderdetails table
+        $orderDetails = OrderDetail::updateOrCreate(
+            ['order_id' => $order->id],
+            [
+                'paid_amount' => $payableAmount['grand_total'],
+            ]
+        );
         
         User::notifyNewBooking($order);
 
@@ -214,6 +226,17 @@ class BookingController extends Controller
             'estimated_price'  => $data['booked_hours']*60*$appDefaults->cost_per_min,
             'promo_code'       => isset($coupon) ? $coupon->code : null,
         ]);
+
+        //Initial payment logic goes here
+        $payableAmount = $order->generateInvoice();
+
+        $intialPaymentDone = true; //Later payment module will go here and if successfull we entry intial payment amoutn on orderdetails table
+        $orderDetails = OrderDetail::updateOrCreate(
+            ['order_id' => $order->id],
+            [
+                'paid_amount' => $payableAmount['grand_total'],
+            ]
+        );
         
         User::notifyNewBooking($order);
 
@@ -235,6 +258,7 @@ class BookingController extends Controller
         $bookings = Order::where('customer_id',Auth::id())
                         ->whereIn('status',config('settings.customer_active_booking_statuses'))
                         ->orderBy('type','ASC')
+                        ->with('details')
                         ->orderBy('pick_timestamp','ASC')
                         ->get();
 

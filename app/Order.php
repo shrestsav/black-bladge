@@ -198,4 +198,40 @@ class Order extends Model
 
         return true;
     }
+
+    //Get invoice of order 
+    public function generateInvoice()
+    {
+        $appDefaults = AppDefault::first();
+        
+        $estimatedPrice = $this->estimated_price; //this price already includes total added time / total added drop loacations
+        $additionalPrice = $this->additionalBookedMinute()*$appDefaults->cost_per_min;
+        $initialPrice = $estimatedPrice - $additionalPrice; //Because in estimated_price field additional cost is already included while adding any additional time
+
+        $couponDiscount = 0;
+        if($this->coupon){
+            if($this->coupon->type==1){
+                $couponDiscount = ($this->coupon->discount/100)*$estimatedPrice;
+            }
+            elseif($this->coupon->type==2){
+                $couponDiscount = $this->coupon->discount;
+            }
+        }
+        $subTotal = ($estimatedPrice>$couponDiscount) ? ($estimatedPrice - $couponDiscount) : 0;
+        $VATPercentage = $appDefaults->VAT ? $appDefaults->VAT : 5;
+        $VAT = ($VATPercentage/100)*$subTotal;
+        $grandTotal = $VAT+$subTotal;
+
+        return [
+            'currency'         => config('settings.currency'),
+            'estimated_price'  => $estimatedPrice,
+            'additional_price' => $additionalPrice,
+            'initial_price'    => $initialPrice,
+            'coupon_discount'  => $couponDiscount,
+            'sub_total'        => $subTotal,
+            'VAT_percentage'   => $VATPercentage,
+            'VAT'              => $VAT,
+            'grand_total'      => $grandTotal
+        ];
+    }
 }

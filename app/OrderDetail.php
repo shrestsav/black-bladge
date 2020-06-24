@@ -16,7 +16,8 @@ class OrderDetail extends Model
 		'payment_type',
 		'payment_id',
 		'PT',
-		'PDR'
+		'PDR',
+		'paid_amount'
     ];
 
     protected $appends = ['payment_type_name'];
