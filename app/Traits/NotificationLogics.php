@@ -234,6 +234,31 @@ trait NotificationLogics
     }
 
     /**
+    * Notify Admins and Customer and driver of that specific order
+    */
+    public static function notifyAssignedForPickup($order)
+    {  
+        $superAdmin_ids = self::getUserRoleIDs('superAdmin');
+
+        $adminMessage = 'Booking Order #'.$order->id.' has been assined to '. $order->driver->full_name. ' for pickup.';
+        $customerMessage = 'Driver: ' . $order->driver->full_name. ' has been assigned for your booking #' . $order->id. '.';
+        $driverMessage = 'You have been assigned for pickup of booking #' . $order->id. '.';
+
+        // Send Order Accepted Notification to All Superadmins
+        foreach($superAdmin_ids as $id){
+            self::notifyApp($order, 'booking_accepted', $id, $adminMessage,'web');
+        }
+
+        // Send Order Accepted Notification to Customer    
+        self::notifyApp($order, 'booking_accepted', $order->customer_id, $customerMessage,'mobile');
+
+        // Send Order Accepted Notification to Customer    
+        self::notifyApp($order, 'booking_accepted', $order->driver_id, $driverMessage,'mobile');
+
+        return true;
+    }
+
+    /**
     * Notify when driver starts trip for pickup
     */
     public static function notifyStartTripForPickup($order)

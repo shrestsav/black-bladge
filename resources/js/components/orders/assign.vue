@@ -9,64 +9,14 @@
           </button>
         </div>
         <div class="modal-body">
-          <div class="row" v-if="assign.type=='pickAssign'">
-            <div class="col-md-6">
-              <h4 class="mb-0">
-                Pickup Date
-              </h4>
-              <span>{{assign.pick_date}}</span>
-              <!-- <date-picker 
-                v-model="assign.pick_date"
-                lang='en' 
-                input-class="form-control"
-                valueType="format"
-                readonly 
-              ></date-picker> -->
-            </div>
-            <div class="col-md-6">
-              <h4 class="mb-0">
-                Pickup Time
-              </h4>
-              <span>{{assign.pick_timerange}}</span>
-              <!-- <select class="form-control" v-model="assign.pick_timerange" readonly>
-                <option disabled selected value>Select Time</option>
-                <option v-for="timerange in orderTime" :value="timerange">{{timerange}}</option>
-              </select> -->
-            </div>
-          </div>
-          <div class="row" v-if="assign.type=='dropAssign'">
-            <div class="col-md-6">
-              <h4 class="mb-0">
-                Drop Date
-              </h4>
-              <date-picker 
-                v-model="assign.drop_date"
-                lang='en' 
-                input-class="form-control"
-                valueType="format" 
-              ></date-picker>
-            </div>
-            <div class="col-md-6">
-              <h4 class="mb-0">
-                Drop Time
-              </h4>
-              <select class="form-control" v-model="assign.drop_timerange">
-                <option disabled selected value>Select Time</option>
-                <option v-for="timerange in orderTime" :value="timerange">{{timerange}}</option>
-              </select>
-            </div>
-          </div>
-          <div class="row mt-5">
+          <div class="row">
             <div class="col-md-12">
-              <h4 class="mb-1">
-                <a href="javascript:;">Assign to</a>
-              </h4>
               <v-select
                 class="form-control"  
                 v-model="assign.driver_id" 
                 :options="drivers" 
                 :reduce="data => data.id"
-                label="fname" 
+                label="full_name" 
                 placeholder="Drivers"
               />
             </div>
@@ -97,8 +47,6 @@
     data(){
       return{
         assign:{
-          pick_date:'',
-          pick_timerange:'',
           order_id:'',
           type:''
         },
@@ -123,8 +71,6 @@
     },
     methods:{
       mount(){
-        this.assign.pick_date = this.order.pick_date
-        this.assign.pick_timerange = this.order.pick_timerange
         this.assign.order_id = this.order.id
         this.assign.type = this.active.type
       },

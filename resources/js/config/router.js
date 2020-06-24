@@ -27,13 +27,6 @@ import orderDetails from '../components/orders/details.vue'
 
 import createOrder from '../components/orders/create.vue'
 
-
-import services from '../components/services/index.vue'
-import createService from '../components/services/create.vue'
-import categories from '../components/categories/index.vue'
-import createCategory from '../components/categories/create.vue'
-import items from '../components/items/index.vue'
-import createItem from '../components/items/create.vue'
 import reports from '../components/reports/index.vue'
 import promoCoupons from '../components/coupon/promoCoupons.vue'
 import referralCoupons from '../components/coupon/referralCoupons.vue'
@@ -56,15 +49,6 @@ const routes = [
 
   {name:'vehicles',  path: '/v/vehicles', component: vehicles },
   {name:'createVehicle',  path: '/v/vehicles/create', component: createVehicle },
-
-  {name:'services',  path: '/v/services', component: services },
-  {name:'createService',  path: '/v/services/create', component: createService },
-
-  {name:'categories',  path: '/v/categories', component: categories },
-  {name:'createCategory',  path: '/v/categories/create', component: createCategory },
-
-  {name:'items',  path: '/v/items', component: items },
-  {name:'createItem',  path: '/v/items/create', component: createItem },
 
   {name:'reports',  path: '/v/reports', component: reports },
 

@@ -47,26 +47,29 @@ Route::get('/', 'HomeController@index')->name('dashboard');
 Auth::routes();
 
 Route::middleware(['auth'])->group(function () {
+	Route::group(['prefix' => 'admin', 'middleware' => ['role:superAdmin']], function() {
+	    Route::resource('roles','RoleController');
+	    Route::resource('users','UserController');
+	});
+	
+	//Driver Routes
 	Route::apiResource('/drivers','DriverController');
 	Route::get('/driver/all','DriverController@allDrivers');
 
+	//Customer Routes
 	Route::apiResource('/customers','CustomerController');
 	Route::get('/unverifiedCustomers','CustomerController@unverifiedCustomers');
 	Route::post('/deleteCustomers','CustomerController@deleteCustomers');
 	Route::get('/address/{customer_id}','CustomerController@address');
-
 	Route::get('/customer/all','CustomerController@all');
 	
+	//Vehicle Routes
 	Route::apiResource('/vehicles','VehicleController');
-
 
 	//REPORT GENERATION
 	Route::group(['prefix' => 'reports'], function() {
 		Route::get('/driver/orders/{driver_id}','ReportController@driverOrders');
 		Route::get('/customer/orders/{customer_id}','ReportController@customerOrders');
-
-
-
 
 	    // Route::post('/totalOrders','ReportController@totalOrders');
 	    // Route::post('/totalCustomers','ReportController@totalCustomers');
@@ -89,35 +92,7 @@ Route::middleware(['auth'])->group(function () {
 
 	Route::get('/authUser','CoreController@authUser');
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	
-	Route::get('/v/{any}', 'HomeController@index')->where('any', '.*');
-	Route::group(['prefix' => 'admin', 'middleware' => ['role:superAdmin']], function() {
-	    Route::resource('roles','RoleController');
-	    Route::resource('users','UserController');
-	});
-	Route::get('firestore','FirestoreController@index');
-	Route::get('set','FirestoreController@setData');
-	Route::get('whereData','FirestoreController@whereData');
-
+	//Booking Routes
 	Route::resource('/orders','OrderController');
 	Route::get('/getOrders/{status}','OrderController@getOrders');
 	Route::get('/getOrdersCount','OrderController@getOrdersCount');
@@ -126,35 +101,30 @@ Route::middleware(['auth'])->group(function () {
 	Route::post('/orders/search/{status}','OrderController@searchOrders');
 	Route::post('/cancelMultipleOrders','OrderController@cancelMultipleOrders');
 	Route::post('/deleteMultipleOrders','OrderController@deleteMultipleOrders');
-
 	Route::get('/filterCraps','OrderController@filterCraps');
-	
 
-	
-	
+	//Coupon Routes
 	Route::apiResource('/coupons','CouponController');
 	Route::get('/coupon/referral','CouponController@referralCoupons');
 	Route::get('/coupon/orders/{code}','CouponController@redeemedOrders');
 
-	
+	//Route to forward to vue
+	Route::get('/v/{any}', 'HomeController@index')->where('any', '.*');
 
+	// Notification Routes
 	Route::get('/notifications','UserController@notifications');
 	Route::get('/markAsRead/{notificationId}','UserController@markAsRead');
 	Route::get('/markAllAsRead','UserController@markAllAsRead');
 
+	//When Pushing Bulk Notifications to devices
 	Route::post('/pushNotification','CoreController@sendPushNotification');
 	Route::get('/pushNotification','CoreController@sentPushNotification');
 
-	Route::get('event',function(){
-		event(new TaskEvent('Hey how are you'));
-	});
-
+	//Config Routes
 	Route::get('getFields/{fieldType}','CoreController@getFields');
 	Route::get('getSettings/{settingType}','CoreController@getSettings');
 	Route::get('orderTime','CoreController@orderTime');
 
-	
-	
 	//PAYPAL INTEGRATION and TESTING
 	Route::get('/payment',function(){
 		return view('test');
@@ -162,4 +132,15 @@ Route::middleware(['auth'])->group(function () {
 	Route::post('/paypal/initiate','PaypalController@createPayment')->name('createPayment');
 	Route::get('/paypal/execute/{order_id}','PaypalController@executePayment')->name('executePayment');
 	Route::get('/paypal/retrieve/{paymentID}','PaypalController@retrievePayment');
+
+
+	//Firestore Tests
+	Route::get('firestore','FirestoreController@index');
+	Route::get('set','FirestoreController@setData');
+	Route::get('whereData','FirestoreController@whereData');
+
+	Route::get('event',function(){
+		event(new TaskEvent('Hey how are you'));
+	});
+
 });

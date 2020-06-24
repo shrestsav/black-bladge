@@ -41,7 +41,7 @@
                                 <li class="nav-item" v-for="(status,key) in orderStatus" :key="key">
                                     <a
                                         class="nav-link mb-sm-3 mb-md-0"
-                                        :class="key=='Pending' ? 'active' : ''"
+                                        :class="key==$route.query.goto ? 'active' : ''"
                                         :id="key"
                                         data-toggle="tab"
                                         href
@@ -72,7 +72,6 @@
                                     <th>Pickup From</th>
                                     <th>Pickup Date</th>
                                     <th>Picked By</th>
-                                    <!-- <th v-if="active.status!='Pending'">Grand Total</th> -->
                                     <th>Status</th>
                                     <th>Ordered</th>
                                 </tr>
@@ -109,7 +108,7 @@
                                             @change="searchOrder"
                                             class="form-control searchRow"
                                         >
-                                            <option value="" selected>Both</option>
+                                            <option value selected>Both</option>
                                             <option value="1">Instant</option>
                                             <option value="2">Advance</option>
                                         </select>
@@ -141,28 +140,7 @@
                                             class="form-control searchRow"
                                         />
                                     </th>
-                                    <th v-if="active.status!='Pending'"></th>
-                                    <th>
-                                        <select
-                                            v-if="active.status=='Pending'"
-                                            v-model="search.orderStatus"
-                                            @change="searchOrder"
-                                            class="form-control searchRow"
-                                        >
-                                            <option value="0">Pending</option>
-                                            <option value="1">Assigned</option>
-                                            <option value="2">Invoice Generated</option>
-                                            <option value="3">Invoice Confirmed</option>
-                                        </select>
-                                        <select
-                                            v-if="active.status=='Received'"
-                                            v-model="search.orderStatus"
-                                            @change="searchOrder"
-                                            class="form-control searchRow"
-                                        >
-                                            <option value="4">Received</option>
-                                        </select>
-                                    </th>
+                                    <th></th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -196,8 +174,15 @@
                                                     title="Show Order Details"
                                                 >Details</a>
 
-                                                <a class="dropdown-item" href="javascript:;" @click="assign(index,'pickAssign')"  data-toggle="modal" data-target="#assignOrder" title="Assign Pending Order" v-if="item.status == 0">Assign Driver</a>
-
+                                                <a
+                                                    class="dropdown-item"
+                                                    href="javascript:;"
+                                                    @click="assign(index,'pickAssign')"
+                                                    data-toggle="modal"
+                                                    data-target="#assignOrder"
+                                                    title="Assign Pending Order"
+                                                    v-if="item.status == 0"
+                                                >Assign Driver</a>
                                             </div>
                                         </div>
                                     </td>
@@ -229,13 +214,8 @@
                                         <span v-if="item.status === 0">Not Assigned</span>
                                         <span v-if="item.status > 0">{{item.driver_full_name}}</span>
                                     </td>
-                                    <!-- <td v-if="active.status!='Pending'"> -->
-                                    <!-- <template v-if="item.order_invoice.invoice_details">AED {{item.order_invoice.invoice_details.grand_total}}</template> -->
-                                    <!-- <template v-if=""></template> -->
-
-                                    <!-- </td> -->
                                     <td>
-                                        <span>{{ item.status_is }}</span>
+                                        <span>{{ item.status_str }}</span>
                                     </td>
                                     <td>{{ dateDiff(item.booked_at)}}</td>
                                 </tr>
@@ -266,8 +246,8 @@ export default {
     data() {
         return {
             search: {
-				type:'',
-			},
+                type: ""
+            },
             active: {
                 order: "",
                 page: 1,
@@ -289,8 +269,12 @@ export default {
         this.$store.commit("changeCurrentPage", "orders");
         this.$store.commit("changeCurrentMenu", "ordersMenu");
         // get pending orders on page load
-        this.getOrders("Active");
         this.$store.dispatch("getOrderStatus");
+
+        if (this.$route.query.goto)
+            this.getOrders(this.$route.query.goto)
+        else
+            this.getOrders("Active")
     },
     mounted() {},
     methods: {
@@ -299,6 +283,12 @@ export default {
             this.getResults();
             this.pick.orderIds = [];
             this.$store.dispatch("getOrdersCount");
+            this.$router.replace({
+                name: "orders",
+                query: {
+                    goto: status
+                }
+            });
         },
         getResults(page = 1) {
             this.active.page = page;
