@@ -293,20 +293,19 @@ class BookingController extends Controller
         
         $order = Order::findOrFail($order_id);
 
-        User::notifyBookingCancelled($order);
-
         if(Auth::id()!=$order->customer_id){
             return response()->json([
                 'message' => 'Forbidden! You donot have access to this order',
             ], 403);
         }
 
+        User::notifyBookingCancelled($order);
+
         $order->update([
             'cancellation_reason' => $request->cancellation_reason
         ]);
         
         $order->delete();
-
 
         $couponCode = $this->generateRandomCoupon();
 

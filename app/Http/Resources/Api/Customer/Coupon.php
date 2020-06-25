@@ -16,7 +16,7 @@ class Coupon extends JsonResource
     {
         return [
             'code'        => $this->code,
-            'type'        => $this->code==1 ? 'Percentage' : ($this->code==2 ? 'Amount' : 'Not Mentioned'),
+            'type'        => $this->type==1 ? 'Percentage' : ($this->type==2 ? 'Amount' : 'Not Mentioned'),
             'discount'    => $this->discount,
             'description' => $this->description,
             'valid_from'  => $this->valid_from,
