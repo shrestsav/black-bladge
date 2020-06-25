@@ -323,26 +323,43 @@ class BookingController extends Controller
                 'message'=>'Forbidden, status or driver id problem'
             ],403);
         }
-        
-        $order->update([
-            'status'    => 6,
-            'payment'   => 1
-        ]);
-        
-        $orderDetails = OrderDetail::updateOrCreate(
-            ['order_id' => $order->id],
-            [
-                'PT'            => Date('Y-m-d h:i:s'),
-                'payment_type'  => 1
-            ]
-        );
 
-        User::notifyPaymentDone($order);
+
+        //Final payment logic goes here if time or drop locations are added while on trip
+        $payableAmount = $order->generateInvoice();
+
+        $finalPaymentDone = true;
+        if(!$payableAmount['payment_complete']){
+            // $payableAmount['left_amount'] left amount to be paid
+            $finalPaymentDone = true; //Later payment module will go here and if successfull we entry final payment amount on orderdetails table
+        }
         
+        if($finalPaymentDone){
+            $order->update([
+                'status'    => 6,
+                'payment'   => 1
+            ]);
+            
+            $orderDetails = OrderDetail::updateOrCreate(
+                ['order_id' => $order->id],
+                [
+                    'PT'            => Date('Y-m-d h:i:s'),
+                    'payment_type'  => 1,
+                    'paid_amount'   => $payableAmount['grand_total'],
+                ]
+            );
+
+            User::notifyPaymentDone($order);
+            
+            return response()->json([
+                'message' => 'Payment Done and Booking Completed',
+                'order'   => new OrderResource($order),
+            ]);
+        }
+
         return response()->json([
-            'message' => 'Payment Done and Booking Completed',
-            'order'   => new OrderResource($order),
-        ]);
+            'message' => 'Something went wrong'
+        ],400);
     }
 
     /**
@@ -402,7 +419,7 @@ class BookingController extends Controller
         }
 
         return response()->json([
-            'message'=>'Something wrong with the request'
+            'message' => 'Something wrong with the request'
         ],400);
     }
 
