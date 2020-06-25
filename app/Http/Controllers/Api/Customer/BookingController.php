@@ -13,6 +13,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\Api\Customer\Order as OrderResource;
+use App\Http\Resources\Api\Customer\Coupon as CouponResource;
+use Illuminate\Support\Str;
 
 class BookingController extends Controller
 {
@@ -305,8 +307,25 @@ class BookingController extends Controller
         
         $order->delete();
 
+
+        $couponCode = $this->generateRandomCoupon();
+
+        //Create Coupon
+        $coupon = Coupon::create([
+            'code'          =>  $couponCode,
+            'user_id'       =>  Auth::id(),
+            'status'        =>  1,
+            'type'          =>  2,
+            'coupon_type'   =>  3,
+            'discount'      =>  100,
+            'description'   =>  'Order Cancellation redeem coupon',
+            'valid_from'    =>  \Carbon\Carbon::now(),
+            'valid_to'      =>  \Carbon\Carbon::now()->addMonth(),
+        ]);
+
         return response()->json([
             'message' => 'Booking Cancelled',
+            'coupon'  =>  new CouponResource($coupon)
         ], 200);
     }
 
@@ -351,5 +370,19 @@ class BookingController extends Controller
             'valid_from'  =>  $coupon->valid_from,
             'valid_to'    =>  $coupon->valid_to
         ]);
+    }
+
+    public function generateRandomCoupon()
+    {
+        $coupon = strtoupper(Str::random(8));
+
+        //Check if exists
+        $exists = Coupon::where('code',$coupon)->exists();
+        
+        if($exists){
+            $this->generateRandomCoupon();
+        }
+
+        return $coupon;
     }
 }
