@@ -54,7 +54,9 @@ class Order extends JsonResource
             'VAT_percentage'           => $invoice['VAT_percentage'],
             'VAT'                      => $invoice['VAT'],
             'grand_total'              => $invoice['grand_total'],
-            'paid_amount'              => $this->details['paid_amount'],
+            'paid_amount'              => $invoice['paid_amount'],
+            'left_amount'              => $invoice['left_amount'],
+            'payment_complete'         => $invoice['payment_complete'],
         
             //Customer Details
             'customer_id'              => $this->customer_id,

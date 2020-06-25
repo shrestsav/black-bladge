@@ -222,6 +222,10 @@ class Order extends Model
         $VAT = ($VATPercentage/100)*$subTotal;
         $grandTotal = $VAT+$subTotal;
 
+        $paidAmount = $this->details['paid_amount'];
+        $leftAmount = $grandTotal-$paidAmount;
+        $paymentComplete = ($leftAmount > 0) ? false : true;
+
         return [
             'currency'         => config('settings.currency'),
             'estimated_price'  => $estimatedPrice,
@@ -231,7 +235,10 @@ class Order extends Model
             'sub_total'        => $subTotal,
             'VAT_percentage'   => $VATPercentage,
             'VAT'              => $VAT,
-            'grand_total'      => $grandTotal
+            'grand_total'      => $grandTotal,
+            'paid_amount'      => $paidAmount,
+            'left_amount'      => $leftAmount,
+            'payment_complete' => $paymentComplete
         ];
     }
 }
