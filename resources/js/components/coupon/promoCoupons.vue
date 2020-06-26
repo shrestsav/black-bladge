@@ -210,7 +210,7 @@
             <th>
               <select
                 v-model="search.coupon_type"
-                @change="searchCoupon"
+                @change="getCoupon"
                 placeholder="Coupon Type"
                 class="form-control searchRow"
               >
@@ -225,7 +225,7 @@
                 v-model="search.active_date"
                 lang="en"
                 :confirm="true"
-                @change="searchCoupon"
+                @change="getCoupon"
                 input-class="form-control"
                 valueType="format"
                 format="YYYY-MM-DD HH:mm:ss"
@@ -236,7 +236,7 @@
               </date-picker>
 
               <!-- <date-picker
-                @blur="searchCoupon"
+                @blur="getCoupon"
                 input-class="form-control bg-transparent"
                 v-model="search.active_date"
                 lang="en"
@@ -250,7 +250,7 @@
             <th>
               <select
                 v-model="search.status"
-                @change="searchCoupon"
+                @change="getCoupon"
                 placeholder="Status"
                 class="form-control searchRow"
               >
@@ -435,17 +435,10 @@ export default {
   mounted() {},
   methods: {
     getCoupon(page = 1) {
-      axios.get("/coupons?page=" + page).then(response => {
+      var getURL =  `/coupons?coupon_type=${this.search.coupon_type}&active_date=${this.search.active_date}&status=${this.search.status}`;
+      axios.get(getURL).then(response => {
         this.coupons = response.data;
       });
-    },
-    searchCoupon() {
-      var getURL =  `/coupons?coupon_type=${this.search.coupon_type}&active_date=${this.search.active_date}&status=${this.search.status}`;
-      console.log(getURL);
-      axios.get(getURL)
-        .then(response => {
-          this.coupons = response.data;
-        });
     },
     testDate(){
       console.log('here')
