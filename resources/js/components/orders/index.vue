@@ -6,26 +6,34 @@
                     href="javascript:;"
                     class="btn btn-sm btn-danger"
                     @click="cancelOrders"
-                    v-if="pick.orderIds.length && active.status!='Cancelled' && pick.orders"
-                >Cancel Booking</a>
+                    v-if="
+                        pick.orderIds.length &&
+                            active.status != 'Cancelled' &&
+                            pick.orders
+                    "
+                    >Cancel Booking</a
+                >
                 <a
                     href="javascript:;"
                     class="btn btn-sm btn-danger"
                     @click="deleteOrders"
                     v-if="pick.orderIds.length && pick.orders"
-                >Delete Booking</a>
+                    >Delete Booking</a
+                >
                 <a
                     href="javascript:;"
                     class="btn btn-sm btn-neutral"
                     @click="pick.orders = !pick.orders"
                     v-if="!pick.orders"
-                >Select</a>
+                    >Select</a
+                >
                 <a
                     href="javascript:;"
                     class="btn btn-sm btn-info"
                     @click="pick.orders = !pick.orders"
                     v-if="pick.orders"
-                >Cancel</a>
+                    >Cancel</a
+                >
             </div>
         </div>
         <div class="row">
@@ -38,10 +46,18 @@
                                 id="tabs-icons-text"
                                 role="tablist"
                             >
-                                <li class="nav-item" v-for="(status,key) in orderStatus" :key="key">
+                                <li
+                                    class="nav-item"
+                                    v-for="(status, key) in orderStatus"
+                                    :key="key"
+                                >
                                     <a
                                         class="nav-link mb-sm-3 mb-md-0"
-                                        :class="key==$route.query.goto ? 'active' : ''"
+                                        :class="
+                                            key == $route.query.goto
+                                                ? 'active'
+                                                : ''
+                                        "
                                         :id="key"
                                         data-toggle="tab"
                                         href
@@ -50,11 +66,12 @@
                                         aria-selected="false"
                                         @click="getOrders(key)"
                                     >
-                                        {{key}}
+                                        {{ key }}
                                         <span
                                             class="status_count"
                                             v-if="ordersCount[key]"
-                                        >{{ordersCount[key]}}</span>
+                                            >{{ ordersCount[key] }}</span
+                                        >
                                     </a>
                                 </li>
                             </ul>
@@ -72,6 +89,7 @@
                                     <th>Pickup From</th>
                                     <th>Pickup Date</th>
                                     <th>Picked By</th>
+                                    <th v-if="checkStatus()">Vechile Info</th>
                                     <th>Status</th>
                                     <th>Ordered</th>
                                 </tr>
@@ -140,15 +158,37 @@
                                             class="form-control searchRow"
                                         />
                                     </th>
+                                    <th v-if="checkStatus()">
+                                        <select
+                                            v-model="search.vehicle_id"
+                                            @change="searchOrder"
+                                            class="form-control searchRow"
+                                        >
+                                            <template
+                                                v-for="(vehicle,
+                                                index) in vehicles"
+                                            >
+                                                <option
+                                                    v-bind:value="vehicle.id"
+                                                    :key="index"
+                                                    >{{
+                                                        vehicle.vehicle_number
+                                                    }}</option
+                                                >
+                                            </template>
+                                        </select>
+                                    </th>
                                     <th></th>
                                     <th></th>
                                 </tr>
                             </thead>
                             <tbody class="list">
                                 <tr
-                                    v-for="(item,index) in showOrders.data"
+                                    v-for="(item, index) in showOrders.data"
                                     :key="index"
-                                    v-bind:class="{ urgent: checkPending(index) }"
+                                    v-bind:class="{
+                                        urgent: checkPending(index)
+                                    }"
                                 >
                                     <td>
                                         <div class="dropdown">
@@ -160,7 +200,9 @@
                                                 aria-haspopup="true"
                                                 aria-expanded="false"
                                             >
-                                                <i class="fas fa-ellipsis-v"></i>
+                                                <i
+                                                    class="fas fa-ellipsis-v"
+                                                ></i>
                                             </a>
                                             <div
                                                 class="dropdown-menu dropdown-menu-right dropdown-menu-arrow"
@@ -172,17 +214,24 @@
                                                     data-toggle="modal"
                                                     data-target="#orderDetails"
                                                     title="Show Order Details"
-                                                >Details</a>
+                                                    >Details</a
+                                                >
 
                                                 <a
                                                     class="dropdown-item"
                                                     href="javascript:;"
-                                                    @click="assign(index,'pickAssign')"
+                                                    @click="
+                                                        assign(
+                                                            index,
+                                                            'pickAssign'
+                                                        )
+                                                    "
                                                     data-toggle="modal"
                                                     data-target="#assignOrder"
                                                     title="Assign Pending Order"
                                                     v-if="item.status == 0"
-                                                >Assign Driver</a>
+                                                    >Assign Driver</a
+                                                >
                                             </div>
                                         </div>
                                     </td>
@@ -193,37 +242,58 @@
                                         >
                                             <input
                                                 class="custom-control-input"
-                                                :id="'check_'+index"
+                                                :id="'check_' + index"
                                                 type="checkbox"
-                                                :checked="pick.orderIds.includes(item.id)"
-                                                @change="pickMultipleOrders(item.id,$event)"
+                                                :checked="
+                                                    pick.orderIds.includes(
+                                                        item.id
+                                                    )
+                                                "
+                                                @change="
+                                                    pickMultipleOrders(
+                                                        item.id,
+                                                        $event
+                                                    )
+                                                "
                                             />
                                             <label
                                                 class="custom-control-label"
-                                                :for="'check_'+index"
+                                                :for="'check_' + index"
                                             ></label>
                                         </div>
-                                        <span v-else>{{index+1}}</span>
+                                        <span v-else>{{ index + 1 }}</span>
                                     </td>
-                                    <td>BOK-{{item.id}}</td>
-                                    <td>{{item.customer_full_name}}</td>
-                                    <td>{{item.order_type}}</td>
-                                    <td v-if="item.pick_location">{{item.pick_location.name}}</td>
-                                    <td>{{item.pick_timestamp}}</td>
+                                    <td>BOK-{{ item.id }}</td>
+                                    <td>{{ item.customer_full_name }}</td>
+                                    <td>{{ item.order_type }}</td>
+                                    <td v-if="item.pick_location">
+                                        {{ item.pick_location.name }}
+                                    </td>
+                                    <td>{{ item.pick_timestamp }}</td>
                                     <td>
-                                        <span v-if="item.status === 0">Not Assigned</span>
-                                        <span v-if="item.status > 0">{{item.driver_full_name}}</span>
+                                        <span v-if="item.status === 0"
+                                            >Not Assigned</span
+                                        >
+                                        <span v-if="item.status > 0">{{
+                                            item.driver_full_name
+                                        }}</span>
+                                    </td>
+                                    <td v-if="checkStatus()">
+                                        {{ item.vehicle_number }}
                                     </td>
                                     <td>
                                         <span>{{ item.status_str }}</span>
                                     </td>
-                                    <td>{{ dateDiff(item.booked_at)}}</td>
+                                    <td>{{ dateDiff(item.booked_at) }}</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                     <div class="card-footer py-4">
-                        <pagination :data="showOrders" @pagination-change-page="getResults"></pagination>
+                        <pagination
+                            :data="showOrders"
+                            @pagination-change-page="getResults"
+                        ></pagination>
                     </div>
                 </div>
             </div>
@@ -262,7 +332,8 @@ export default {
             },
             errors: {},
             message: "",
-            showOrders: {}
+            showOrders: {},
+            vehicles: []
         };
     },
     created() {
@@ -270,11 +341,11 @@ export default {
         this.$store.commit("changeCurrentMenu", "ordersMenu");
         // get pending orders on page load
         this.$store.dispatch("getOrderStatus");
+        // get all vehicles info
+        this.getVehicles();
 
-        if (this.$route.query.goto)
-            this.getOrders(this.$route.query.goto)
-        else
-            this.getOrders("Active")
+        if (this.$route.query.goto) this.getOrders(this.$route.query.goto);
+        else this.getOrders("Active");
     },
     mounted() {},
     methods: {
@@ -288,6 +359,11 @@ export default {
                 query: {
                     goto: status
                 }
+            });
+        },
+        getVehicles() {
+            axios.get("/vehicle/all").then(response => {
+                this.vehicles = response.data;
             });
         },
         getResults(page = 1) {
@@ -390,6 +466,12 @@ export default {
                         });
                 }
             });
+        },
+        checkStatus() {
+            return (
+                this.active.status !== "Active" &&
+                this.active.status !== "Unassigned"
+            );
         }
     },
     computed: {

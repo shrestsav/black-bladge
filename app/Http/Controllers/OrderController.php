@@ -23,7 +23,7 @@ class OrderController extends Controller
     public function index()
     {
       $orders = Order::with('customer','driver')->get();
-      
+
       return $orders;
     }
 
@@ -40,7 +40,7 @@ class OrderController extends Controller
       else if($status==='Completed')
         $statusArr = config('settings.completed');
 
-      $orders = Order::with('customer','driver');
+      $orders = Order::with('customer','driver','vehicle');
 
       if($status==='Cancelled')
     		$orders->onlyTrashed();
@@ -66,7 +66,7 @@ class OrderController extends Controller
         $statusArr = config('settings.assigned');
       else if($status==='Completed')
         $statusArr = config('settings.completed');
-      
+
       $orders = Order::whereIn('status',$statusArr)
                       ->with('customer','driver');
 
@@ -79,17 +79,23 @@ class OrderController extends Controller
       if($request->drop_location){
         $orders->where('drop_location->name','like','%'.$request->drop_location.'%');
       }
+
+      if($status !== 'Active' && $status !=='Unassigned'){
+        if($request->vehicle_id){
+            $orders->where('vehicle_id',$request->vehicle_id);
+        }
+      }
       if($request->type)
         $orders->where('type',$request->type);
       if($request->orderStatus || $request->orderStatus=='0')
         $orders->where('status',$request->orderStatus);
       if($request->pick_date)
 				$orders->whereDate('pick_timestamp',$request->pick_date);
-				
+
       $orders = $orders->orderBy('orders.created_at','DESC')
                        ->orderBy('orders.status','ASC')
                        ->get();
-                       
+
       // To search customer or driver, collects all data and then filters the fullname, will be major complication if large collection
       //Best Option: make a new field in table named slug where concatenate with '-' for fname and lname, and simply search there
 
@@ -119,7 +125,7 @@ class OrderController extends Controller
       $collection = collect([
         'data' =>  OrderResource::collection($orders)
       ]);
-      
+
       return response()->json($collection);
     }
 
@@ -194,7 +200,7 @@ class OrderController extends Controller
     public function destroy(Request $request,$id)
     {
         return $request->all();
-    }    
+    }
 
     /**
      * Just soft deleting bookings / cancel booking
@@ -245,7 +251,7 @@ class OrderController extends Controller
             'PAT' => Date('Y-m-d h:i:s')
           ]
         );
-        User::notifyAssignedForPickup($order);      
+        User::notifyAssignedForPickup($order);
       }
 
       return response()->json('Successfully Assigned');

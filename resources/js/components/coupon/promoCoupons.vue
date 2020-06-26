@@ -6,7 +6,12 @@
           <h5 class="h3 mb-0">Coupons</h5>
         </div>
         <div class="col-4 text-right">
-          <button type="button" class="btn btn-info btn-sm" @click="addCoupon()" v-if="addbtn">Add Promo Coupon</button>
+          <button
+            type="button"
+            class="btn btn-info btn-sm"
+            @click="addCoupon()"
+            v-if="addbtn"
+          >Add Promo Coupon</button>
         </div>
       </div>
     </div>
@@ -18,13 +23,23 @@
             <label class="form-control-label">COUPON CODE</label>
             <div class="input-group input-group-merge">
               <div class="input-group-prepend">
-                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                <span class="input-group-text">
+                  <i class="fas fa-user"></i>
+                </span>
               </div>
-              <input v-model="coupon.code" :class="{'not-validated':errors.code}" type="text" class="form-control" placeholder="COUPON CODE">
+              <input
+                v-model="coupon.code"
+                :class="{'not-validated':errors.code}"
+                type="text"
+                class="form-control"
+                placeholder="COUPON CODE"
+              />
             </div>
-            <div class="invalid-feedback" style="display: block;" v-if="errors.code">
-              {{errors.code[0]}}
-            </div>
+            <div
+              class="invalid-feedback"
+              style="display: block;"
+              v-if="errors.code"
+            >{{errors.code[0]}}</div>
           </div>
         </div>
         <div class="col-md-3">
@@ -32,16 +47,24 @@
             <label class="form-control-label">Coupon Type</label>
             <div class="input-group input-group-merge">
               <div class="input-group-prepend">
-                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                <span class="input-group-text">
+                  <i class="fas fa-envelope"></i>
+                </span>
               </div>
-              <select class="form-control" v-model="coupon.coupon_type" :class="{'not-validated':errors.type}">
+              <select
+                class="form-control"
+                v-model="coupon.coupon_type"
+                :class="{'not-validated':errors.type}"
+              >
                 <option value="1">SINGLE VALIDITY</option>
                 <option value="2">MULTIPLE VALIDITY</option>
               </select>
             </div>
-            <div class="invalid-feedback" style="display: block;" v-if="errors.type">
-              {{errors.type[0]}}
-            </div>
+            <div
+              class="invalid-feedback"
+              style="display: block;"
+              v-if="errors.type"
+            >{{errors.type[0]}}</div>
           </div>
         </div>
         <div class="col-md-3">
@@ -49,13 +72,23 @@
             <label class="form-control-label">Discount</label>
             <div class="input-group input-group-merge">
               <div class="input-group-prepend">
-                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                <span class="input-group-text">
+                  <i class="fas fa-envelope"></i>
+                </span>
               </div>
-              <input v-model="coupon.discount" :class="{'not-validated':errors.discount}" type="number" class="form-control" placeholder="COUPON DISCOUNT">
+              <input
+                v-model="coupon.discount"
+                :class="{'not-validated':errors.discount}"
+                type="number"
+                class="form-control"
+                placeholder="COUPON DISCOUNT"
+              />
             </div>
-            <div class="invalid-feedback" style="display: block;" v-if="errors.discount">
-              {{errors.discount[0]}}
-            </div>
+            <div
+              class="invalid-feedback"
+              style="display: block;"
+              v-if="errors.discount"
+            >{{errors.discount[0]}}</div>
           </div>
         </div>
         <div class="col-md-3">
@@ -63,33 +96,44 @@
             <label class="form-control-label">Discount Type</label>
             <div class="input-group input-group-merge">
               <div class="input-group-prepend">
-                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                <span class="input-group-text">
+                  <i class="fas fa-envelope"></i>
+                </span>
               </div>
-              <select class="form-control" v-model="coupon.type" :class="{'not-validated':errors.type}">
+              <select
+                class="form-control"
+                v-model="coupon.type"
+                :class="{'not-validated':errors.type}"
+              >
                 <option value="1">Percentage</option>
                 <option value="2">Amount</option>
               </select>
             </div>
-            <div class="invalid-feedback" style="display: block;" v-if="errors.type">
-              {{errors.type[0]}}
-            </div>
+            <div
+              class="invalid-feedback"
+              style="display: block;"
+              v-if="errors.type"
+            >{{errors.type[0]}}</div>
           </div>
         </div>
         <div class="col-md-3">
           <div class="form-group">
             <label class="form-control-label">Valid FROM - TO</label>
-            <date-picker 
-              range 
+            <date-picker
+              range
               v-model="coupon.valid_from_to"
-              lang='en' 
+              lang="en"
               input-class="form-control"
-              valueType="format" 
-              format="YYYY-MM-DD HH:mm:ss" :time-picker-options="{ start: '00:00', step: '00:30', end: '23:30' }"
+              valuetype="format"
+              format="YYYY-MM-DD HH:mm:ss"
+              :time-picker-options="{ start: '00:00', step: '00:30', end: '23:30' }"
               type="datetime"
             ></date-picker>
-            <div class="invalid-feedback" style="display: block;" v-if="errors.valid_from">
-              {{errors.valid_from[0]}}
-            </div>
+            <div
+              class="invalid-feedback"
+              style="display: block;"
+              v-if="errors.valid_from"
+            >{{errors.valid_from[0]}}</div>
           </div>
         </div>
         <div class="col-md-3">
@@ -97,25 +141,37 @@
             <label class="form-control-label">Status</label>
             <div class="input-group input-group-merge">
               <div class="input-group-prepend">
-                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                <span class="input-group-text">
+                  <i class="fas fa-envelope"></i>
+                </span>
               </div>
               <select class="form-control" v-model="coupon.status">
                 <option value="1">Active</option>
                 <option value="0">Inactive</option>
               </select>
             </div>
-            <div class="invalid-feedback" style="display: block;" v-if="errors.status">
-              {{errors.status[0]}}
-            </div>
+            <div
+              class="invalid-feedback"
+              style="display: block;"
+              v-if="errors.status"
+            >{{errors.status[0]}}</div>
           </div>
         </div>
         <div class="col-md-12">
           <div class="form-group">
             <label class="form-control-label">Description</label>
-            <textarea v-model="coupon.description" :class="{'not-validated':errors.description}" class="form-control" rows="3" placeholder="BRIEF DESCRIPTION OF COUPON"></textarea>
-            <div class="invalid-feedback" style="display: block;" v-if="errors.description">
-              {{errors.description[0]}}
-            </div>
+            <textarea
+              v-model="coupon.description"
+              :class="{'not-validated':errors.description}"
+              class="form-control"
+              rows="3"
+              placeholder="BRIEF DESCRIPTION OF COUPON"
+            ></textarea>
+            <div
+              class="invalid-feedback"
+              style="display: block;"
+              v-if="errors.description"
+            >{{errors.description[0]}}</div>
           </div>
         </div>
       </div>
@@ -140,9 +196,59 @@
             <th>Status</th>
             <th>Action</th>
           </tr>
+          <tr>
+            <th>
+              <div class="icon icon-shape bg-gradient-red text-white rounded-circle shadow">
+                <i class="fas fa-search"></i>
+              </div>
+            </th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th>
+              <select
+                v-model="search.coupon_type"
+                @change="searchCoupon"
+                placeholder="Coupon Type"
+                class="form-control searchRow"
+              >
+                <option value>All</option>
+                <option value="1">Single Validity</option>
+                <option value="2">Multiple Validity</option>
+              </select>
+            </th>
+            <th class="width:20rem;">
+              <date-picker
+                @blur="activeDateChanges($event)"
+                input-class="form-control bg-transparent"
+                v-model="search.active_date"
+                lang="en"
+                type="datetime"
+                range
+                :clearable="false"
+              >
+                <i slot="calendar-icon"></i>
+              </date-picker>
+            </th>
+            <th>
+              <select
+                v-model="search.status"
+                @change="searchCoupon"
+                placeholder="Status"
+                class="form-control searchRow"
+              >
+                <option value>All</option>
+                <option value="1">Actice</option>
+                <option value="0">Inactive</option>
+              </select>
+            </th>
+            <th></th>
+          </tr>
         </thead>
         <tbody>
-          <tr v-for="item,key in coupons.data">
+          <tr v-for="(item,key) in coupons.data" :key="key">
             <td>{{key+1}}</td>
             <td>
               <b>{{item.code}}</b>
@@ -150,40 +256,44 @@
             <td>{{item.total_redeems}}</td>
             <td>
               <div class="form-group" v-if="editExistingCoupon(item.id)">
-                <textarea v-model="coupon.description" :class="{'not-validated':errors.description}" class="form-control" rows="3" placeholder="BRIEF DESCRIPTION OF COUPON"></textarea>
-                <div class="invalid-feedback" style="display: block;" v-if="errors.description">
-                  {{errors.description[0]}}
-                </div>
+                <textarea
+                  v-model="coupon.description"
+                  :class="{'not-validated':errors.description}"
+                  class="form-control"
+                  rows="3"
+                  placeholder="BRIEF DESCRIPTION OF COUPON"
+                ></textarea>
+                <div
+                  class="invalid-feedback"
+                  style="display: block;"
+                  v-if="errors.description"
+                >{{errors.description[0]}}</div>
               </div>
               <div v-else>{{item.description}}</div>
             </td>
             <td>
-              <div>
-                {{item.discount}}
-              </div>
+              <div>{{item.discount}}</div>
             </td>
             <td>
-              <div>
-                {{couponDiscountType(item.type)}}
-              </div>
+              <div>{{couponDiscountType(item.type)}}</div>
             </td>
             <td>
-              <div>
-                {{couponType(item.coupon_type)}}
-              </div>
+              <div>{{couponType(item.coupon_type)}}</div>
             </td>
             <td>
-              {{datetime(item.valid_from)}} - 
+              {{datetime(item.valid_from)}} -
               {{datetime(item.valid_to)}}
             </td>
             <td>
-              <select class="form-control" v-model="coupon.status" v-if="editExistingCoupon(item.id)">
+              <select
+                class="form-control"
+                v-model="coupon.status"
+                v-if="editExistingCoupon(item.id)"
+              >
                 <option value="1">Active</option>
                 <option value="0">Inactive</option>
               </select>
-              <div v-else>
-                {{status(item.status)}}
-              </div>
+              <div v-else>{{status(item.status)}}</div>
             </td>
             <td>
               <div v-if="editExistingCoupon(item.id)">
@@ -191,9 +301,26 @@
                 <button type="button" class="btn btn-info btn-sm" @click="cancelEditCoupon()">Cancel</button>
               </div>
               <div v-else>
-                <button type="button" class="btn btn-danger btn-sm" @click="deleteCoupon(item.id)"><i class="far fa-trash-alt"></i></button>
-                <button type="button" class="btn btn-info btn-sm" @click="editCoupon(key)" v-if="editbtn"><i class="far fa-edit"></i></button>
-                <button type="button" class="btn btn-info btn-sm" @click="getRedeemedOrders(item.code)" title="View All Coupon Redeems" v-if="item.total_redeems"><i class="far fa-eye"></i></button>
+                <button type="button" class="btn btn-danger btn-sm" @click="deleteCoupon(item.id)">
+                  <i class="far fa-trash-alt"></i>
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-info btn-sm"
+                  @click="editCoupon(key)"
+                  v-if="editbtn"
+                >
+                  <i class="far fa-edit"></i>
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-info btn-sm"
+                  @click="getRedeemedOrders(item.code)"
+                  title="View All Coupon Redeems"
+                  v-if="item.total_redeems"
+                >
+                  <i class="far fa-eye"></i>
+                </button>
               </div>
             </td>
           </tr>
@@ -203,12 +330,22 @@
     <div class="card-footer py-4" v-if="coupons.data">
       <pagination :data="coupons" @pagination-change-page="getCoupon"></pagination>
     </div>
-    <b-modal id="redeemedOrdersModal" ref="redeemedOrdersModal" size="xl" title="Orders" hide-footer hide-header>
+    <b-modal
+      id="redeemedOrdersModal"
+      ref="redeemedOrdersModal"
+      size="xl"
+      title="Orders"
+      hide-footer
+      hide-header
+    >
       <div class="card">
         <div class="card-header">
           <div class="row align-items-center">
             <div class="col-4">
-              <h3 class="mb-0 text-black" v-if="redeemedOrders.length">Reedemed Orders for "{{redeemedOrders[0]['coupon']}}"</h3>
+              <h3
+                class="mb-0 text-black"
+                v-if="redeemedOrders.length"
+              >Reedemed Orders for "{{redeemedOrders[0]['coupon']}}"</h3>
             </div>
           </div>
         </div>
@@ -224,7 +361,7 @@
               </tr>
             </thead>
             <tbody class="list">
-              <tr v-for="item,key in redeemedOrders">
+              <tr v-for="(item,key) in redeemedOrders" :key="key">
                 <td>{{++key}}</td>
                 <td>{{item.id}}</td>
                 <td>{{dateTimeUTC(item.created_at)}}</td>
@@ -241,174 +378,186 @@
 
 
 <script>
-  import {settings} from '../../config/settings'
-  import DatePicker from 'vue2-datepicker'
+import { settings } from "../../config/settings";
+import DatePicker from "vue2-datepicker";
 
-  export default{
-    components:{DatePicker},
-    data(){
-      return{
-        coupon:{
-          code:'',
-          description:'',
-          coupon_type:'',
-          type:'',
-          discount:'',
-          status:'',
-          valid_from_to:'',
-        },
-        addbtn:true,
-        editbtn:true,
-        newCoupon:false,
-        redeemedOrders:[],
-        modifyCoupon:{
-          id:'',
-          edit:false,
-        },
-        coupons:{},
-        errors:{},
-      }
+export default {
+  components: { DatePicker },
+  data() {
+    return {
+      search: {
+        status: "",
+        active_date: "",
+        status: ""
+      },
+      coupon: {
+        code: "",
+        description: "",
+        coupon_type: "",
+        type: "",
+        discount: "",
+        status: "",
+        valid_from_to: ""
+      },
+      addbtn: true,
+      editbtn: true,
+      newCoupon: false,
+      redeemedOrders: [],
+      modifyCoupon: {
+        id: "",
+        edit: false
+      },
+      coupons: {},
+      errors: {}
+    };
+  },
+  created() {
+    this.getCoupon();
+    this.$store.commit("changeCurrentPage", "promo");
+    this.$store.commit("changeCurrentMenu", "couponMenu");
+  },
+  mounted() {},
+  methods: {
+    getCoupon(page = 1) {
+      axios.get("/coupons?page=" + page).then(response => {
+        this.coupons = response.data;
+      });
     },
-    created(){
-      this.getCoupon()
-      this.$store.commit('changeCurrentPage', 'promo')
-      this.$store.commit('changeCurrentMenu', 'couponMenu')
-    },
-    mounted(){
-
-    },
-    methods:{
-      getCoupon(page = 1){
-        axios.get('/coupons?page='+page)
+    searchCoupon() {
+      axios
+        .get(
+          `/coupons?coupon_type=${this.search.coupon_type}&active_date=${this.search.active_date}&status=${this.search.status}`
+        )
         .then(response => {
-          this.coupons = response.data
-        }); 
-      },
-      addCoupon(){
-        this.newCoupon = true
-        this.editbtn = false
-      },
-      couponDiscountType(type){
-        return settings.couponDiscountType[type]
-      },
-      couponType(type){
-        return settings.couponType[type]
-      },
-      status(status){
-        return settings.status[status]
-      },
-      saveCoupon(){
-        axios.post('/coupons',this.coupon)
-        .then((response) => {
-          this.$store.dispatch('getCoupons')
-          this.coupon = {}
-          this.newCoupon = false
-          showNotify('success',response.data)
+          this.coupons = response.data;
+        });
+    },
+    addCoupon() {
+      this.newCoupon = true;
+      this.editbtn = false;
+    },
+    couponDiscountType(type) {
+      return settings.couponDiscountType[type];
+    },
+    couponType(type) {
+      return settings.couponType[type];
+    },
+    status(status) {
+      return settings.status[status];
+    },
+    saveCoupon() {
+      axios
+        .post("/coupons", this.coupon)
+        .then(response => {
+          this.$store.dispatch("getCoupons");
+          this.coupon = {};
+          this.newCoupon = false;
+          showNotify("success", response.data);
         })
-        .catch((error) => {
-          this.errors = error.response.data.errors
+        .catch(error => {
+          this.errors = error.response.data.errors;
           for (var prop in error.response.data.errors) {
-            showNotify('danger',error.response.data.errors[prop])
-          }  
-        })
-      },
-      saveEditedCoupon(){
-        axios.patch('/coupons/'+this.coupon.id,this.coupon)
-        .then((response) => {
-          this.$store.dispatch('getCoupons')
-          this.coupon = {}
-          this.modifyCoupon.id = ''
-          this.modifyCoupon.edit = true
-          showNotify('success',response.data)
-        })
-        .catch((error) => {
-          this.errors = error.response.data.errors
-          for (var prop in error.response.data.errors) {
-            showNotify('danger',error.response.data.errors[prop])
-          }  
-        })
-      },
-      discardCoupon(){
-        this.coupon = {
-          code : '',
-          description: '',
-          discount: 0,
-          type: '',
-          status: 0,
-        }
-        this.newCoupon = false
-        this.editbtn = true
-      },
-      deleteCoupon(id){
-        this.$swal({
-          title: 'Are you sure?',
-          text: "You may not undo this",
-          type: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Yes, delete it!'
-        }).then((result) => {
-          if (result.value) {
-            axios.delete('/coupons/'+id)
-            .then((response) => {
-              this.$store.dispatch('getCoupons')
-              showNotify('success',response.data)
-            })
-            .catch((error) => {  
-              showNotify('danger',error.response.data.errors)
-            })
+            showNotify("danger", error.response.data.errors[prop]);
           }
+        });
+    },
+    saveEditedCoupon() {
+      axios
+        .patch("/coupons/" + this.coupon.id, this.coupon)
+        .then(response => {
+          this.$store.dispatch("getCoupons");
+          this.coupon = {};
+          this.modifyCoupon.id = "";
+          this.modifyCoupon.edit = true;
+          showNotify("success", response.data);
         })
-      },
-      editCoupon(key){
-        this.coupon = this.coupons.data[key]
-        this.modifyCoupon.id = this.coupons.data[key].id
-        this.modifyCoupon.edit = true
-        this.addbtn = false
-      },
-      cancelEditCoupon(){
-        this.coupon = {}
-        this.modifyCoupon.id = ''
-        this.modifyCoupon.edit = false
-        this.addbtn = true
-      },
-      editExistingCoupon(edit_id){
-        if(this.modifyCoupon.id == edit_id && this.modifyCoupon.edit)
-          return true
-        else 
-          return false
-      },
-      datetime(datetime){
-        var date = new Date(datetime)
-        return this.$moment(String(datetime)).format('YYYY/MM/DD hh:mm a');
-      },
-      getRedeemedOrders(code){
-        axios.get('/coupon/orders/'+code)
-        .then((response) => {
-          this.redeemedOrders = response.data
-          this.$refs['redeemedOrdersModal'].show()
-        })
-      },
-      dateTimeUTC(date){
-        if(date){
-          var date = new Date(date+' UTC')
-          return this.$moment(date).format("ddd MMM DD YYYY [at] HH:mm A")
+        .catch(error => {
+          this.errors = error.response.data.errors;
+          for (var prop in error.response.data.errors) {
+            showNotify("danger", error.response.data.errors[prop]);
+          }
+        });
+    },
+    discardCoupon() {
+      this.coupon = {
+        code: "",
+        description: "",
+        discount: 0,
+        type: "",
+        status: 0
+      };
+      this.newCoupon = false;
+      this.editbtn = true;
+    },
+    deleteCoupon(id) {
+      this.$swal({
+        title: "Are you sure?",
+        text: "You may not undo this",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!"
+      }).then(result => {
+        if (result.value) {
+          axios
+            .delete("/coupons/" + id)
+            .then(response => {
+              this.$store.dispatch("getCoupons");
+              showNotify("success", response.data);
+            })
+            .catch(error => {
+              showNotify("danger", error.response.data.errors);
+            });
         }
-        else
-          return ' - '
-      },
+      });
     },
-    computed: {
+    editCoupon(key) {
+      this.coupon = this.coupons.data[key];
+      this.modifyCoupon.id = this.coupons.data[key].id;
+      this.modifyCoupon.edit = true;
+      this.addbtn = false;
     },
-  }
+    cancelEditCoupon() {
+      this.coupon = {};
+      this.modifyCoupon.id = "";
+      this.modifyCoupon.edit = false;
+      this.addbtn = true;
+    },
+    editExistingCoupon(edit_id) {
+      if (this.modifyCoupon.id == edit_id && this.modifyCoupon.edit)
+        return true;
+      else return false;
+    },
+    datetime(datetime) {
+      var date = new Date(datetime);
+      return this.$moment(String(datetime)).format("YYYY/MM/DD hh:mm a");
+    },
+    getRedeemedOrders(code) {
+      axios.get("/coupon/orders/" + code).then(response => {
+        this.redeemedOrders = response.data;
+        this.$refs["redeemedOrdersModal"].show();
+      });
+    },
+    dateTimeUTC(date) {
+      if (date) {
+        var date = new Date(date + " UTC");
+        return this.$moment(date).format("ddd MMM DD YYYY [at] HH:mm A");
+      } else return " - ";
+    },
+    activeDateChanges($event) {
+      console.log($event);
+    }
+  },
 
+  computed: {}
+};
 </script>
 <style type="text/css">
-  #redeemedOrdersModal___BV_modal_body_{
-    padding: 0;
-  }
-  #redeemedOrdersModal___BV_modal_body_ .card {
-    margin-bottom: 30px;
-  }
+#redeemedOrdersModal___BV_modal_body_ {
+  padding: 0;
+}
+#redeemedOrdersModal___BV_modal_body_ .card {
+  margin-bottom: 30px;
+}
 </style>

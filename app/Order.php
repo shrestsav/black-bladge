@@ -11,7 +11,7 @@ use App\Http\Resources\Api\DropLocation as DropLocationResource;
 class Order extends Model
 {
     use SoftDeletes;
-    
+
     protected $fillable = [
         'status',
         'customer_id',
@@ -42,7 +42,7 @@ class Order extends Model
     ];
 
     protected $appends = ['end_booking_timestamp'];
-    
+
     public function getEndBookingTimestampAttribute()
     {
         return $this->type==2 ? \Carbon\Carbon::parse($this->pick_timestamp)->addHours($this->booked_hours) : null;
@@ -52,7 +52,7 @@ class Order extends Model
     {
         return $this->belongsTo(Coupon::class,'promo_code','code');
     }
-    
+
     public function customer()
     {
         return $this->belongsTo(User::class,'customer_id');
@@ -83,6 +83,10 @@ class Order extends Model
         return $this->hasMany(BookingLog::class,'order_id');
     }
 
+    public function vehicle(){
+        return $this->belongsTo(Vehicle::class, 'vehicle_id');
+    }
+
     public function additionalBookedMinute()
     {
         $bookedTime = 0;
@@ -97,7 +101,7 @@ class Order extends Model
     public function totalBookedMinute()
     {
         $customerBooked = $this->booked_hours ? $this->booked_hours*60 : 0;  //converting hours to minutes if exists
-        
+
         $bookedTime = $this->additionalBookedMinute();
 
         return $bookedTime+$customerBooked;
@@ -107,14 +111,14 @@ class Order extends Model
     {
         $dropLocation = $this->dropLocations()->where('type',2)->orderBy('created_at','DESC')->first();
 
-        return new DropLocationResource($dropLocation);    
+        return new DropLocationResource($dropLocation);
     }
 
     public function additionalLocations()
     {
         $dropLocations = $this->dropLocations()->where('type',1)->orderBy('created_at','ASC')->get();
 
-        return DropLocationResource::collection($dropLocations);    
+        return DropLocationResource::collection($dropLocations);
     }
 
     public function bookingRoute()
@@ -123,7 +127,7 @@ class Order extends Model
         $dropLocations = $this->dropLocations;
         $destination = DropLocationResource::collection($dropLocations->where('type',2));
         $additional = DropLocationResource::collection($dropLocations->where('type',1));
-        
+
         $route = [$pickLocation];
 
         foreach($additional as $a){
@@ -148,7 +152,7 @@ class Order extends Model
             $price += $dropLocation->price;
             $distance += $dropLocation->distance;
         }
-        
+
         $this->update([
             'estimated_price'    => $price,
             'estimated_distance' => $distance,
@@ -160,7 +164,7 @@ class Order extends Model
     public function updatePriceForInstant()
     {
         $appDefaults = AppDefault::firstOrFail();
-        
+
         $bookingAddedTime = $this->bookingExtendedTime;
         $bookedTimePrice = 0;
 
@@ -181,7 +185,7 @@ class Order extends Model
     public function updatePriceForAdvance()
     {
         $appDefaults = AppDefault::firstOrFail();
-        
+
         $bookingAddedTime = $this->bookingExtendedTime;
         $bookedTimePrice = 0;
 
@@ -199,11 +203,11 @@ class Order extends Model
         return true;
     }
 
-    //Get invoice of order 
+    //Get invoice of order
     public function generateInvoice()
     {
         $appDefaults = AppDefault::first();
-        
+
         $estimatedPrice = $this->estimated_price; //this price already includes total added time / total added drop loacations
         $additionalPrice = $this->additionalBookedMinute()*$appDefaults->cost_per_min;
         $initialPrice = $estimatedPrice - $additionalPrice; //Because in estimated_price field additional cost is already included while adding any additional time

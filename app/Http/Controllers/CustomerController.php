@@ -105,6 +105,8 @@ class CustomerController extends Controller
             "id" => 'required',
             "fname" => 'required|max:255',
             "lname" => 'required|max:255',
+            "email" => 'required|unique:users,email,'. $id,
+            "phone" => 'required|unique:users,phone,'. $id,
         ]);
 
         if ($validator->fails()) {
@@ -119,7 +121,9 @@ class CustomerController extends Controller
         $customerUpdate = User::findOrFail($request->id)
                               ->update([
                                 'fname' =>  $request->fname,
-                                'lname' =>  $request->lname
+                                'lname' =>  $request->lname,
+                                'email' =>  $request->email,
+                                'phone' =>  $request->phone,
                               ]);
 
         return response()->json([
@@ -142,7 +146,7 @@ class CustomerController extends Controller
     public function deleteCustomers(Request $request)
     {
         $customers = User::whereIn('id',$request->customerIds)->with('orders')->get();
-        
+
         foreach($customers as $customer){
             if(count($customer->orders)){
                 return response()->json(['message'=>'One of the customer has existing orders, you cannot delete this customer'],404);

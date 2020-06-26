@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Coupon;
 use App\Order;
+use App\Coupon;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class CouponController extends Controller
@@ -13,9 +14,28 @@ class CouponController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $coupons = Coupon::whereIn('coupon_type',[1,2])->orderBy('id','DESC')->paginate(config('settings.rows'));
+        $coupons = Coupon::orderBy('valid_to','ASC');
+        if($request->coupon_type){
+            $coupons->where('coupon_type',$request->coupon_type);
+        }else{
+            $coupons->whereIn('coupon_type',[1,2]);
+        }
+        if($request->status!=""){
+            $coupons->where('status',$request->status);
+        }
+        if($request->active_date){
+            $dateArray = explode(',',$request->active_date);
+
+            if($dateArray[0] !=''){
+                $coupons->where('valid_from', '>' ,Carbon::createFromFormat('D M d Y H:i:s e+', $dateArray[0])->toDateTimeString());
+            }
+            if($dateArray[1] !=''){
+                $coupons->where('valid_to', '<' ,Carbon::createFromFormat('D M d Y H:i:s e+', $dateArray[1])->toDateTimeString());
+            }
+        }
+        $coupons = $coupons->paginate(config('settings.rows'));
         $coupons->setCollection( $coupons->getCollection()->makeVisible('total_redeems'));
         return response()->json($coupons);
     }
@@ -76,7 +96,7 @@ class CouponController extends Controller
         $coupon->valid_from = $request->valid_from_to[0];
         $coupon->valid_to = $request->valid_from_to[1];
         $coupon->save();
-        
+
         return response()->json('Successfully Added Coupon');
     }
 
@@ -116,7 +136,7 @@ class CouponController extends Controller
             'description' => $request->description,
             'status' => $request->status
         ]);
-        
+
         return response()->json('Successfully Updated');
     }
 

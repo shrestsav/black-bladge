@@ -51,7 +51,7 @@ Route::middleware(['auth'])->group(function () {
 	    Route::resource('roles','RoleController');
 	    Route::resource('users','UserController');
 	});
-	
+
 	//Driver Routes
 	Route::apiResource('/drivers','DriverController');
 	Route::get('/driver/all','DriverController@allDrivers');
@@ -62,8 +62,9 @@ Route::middleware(['auth'])->group(function () {
 	Route::post('/deleteCustomers','CustomerController@deleteCustomers');
 	Route::get('/address/{customer_id}','CustomerController@address');
 	Route::get('/customer/all','CustomerController@all');
-	
-	//Vehicle Routes
+
+    //Vehicle Routes
+    Route::get('/vehicle/all','VehicleController@getAllVehicles');
 	Route::apiResource('/vehicles','VehicleController');
 
 	//REPORT GENERATION
@@ -78,13 +79,13 @@ Route::middleware(['auth'])->group(function () {
 	    // //Exports
 	    // Route::get('/export','ReportController@export');
 	});
-	
+
 	// Banners
 	Route::get('/offers','CoreController@offers');
 	Route::post('/offers','CoreController@addOffer');
 	Route::post('/offers/edit/{id}','CoreController@editOffer');
 	Route::post('/changeOfferStatus','CoreController@changeOfferStatus');
-	Route::delete('/offers/{id}','CoreController@deleteOffer');	
+	Route::delete('/offers/{id}','CoreController@deleteOffer');
 
 	//App Defaults
 	Route::get('/appDefaults','CoreController@appDefaults');

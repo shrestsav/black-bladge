@@ -33,7 +33,7 @@ class Order extends JsonResource
             'drop_location'            => $this->dropLocation(),
             'additional_locations'     => $this->additionalLocations(),
             'booking_added_time'       => BookingAddedTimeResource::collection($this->bookingExtendedTime),
-            'estimated_distance'       => $this->estimated_distance, 
+            'estimated_distance'       => $this->estimated_distance,
             'booked_at'                => $this->created_at,
             'promo_code'               => $this->promo_code,
             'booked_hours'             => $this->when($this->type==2, $this->booked_hours),
@@ -57,7 +57,7 @@ class Order extends JsonResource
             'paid_amount'              => $invoice['paid_amount'],
             'left_amount'              => $invoice['left_amount'],
             'payment_complete'         => $invoice['payment_complete'],
-        
+
             //Customer Details
             'customer_id'              => $this->customer_id,
             'customer_fname'           => $this->customer['fname'],
@@ -65,7 +65,7 @@ class Order extends JsonResource
             'customer_photo_src'       => $this->customer['photo_src'],
             'customer_full_name'       => ucfirst(strtolower($this->customer['gender'])).'. '.$this->customer['full_name'],
             'customer_phone'           => $this->customer['phone'],
-            
+
             //Driver Details
             'driver_id'                => $this->when($this->driver_id, $this->driver_id),
             'driver_fname'             => $this->when($this->driver_id, $this->driver['fname']),
@@ -73,6 +73,11 @@ class Order extends JsonResource
             'driver_full_name'         => $this->when($this->driver_id, ucfirst(strtolower($this->driver['gender'])).'. '.$this->driver['full_name']),
             'driver_phone'             => $this->when($this->driver_id, $this->driver['phone']),
             'driver_license'           => $this->when($this->driver_id, $this->driver['license_no']),
+
+             // vehicle detail
+
+            'vehicle_id'               => $this->when($this->vehicle_id, $this->vehicle['id']),
+            'vehicle_number'           => $this->when($this->vehicle_id, $this->vehicle['vehicle_number']),
         ];
     }
 }

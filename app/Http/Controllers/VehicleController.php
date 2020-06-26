@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use Validator;
 use App\Vehicle;
-use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 use Intervention\Image\Facades\Image;
+use App\Http\Resources\Api\Driver\Vehicle as VehicleResource;
 
 class VehicleController extends Controller
 {
@@ -15,6 +16,11 @@ class VehicleController extends Controller
         $vehicles = Vehicle::all();
 
         return $vehicles;
+    }
+
+    public function getAllVehicles(){
+        $vehicles = Vehicle::all();
+        return VehicleResource::collection($vehicles);
     }
 
     public function store(Request $request)
@@ -26,7 +32,7 @@ class VehicleController extends Controller
             'description'    => 'required|string',
         ]);
 
-        //Save User Photo 
+        //Save User Photo
         if ($request->hasFile('photo_file')) {
             $image = Image::make($request->file('photo_file'))->orientate();
             // prevent possible upsizing
@@ -41,7 +47,7 @@ class VehicleController extends Controller
                 \File::makeDirectory($uploadDirectory, 0755, true);
             }
             $image->save($uploadDirectory.DS.$fileName,60);
-        } 
+        }
 
         $vehicle = Vehicle::create([
             'model'             =>  1,
@@ -57,7 +63,7 @@ class VehicleController extends Controller
             'vehicle' =>  $vehicle
         ]);
     }
-    
+
     public function update(Request $request, $id)
     {
         $vehicle = Vehicle::findOrFail($id);
@@ -68,9 +74,9 @@ class VehicleController extends Controller
             'photo_file'     => 'nullable|file',
             'description'    => 'required|string',
         ]);
-        
+
         $fileName = $vehicle->photo;
-        //Save User Photo 
+        //Save User Photo
         if ($request->hasFile('photo_file')) {
             $image = Image::make($request->file('photo_file'))->orientate();
             // prevent possible upsizing
@@ -88,11 +94,11 @@ class VehicleController extends Controller
 
             //Delete Old File
             $oldFile = public_path('files'.DS.'vehicles'.DS.$vehicle->photo);
-            
+
             if(file_exists($oldFile)){
                 \File::delete($oldFile);
             }
-        } 
+        }
 
         $vehicle = $vehicle->update([
             'model'             =>  1,
@@ -107,5 +113,5 @@ class VehicleController extends Controller
             'message' => 'Vehicle Updated'
         ]);
     }
-    
+
 }
