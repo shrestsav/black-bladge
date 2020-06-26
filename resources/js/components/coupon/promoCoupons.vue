@@ -221,7 +221,7 @@
             </th>
             <th class="width:20rem;">
               <date-picker
-                @blur="activeDateChanges($event)"
+                @blur="searchCoupon"
                 input-class="form-control bg-transparent"
                 v-model="search.active_date"
                 lang="en"
