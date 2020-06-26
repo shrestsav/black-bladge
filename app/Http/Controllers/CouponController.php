@@ -6,6 +6,7 @@ use App\Order;
 use App\Coupon;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use App\Http\Resources\Api\Admin\Coupon as CouponResource;
 
 class CouponController extends Controller
 {
@@ -29,15 +30,15 @@ class CouponController extends Controller
             $dateArray = explode(',',$request->active_date);
 
             if($dateArray[0] !=''){
-                $coupons->where('valid_from', '>' ,Carbon::createFromFormat('D M d Y H:i:s e+', $dateArray[0])->toDateTimeString());
+                $coupons->where('valid_from', '<' ,$dateArray[0]);
             }
             if($dateArray[1] !=''){
-                $coupons->where('valid_to', '<' ,Carbon::createFromFormat('D M d Y H:i:s e+', $dateArray[1])->toDateTimeString());
+                $coupons->where('valid_to', '>' ,$dateArray[1]);
             }
         }
         $coupons = $coupons->paginate(config('settings.rows'));
-        $coupons->setCollection( $coupons->getCollection()->makeVisible('total_redeems'));
-        return response()->json($coupons);
+
+        return CouponResource::collection($coupons);
     }
 
     /**

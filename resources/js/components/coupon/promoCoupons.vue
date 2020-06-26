@@ -124,7 +124,7 @@
               v-model="coupon.valid_from_to"
               lang="en"
               input-class="form-control"
-              valuetype="format"
+              valueType="format"
               format="YYYY-MM-DD HH:mm:ss"
               :time-picker-options="{ start: '00:00', step: '00:30', end: '23:30' }"
               type="datetime"
@@ -221,6 +221,21 @@
             </th>
             <th class="width:20rem;">
               <date-picker
+                range
+                v-model="search.active_date"
+                lang="en"
+                :confirm="true"
+                @change="searchCoupon"
+                input-class="form-control"
+                valueType="format"
+                format="YYYY-MM-DD HH:mm:ss"
+                :time-picker-options="{ start: '00:00', step: '00:30', end: '23:30' }"
+                type="datetime"
+              >
+                <i slot="calendar-icon"></i>
+              </date-picker>
+
+              <!-- <date-picker
                 @blur="searchCoupon"
                 input-class="form-control bg-transparent"
                 v-model="search.active_date"
@@ -230,7 +245,7 @@
                 :clearable="false"
               >
                 <i slot="calendar-icon"></i>
-              </date-picker>
+              </date-picker> -->
             </th>
             <th>
               <select
@@ -387,7 +402,8 @@ export default {
     return {
       search: {
         status: "",
-        active_date: "",
+        coupon_type: "",
+        active_date: [],
         status: ""
       },
       coupon: {
@@ -397,7 +413,7 @@ export default {
         type: "",
         discount: "",
         status: "",
-        valid_from_to: ""
+        valid_from_to: []
       },
       addbtn: true,
       editbtn: true,
@@ -424,13 +440,15 @@ export default {
       });
     },
     searchCoupon() {
-      axios
-        .get(
-          `/coupons?coupon_type=${this.search.coupon_type}&active_date=${this.search.active_date}&status=${this.search.status}`
-        )
+      var getURL =  `/coupons?coupon_type=${this.search.coupon_type}&active_date=${this.search.active_date}&status=${this.search.status}`;
+      console.log(getURL);
+      axios.get(getURL)
         .then(response => {
           this.coupons = response.data;
         });
+    },
+    testDate(){
+      console.log('here')
     },
     addCoupon() {
       this.newCoupon = true;
