@@ -109,12 +109,12 @@ trait NotificationLogics
         return true;
     }
        
-    public static function notifyApp($order, $notifyType, $notifyID, $message, $sendTo)
+    public static function notifyApp($order, $notifyType, $notifyID, $message, $sendTo, $model='order')
     {
         $notification = [
             'notifyType' => $notifyType,
             'message'    => $message,
-            'model'      => 'order',
+            'model'      => $model,
             'url'        => $order->id
         ];
 
@@ -460,6 +460,19 @@ trait NotificationLogics
 
         // Send Order Accepted Notification to Customer    
         self::notifyApp($order, 'order_cancelled', $order->customer_id, $customerMessage,'mobile');
+        
+        return true;
+    }
+
+    /**
+    * Notify customer for new gift voucher
+    */
+    public static function notifyCouponVoucher($coupon)
+    {  
+        $customerMessage = "You've got a gift voucher worth " . config('settings.currency') . ' ' . $coupon->discount . ' valid till ' . \Carbon\Carbon::parse($coupon->valid_to)->format('M-d-Y');
+
+        // Send Order Accepted Notification to Customer    
+        self::notifyApp($coupon, 'coupon_voucher', $coupon->user_id, $customerMessage, 'mobile', 'coupon');
         
         return true;
     }

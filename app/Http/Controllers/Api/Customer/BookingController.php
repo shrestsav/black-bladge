@@ -299,13 +299,9 @@ class BookingController extends Controller
             ], 403);
         }
 
-        User::notifyBookingCancelled($order);
-
         $order->update([
             'cancellation_reason' => $request->cancellation_reason
         ]);
-        
-        $order->delete();
 
         $couponCode = $this->generateRandomCoupon();
 
@@ -316,11 +312,15 @@ class BookingController extends Controller
             'status'        =>  1,
             'type'          =>  2,
             'coupon_type'   =>  3,
-            'discount'      =>  100,
+            'discount'      =>  5,
             'description'   =>  'Order Cancellation redeem coupon',
             'valid_from'    =>  \Carbon\Carbon::now(),
             'valid_to'      =>  \Carbon\Carbon::now()->addMonth(),
         ]);
+        
+        User::notifyBookingCancelled($order);
+        User::notifyCouponVoucher($coupon);
+        $order->delete();
 
         return response()->json([
             'message' => 'Booking Cancelled',
