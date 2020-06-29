@@ -42,17 +42,17 @@ class Order extends JsonResource
 
             //Invoicing
             'pricing_unit'         => config('settings.currency'),
-            'estimated_price'      => $invoice['estimated_price'],
+            'estimated_price'      => number_format($invoice['estimated_price'],2),
             'payment_method'       => $this->when($this->status==6, ($this->details['payment_type']==1) ? 'Cash on Delivery' : (($this->details['payment_type']==2) ? 'Card' : 'Cash on Delivery')),
-            'total_cost'           => $invoice['initial_price'],
-            'additional_price'     => $invoice['additional_price'],
-            'coupon_discount'      => $invoice['coupon_discount'],
-            'sub_total'            => $invoice['sub_total'],
+            'total_cost'           => number_format($invoice['initial_price'],2),
+            'additional_price'     => number_format($invoice['additional_price'],2),
+            'coupon_discount'      => number_format($invoice['coupon_discount'],2),
+            'sub_total'            => number_format($invoice['sub_total'],2),
             'VAT_percentage'       => $invoice['VAT_percentage'],
-            'VAT'                  => $invoice['VAT'],
-            'grand_total'          => $invoice['grand_total'],
-            'paid_amount'          => $invoice['paid_amount'],
-            'left_amount'          => $invoice['left_amount'],
+            'VAT'                  => number_format($invoice['VAT'],2),
+            'grand_total'          => number_format($invoice['grand_total'],2),
+            'paid_amount'          => number_format($invoice['paid_amount'],2),
+            'left_amount'          => number_format($invoice['left_amount'],2),
             'payment_complete'     => $invoice['payment_complete'],
             
             //Customer Details
