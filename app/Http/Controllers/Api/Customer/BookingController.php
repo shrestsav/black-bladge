@@ -355,19 +355,10 @@ class BookingController extends Controller
                 'message' => trans('response.coupon.invalid')
             ], 403);
         }
-      
-        $discount = '';
-        if($coupon->type==1)
-            $discount = $coupon->discount.'%';
-        elseif($coupon->type==2)
-            $discount = config('settings.currency').' '.$coupon->discount;
         
         return response()->json([
-            'message'     =>  trans('response.coupon.valid'),
-            'code'        =>  $coupon->code,
-            'discount'    =>  $discount,
-            'valid_from'  =>  $coupon->valid_from,
-            'valid_to'    =>  $coupon->valid_to
+            'message'  =>  trans('response.coupon.valid'),
+            'coupon'   =>  new CouponResource($coupon)
         ]);
     }
 
