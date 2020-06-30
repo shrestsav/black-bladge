@@ -469,7 +469,7 @@ trait NotificationLogics
     */
     public static function notifyCouponVoucher($coupon)
     {  
-        $customerMessage = "You've got a gift voucher worth " . config('settings.currency') . ' ' . $coupon->discount . ' valid till ' . \Carbon\Carbon::parse($coupon->valid_to)->format('M-d-Y');
+        $customerMessage = "You've got a gift voucher worth " . config('settings.currency') . ' ' . $coupon->discount . ' valid till ' . \Carbon\Carbon::parse($coupon->valid_to)->format('M-d-Y') . '. Coupon Code: ' . $coupon->code;
 
         // Send Order Accepted Notification to Customer    
         self::notifyApp($coupon, 'coupon_voucher', $coupon->user_id, $customerMessage, 'mobile', 'coupon');
