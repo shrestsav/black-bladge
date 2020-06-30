@@ -7,14 +7,15 @@ use App\User;
 use App\Order;
 use App\Coupon;
 use App\AppDefault;
+use App\UserDetail;
 use App\OrderDetail;
 use App\DropLocation;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\Api\Customer\Order as OrderResource;
 use App\Http\Resources\Api\Customer\Coupon as CouponResource;
-use Illuminate\Support\Str;
 
 class BookingController extends Controller
 {
@@ -302,7 +303,7 @@ class BookingController extends Controller
             if($referrerExists){
                 $referrer = User::find($referrerExists->user_id);
                 // Now check if order is first order of Auth User
-                $checkIfFirstOrder = Order::withTrashed()->where('user_id',Auth::id())->exists();
+                $checkIfFirstOrder = Order::withTrashed()->where('customer_id',Auth::id())->exists();
 
                 if($referrer && !$checkIfFirstOrder)
                     return $referrer;
