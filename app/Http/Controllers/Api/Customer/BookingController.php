@@ -196,6 +196,8 @@ class BookingController extends Controller
                 'errors' => $validator->errors(),
             ], 422);
         }
+        
+        $referrerUser = $this->checkIfFirstOrderAndHasReferrer();
 
         $checkExistingBooking = Auth::user()->checkExistingBooking($data['pick_timestamp'],$data['booked_hours']);
        
@@ -248,6 +250,11 @@ class BookingController extends Controller
         
         User::notifyNewBooking($order);
 
+        if($referrerUser){
+            //Make coupon here
+            $this->giftCouponVoucher($referrerUser);
+        }
+
         return response()->json([
             "order"   => new OrderResource($order),
             "message" => "Advanced Order Created Successfully"
@@ -264,7 +271,7 @@ class BookingController extends Controller
     public function giftCouponVoucher($user)
     {
         $couponCode = $this->generateRandomCoupon();
-
+        $grantAmount = AppDefault::first()->referral_grant;
         //Create Coupon
         $coupon = Coupon::create([
             'code'          =>  $couponCode,
@@ -272,7 +279,7 @@ class BookingController extends Controller
             'status'        =>  1,
             'type'          =>  2,
             'coupon_type'   =>  3,
-            'discount'      =>  5,
+            'discount'      =>  $grantAmount,
             'description'   =>  'Referral Activation and new booking one time Coupon',
             'valid_from'    =>  \Carbon\Carbon::now(),
             'valid_to'      =>  \Carbon\Carbon::now()->addMonth(),

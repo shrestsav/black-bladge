@@ -51,15 +51,16 @@ class CoreController extends Controller
         $input = [];
         if($request->saveType=='generalSetting'){
             $validatedData = $request->validate([
-                'VAT'           => 'required|numeric',
-                'OTP_expiry'    => 'required|numeric',
-                'app_rows'      => 'required|numeric',
-                'sys_rows'      => 'required|numeric',
-                'cost_per_km'   => 'required|numeric',
-                'cost_per_min'  => 'required|numeric',
+                'VAT'            => 'required|numeric',
+                'OTP_expiry'     => 'required|numeric',
+                'app_rows'       => 'required|numeric',
+                'sys_rows'       => 'required|numeric',
+                'cost_per_km'    => 'required|numeric',
+                'cost_per_min'   => 'required|numeric',
+                'referral_grant' => 'required|numeric',
             ]);
 
-            $input = $request->only('VAT', 'OTP_expiry','app_rows','sys_rows','cost_per_km','cost_per_min');
+            $input = $request->only('VAT', 'OTP_expiry','app_rows','sys_rows','cost_per_km','cost_per_min','referral_grant');
         }
         if($request->saveType=='supportSetting'){
             $validatedData = $request->validate([
