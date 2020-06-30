@@ -16,7 +16,8 @@ Route::get('/phpinfo',function(){
 });
 
 Route::get('/update',function(){
-	$test = round(520.88, 2);
+	$test = number_format(520, 2);
+	// $test = (float)$test;
 	
 
 	return [

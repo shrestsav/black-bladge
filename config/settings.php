@@ -45,13 +45,13 @@ return [
         ]
     ],
     'orderStatuses' => [
-        0 => 'New',
+        0 => 'Pending',
         1 => 'Assigned',
         2 => 'Start Trip',
         3 => 'Arrived at Customer',
         4 => 'Start Trip for Destination',
         5 => 'Reached Destination',
-        6 => 'Payment Done and Closed'
+        6 => 'Completed'
     ],
     'active' => [2,3,4,5],
     'unassigned' => [0],
