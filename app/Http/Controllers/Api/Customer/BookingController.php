@@ -92,6 +92,7 @@ class BookingController extends Controller
         //         'message' => 'Forbidden, Complete your active order or cancel it to make new one'
         //     ], 403);
         // }
+        $referrerUser = $this->checkIfFirstOrderAndHasReferrer();
 
         $pick_timstamp = \Carbon\Carbon::now()->timezone(config('settings.timezone'))->toDateTimeString();
         
@@ -161,6 +162,11 @@ class BookingController extends Controller
         );
         
         User::notifyNewBooking($order);
+
+        if($referrerUser){
+            //Make coupon here
+            $this->giftCouponVoucher($referrerUser);
+        }
 
         return response()->json([
             "order"   => new OrderResource($order),
@@ -246,6 +252,56 @@ class BookingController extends Controller
             "order"   => new OrderResource($order),
             "message" => "Advanced Order Created Successfully"
         ], 200);
+    }
+
+    
+    /**
+     * Gift coupon voucher
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return bool
+     */
+    public function giftCouponVoucher($user)
+    {
+        $couponCode = $this->generateRandomCoupon();
+
+        //Create Coupon
+        $coupon = Coupon::create([
+            'code'          =>  $couponCode,
+            'user_id'       =>  $user->id,
+            'status'        =>  1,
+            'type'          =>  2,
+            'coupon_type'   =>  3,
+            'discount'      =>  5,
+            'description'   =>  'Referral Activation and new booking one time Coupon',
+            'valid_from'    =>  \Carbon\Carbon::now(),
+            'valid_to'      =>  \Carbon\Carbon::now()->addMonth(),
+        ]);
+
+        User::notifyCouponVoucher($coupon);
+    }
+
+    /**
+     * Check if first order and has referrer
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return bool if false, User object if true
+     */
+    public function checkIfFirstOrderAndHasReferrer()
+    {
+        $referredBy = Auth::user()->details->referred_by;
+        if($referredBy){
+            $referrerExists = UserDetail::where('referral_id',$referredBy)->first();
+            if($referrerExists){
+                $referrer = User::find($referrerExists->user_id);
+                // Now check if order is first order of Auth User
+                $checkIfFirstOrder = Order::withTrashed()->where('user_id',Auth::id())->exists();
+
+                if($referrer && !$checkIfFirstOrder)
+                    return $referrer;
+            }
+        }
+        return false;
     }
 
     public function active()

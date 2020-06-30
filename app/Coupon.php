@@ -124,10 +124,8 @@ class Coupon extends Model
 			}
 		  }
 		  
-		if($this->coupon_type==3 && $this->user_id){
-			if($this->user_id!=Auth::id()){
-				$ret = false;
-			}
+		if($this->coupon_type==3 && $this->user_id && $this->user_id!=Auth::id()){
+			$ret = false;
 		}
 
 		return $ret;
