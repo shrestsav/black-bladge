@@ -66,13 +66,13 @@ class BookingController extends Controller
     public function instantBooking($data)
     {
         $validator = Validator::make($data, [
-            'pick_location_name' => 'required|string|max:100',
-            'pick_location_sub_name' => 'required|string|max:100',
+            'pick_location_name' => 'required|string|max:500',
+            'pick_location_sub_name' => 'required|string|max:500',
             'pick_location_lat'  => 'required|numeric',
             'pick_location_long' => 'required|numeric',
             'pick_location_info' => 'nullable|string|max:500',
-            'drop_location_name' => 'required|string|max:100',
-            'drop_location_sub_name' => 'required|string|max:100',
+            'drop_location_name' => 'required|string|max:500',
+            'drop_location_sub_name' => 'required|string|max:500',
             'drop_location_lat'  => 'required|numeric',
             'drop_location_long' => 'required|numeric',
             'drop_location_info' => 'nullable|string|max:500',
@@ -182,7 +182,7 @@ class BookingController extends Controller
         $validator = Validator::make($data, [
             'pick_timestamp'         => 'required|date_format:Y-m-d H:i:s',
             'pick_location_name'     => 'required|string',
-            'pick_location_sub_name' => 'required|string|max:100',
+            'pick_location_sub_name' => 'required|string|max:500',
             'pick_location_lat'      => 'required|numeric',
             'pick_location_long'     => 'required|numeric',
             'pick_location_info'     => 'nullable|string|max:500',

@@ -248,7 +248,7 @@ class BookingController extends Controller
         }
         
         $validator = Validator::make($request->all(), [
-            'drop_location_name'     => 'required|string|max:100',
+            'drop_location_name'     => 'required|string|max:500',
             'drop_location_sub_name' => 'required|string|max:500',
             'drop_location_lat'      => 'required|numeric',
             'drop_location_long'     => 'required|numeric',
@@ -441,8 +441,8 @@ class BookingController extends Controller
         $validator = Validator::make($request->all(), [
             'order_type'             => 'required|numeric',
             'type'                   => 'required|numeric',
-            'drop_location_name'     => 'required|string|max:100',
-            'drop_location_sub_name' => 'required|string|max:100',
+            'drop_location_name'     => 'required|string|max:500',
+            'drop_location_sub_name' => 'required|string|max:500',
             'drop_location_lat'      => 'required|numeric',
             'drop_location_long'     => 'required|numeric',
             'drop_location_info'     => 'nullable|string|max:500',
