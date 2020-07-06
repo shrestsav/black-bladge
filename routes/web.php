@@ -46,6 +46,8 @@ Route::middleware(['auth'])->group(function () {
 	Route::apiResource('/drivers','DriverController');
 	Route::get('/driver/all','DriverController@allDrivers');
 
+	Route::get('/get-count','HomeController@getChartData');
+
 	//Customer Routes
 	Route::apiResource('/customers','CustomerController');
 	Route::get('/unverifiedCustomers','CustomerController@unverifiedCustomers');

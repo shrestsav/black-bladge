@@ -90,6 +90,15 @@ class User extends Authenticatable
         return $this->where('phone', $username)->orWhere('username',$username)->first();
     }
 
+
+    public function getUserTotalDistance(){
+        return $this->hasMany(Order::class,'customer_id','id')->where('status',6)->sum('estimated_distance');
+    }
+
+    public function getDriverTotalDistance(){
+        return $this->hasMany(Order::class,'driver_id', 'id')->where('status',6)->sum('estimated_distance');
+    }
+
     /**
     * Validate the password of the user for the Passport password grant.
     *

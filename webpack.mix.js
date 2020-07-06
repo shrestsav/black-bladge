@@ -16,7 +16,7 @@ mix.js("resources/js/system.js", "public/js").sass(
     "public/css"
 );
 
-var url = "http://localhost:8000/";
+var url = "http://black.bladge//";
 
 mix.browserSync(url);
 

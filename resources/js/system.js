@@ -13,6 +13,8 @@ import VueMoment from 'vue-moment'
 import VueProgressBar from 'vue-progressbar'
 
 import BootstrapVue from 'bootstrap-vue'
+import Donut from 'vue-css-donut-chart';
+import 'vue-css-donut-chart/dist/vcdonut.css';
 Vue.use(BootstrapVue)
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
@@ -31,6 +33,9 @@ Vue.component('pagination', require('laravel-vue-pagination'));
 Vue.use(VueNotification, {
   timer: 20
 });
+
+Vue.use(Donut);
+  
 
 const app = new Vue({
     el: '#app',
