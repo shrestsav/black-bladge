@@ -14,7 +14,7 @@ class Driver extends JsonResource
      */
     public function toArray($request)
     {
-        $totalDistance = $this->getDriverTotalDistance();
+        $totalTrip = $this->getDriverTotalTrip();
         return [
             'id'             => $this->id,
             'fname'          => $this->fname,
@@ -29,7 +29,7 @@ class Driver extends JsonResource
             'license_no'     => $this->license_no,
             'vehicle_id'     => $this->vehicle_id,
             'vehicle_number' => $this->vehicle ? $this->vehicle['vehicle_number'] : null,
-            'total_trip'     => $totalDistance? number_format((float)$totalDistance,2) : 0.00,
+            'total_trip'     => $totalTrip? (int)$totalTrip: 0.00,
         ];
     }
 }

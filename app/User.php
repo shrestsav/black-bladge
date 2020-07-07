@@ -91,12 +91,12 @@ class User extends Authenticatable
     }
 
 
-    public function getUserTotalDistance(){
-        return $this->hasMany(Order::class,'customer_id','id')->where('status',6)->sum('estimated_distance');
+    public function getUserTotalTrip(){
+        return $this->hasMany(Order::class,'customer_id','id')->where('status',6)->count('id');
     }
 
-    public function getDriverTotalDistance(){
-        return $this->hasMany(Order::class,'driver_id', 'id')->where('status',6)->sum('estimated_distance');
+    public function getDriverTotalTrip(){
+        return $this->hasMany(Order::class,'driver_id', 'id')->where('status',6)->count('id');
     }
 
     /**
