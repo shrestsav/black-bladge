@@ -34,7 +34,12 @@ class BookingController extends Controller
     {
         $new = Order::where('status',0)
                         ->whereNull('driver_id')
+                        ->whereDoesntHave('bookingLogs', function ($query) {
+                            $query->where('user_id', Auth::id())
+                                    ->where('type' ,'assign_cancel');
+                        })
                         ->with('customer');
+
         
         if(isset($request->booking_type) && $request->booking_type!='')
             $new->where('type',$request->booking_type);
@@ -44,6 +49,7 @@ class BookingController extends Controller
             $new->orderBy('created_at','DESC');
 
         $new = $new->simplePaginate(10);
+
         
         return OrderResource::collection($new);
     } 
