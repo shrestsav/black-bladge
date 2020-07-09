@@ -34,7 +34,7 @@ class BookingController extends Controller
     {
         $new = Order::where('status',0)
                         ->whereNull('driver_id')
-                        ->whereDoesntHave('bookingLogs', function (Builder $query) {
+                        ->whereDoesntHave('bookingLogs', function ($query) {
                             $query->where('user_id', Auth::id());
                         })
                         ->with('customer');
