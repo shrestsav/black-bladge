@@ -19,7 +19,6 @@ class PaymentCard extends Model
 
 	protected $casts = [
         'card_no' => 'string',
-        'csv' => 'string',
         'type' => 'string',
     ];
 }
