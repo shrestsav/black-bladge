@@ -14,5 +14,12 @@ class PaymentCard extends Model
     	'month_year',
     	'csv',
     	'is_default'
+	];
+	
+
+	protected $casts = [
+        'card_no' => 'string',
+        'csv' => 'string',
+        'type' => 'string',
     ];
 }
