@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Artisan;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,6 +15,12 @@
 
 Route::get('/phpinfo',function(){
 	return dd(phpinfo());
+});
+
+Route::get('/clear-cache', function() {
+    $exitCode = Artisan::call('optimize:clear');
+    $exitCode = Artisan::call('config:cache');
+    // return what you want	
 });
 
 Route::get('/update',function(){
