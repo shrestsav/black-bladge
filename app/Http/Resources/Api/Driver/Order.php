@@ -43,7 +43,7 @@ class Order extends JsonResource
             //Invoicing
             'pricing_unit'         => config('settings.currency'),
             'estimated_price'      => $invoice['estimated_price'],
-            'payment_method'       => $this->when($this->status==6, ($this->details['payment_type']==1) ? 'Cash on Delivery' : (($this->details['payment_type']==2) ? 'Card' : 'Cash on Delivery')),
+            'payment_method'       => $this->when($this->status==6, (optional($this->details)->payment_type ==1) ? 'Cash on Delivery' : ((optional($this->details)->payment_type==2) ? 'Card' : 'Cash on Delivery')),
             'total_cost'           => $invoice['initial_price'],
             'additional_price'     => $invoice['additional_price'],
             'coupon_discount'      => $invoice['coupon_discount'],
