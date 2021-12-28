@@ -226,7 +226,7 @@ class Order extends Model
         $VAT = ($VATPercentage/100)*$subTotal;
         $grandTotal = $VAT+$subTotal;
 
-        $paidAmount = $this->details['paid_amount'];
+        $paidAmount = $this->details['paid_amount'] ?? 0;
         $leftAmount = $grandTotal-$paidAmount;
         $paymentComplete = ($leftAmount > 0) ? false : true;
 

@@ -37,12 +37,12 @@ class Order extends JsonResource
             'promo_code'           => $this->promo_code,
             'booked_hours'         => $this->when($this->type==2, $this->booked_hours),
             'total_booked_min'     => $this->totalBookedMinute(),
-            'cancellation_reason'  => $this->when($this->deleted_at, $this->cancellation_reason),
+            'cancellation_reason'  => $this->when(!!$this->deleted_at, $this->cancellation_reason),
 
             //Invoicing
             'pricing_unit'         => config('settings.currency'),
             'estimated_price'      => $invoice['estimated_price'],
-            'payment_method'       => $this->when($this->status==6, ($this->details['payment_type']==1) ? 'Cash on Delivery' : (($this->details['payment_type']==2) ? 'Card' : 'Cash on Delivery')),
+            'payment_method'       => $this->when($this->status==6, (optional($this->details)->payment_type ==1) ? 'Cash on Delivery' : ((optional($this->details)->payment_type ==2) ? 'Card' : 'Cash on Delivery')),
             'total_cost'           => $invoice['initial_price'],
             'additional_price'     => $invoice['additional_price'],
             'coupon_discount'      => $invoice['coupon_discount'],
@@ -55,13 +55,13 @@ class Order extends JsonResource
             'payment_complete'     => $invoice['payment_complete'],
             
             //Driver Details
-            'driver_id'            => $this->when($this->driver_id, $this->driver_id),
-            'driver_fname'         => $this->when($this->driver_id, $this->driver['fname']),
-            'driver_lname'         => $this->when($this->driver_id, $this->driver['lname']),
-            'driver_full_name'     => $this->when($this->driver_id, ucfirst(strtolower($this->driver['gender'])).'. '.$this->driver['full_name']),
-            'driver_phone'         => $this->when($this->driver_id, $this->driver['phone']),
-            'driver_license'       => $this->when($this->driver_id, $this->driver['license_no']),
-            'driver_photo_src'     => $this->when($this->driver_id, $this->driver['photo_src']),
+            'driver_id'            => $this->when(!!$this->driver_id, $this->driver_id),
+            'driver_fname'         => $this->when(!!$this->driver_id, $this->driver['fname'] ?? ''),
+            'driver_lname'         => $this->when(!!$this->driver_id, $this->driver['lname'] ?? ''),
+            'driver_full_name'     => $this->when(!!$this->driver_id, ucfirst(strtolower($this->driver['gender'] ?? '')).'. '.($this->driver['full_name'] ?? '')),
+            'driver_phone'         => $this->when(!!$this->driver_id, $this->driver['phone'] ?? ''),
+            'driver_license'       => $this->when(!!$this->driver_id, $this->driver['license_no'] ?? ''),
+            'driver_photo_src'     => $this->when(!!$this->driver_id, $this->driver['photo_src'] ?? ''),
         ];
     }
 }
